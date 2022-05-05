@@ -58,15 +58,7 @@ def get_requirements(filename="requirements.txt"):
 def get_long_description():
     with open("README.md") as f:
         long_description = f.read()
-
-    try:
-        import github2pypi
-
-        return github2pypi.replace_url(
-            slug="haruishi43/equilib", content=long_description
-        )
-    except Exception:
-        return long_description
+    return long_description
 
 
 def get_extentions():
@@ -128,7 +120,6 @@ setup(
     keywords=["Edge Detection", "Semantic Boundary Detection", "Computer Vision"],
     packages=find_packages(
         exclude=[
-            "github2pypi",
             "tests",
             "scripts",
             "tools",
@@ -137,7 +128,7 @@ setup(
             "build",
         ]
     ),
-    install_requires=["numpy"],
+    install_requires=["numpy", "Cython"],
     include_package_data=False,  # used for MANIFEST.in
     zip_safe=False,
     ext_modules=cythonize(get_extentions()),
