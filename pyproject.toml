@@ -22,5 +22,6 @@ exclude = '''
   | data
   | tools
   | scripts
+  | notebooks
 )/
 '''

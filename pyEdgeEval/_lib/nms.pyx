@@ -42,7 +42,7 @@ def nms(edge, ori, r=1, s=5, m=1.01):
 
     _edge = edge.astype('float64').copy(order='F')
     _ori = ori.astype('float64').copy(order='F')
-    _out = np.zero_like(_edge, order='F')
+    _out = np.zeros_like(_edge, order='F')
 
     _r = int(r)
     _s = int(s)

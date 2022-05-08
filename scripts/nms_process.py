@@ -22,12 +22,16 @@ def nms_process_one_image(image, save_path=None, save=True):
     :param save: bool, if True, save .png
     :return: edge
     NOTE: in MATLAB, uint8(x) means round(x).astype(uint8) in numpy
+
+    NOTE: input image must be normalized between 0~1
     """
+
+    # assume input image is float (float64)
 
     if save and save_path is not None:
         assert os.path.splitext(save_path)[-1] == ".png"
     edge = conv_tri(image, 1)
-    edge = np.float32(edge)
+    # edge = np.float32(edge)
     ox, oy = grad2(conv_tri(edge, 4))
     oxx, _ = grad2(ox)
     oxy, oyy = grad2(oy)
