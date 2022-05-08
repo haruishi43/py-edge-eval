@@ -161,5 +161,8 @@ setup(
     install_requires=["numpy", "Cython"],
     include_package_data=False,  # used for MANIFEST.in
     zip_safe=False,
-    ext_modules=cythonize(get_extentions()),
+    ext_modules=cythonize(
+        get_extentions(),
+        language_level="3",
+    ),
 )
