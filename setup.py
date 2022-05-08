@@ -6,43 +6,45 @@ from setuptools import find_packages, setup
 from setuptools.extension import Extension
 from Cython.Build import cythonize
 
+PKG_NAME = "pyEdgeEval"
 
-def readme():
+
+def get_long_description():
     with open("README.md") as f:
-        content = f.read()
-    return content
+        long_description = f.read()
+    return long_description
 
 
 def find_version():
-    version_file = "pyEdgeEval/info.py"
+    version_file = osp.join(PKG_NAME, "info.py")
     with open(version_file, "r") as f:
         exec(compile(f.read(), version_file, "exec"))
     return locals()["__version__"]
 
 
 def find_author():
-    version_file = "pyEdgeEval/info.py"
+    version_file = osp.join(PKG_NAME, "info.py")
     with open(version_file, "r") as f:
         exec(compile(f.read(), version_file, "exec"))
     return locals()["__author__"]
 
 
 def find_email():
-    version_file = "pyEdgeEval/info.py"
+    version_file = osp.join(PKG_NAME, "info.py")
     with open(version_file, "r") as f:
         exec(compile(f.read(), version_file, "exec"))
     return locals()["__email__"]
 
 
 def find_description():
-    version_file = "pyEdgeEval/info.py"
+    version_file = osp.join(PKG_NAME, "info.py")
     with open(version_file, "r") as f:
         exec(compile(f.read(), version_file, "exec"))
     return locals()["__description__"]
 
 
 def find_url():
-    version_file = "pyEdgeEval/info.py"
+    version_file = osp.join(PKG_NAME, "info.py")
     with open(version_file, "r") as f:
         exec(compile(f.read(), version_file, "exec"))
     return locals()["__url__"]
@@ -55,17 +57,21 @@ def get_requirements(filename="requirements.txt"):
     return requires
 
 
-def get_long_description():
-    with open("README.md") as f:
-        long_description = f.read()
-    return long_description
-
-
 def get_extentions():
     """Manage and generate Extensions
 
-    - "correspond_pixels.pyx"
+    - `correspond_pixels.pyx`
+    - `nms.pyx`
     """
+
+    ROOT = osp.join(PKG_NAME, "_lib")
+    extensions = []
+
+    def _add_sources(source_files, root=ROOT):
+        _srcs = []
+        for s in source_files:
+            _srcs.append(osp.join(root, s))
+        return _srcs
 
     # FIXME: possibly glob it instead?
     source_files = [
@@ -79,26 +85,44 @@ def get_extentions():
         "src/String.cc",
         "src/Timer.cc",
     ]
-    sources = []
-    root = osp.join("pyEdgeEval", "_lib")
-    for s in source_files:
-        sources.append(osp.join(root, s))
+    sources = _add_sources(source_files)
 
-    extensions = [
+    extensions += [
         Extension(
-            "pyEdgeEval._lib.correspond_pixels",
+            f"{PKG_NAME}._lib.correspond_pixels",
             sources=sources,
-            include_dirs=[osp.join(root, "include")],
+            include_dirs=[osp.join(ROOT, "include")],
             language="c++",
-            extra_compile_args=["-DNOBLAS"],
+            extra_compile_args=["-fPIC", "-DNOBLAS"],
         ),
+    ]
+
+    source_files = [
+        "nms.pyx",
+        "src/benms.cc",
+        "src/Exception.cc",
+        "src/Matrix.cc",
+        "src/Random.cc",
+        "src/String.cc",
+        "src/Timer.cc",
+    ]
+    sources = _add_sources(source_files)
+
+    extensions += [
+        Extension(
+            f"{PKG_NAME}._lib.nms",
+            sources=sources,
+            include_dirs=[osp.join(ROOT, "include")],
+            language="c++",
+            extra_compile_args=["-fPIC", "-DNOBLAS"],
+        )
     ]
 
     return extensions
 
 
 setup(
-    name="pyEdgeEval",
+    name=PKG_NAME,
     version=find_version(),
     author=find_author(),
     author_email=find_email(),

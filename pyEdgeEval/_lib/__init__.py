@@ -5,4 +5,9 @@ try:
 except ImportError:
     raise ImportError("`correspond_pixels` hasn't been compiled yet")
 
-__all__ = ["correspond_pixels"]
+try:
+    from pyEdgeEval._lib.nms import nms
+except ImportError:
+    raise ImportError("`nms` hasn't been compiled yet")
+
+__all__ = ["correspond_pixels", "nms"]

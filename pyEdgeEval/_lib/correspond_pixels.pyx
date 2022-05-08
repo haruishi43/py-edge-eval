@@ -15,7 +15,6 @@ cdef extern from "match.hh":
                          Matrix& match1, Matrix& match2)
 
 
-
 cdef _correspond_pixels(double[::1,:] img0, double[::1,:] img1, double max_dist, double outlier_cost,
                         double[::1,:] out0, double[::1,:] out1):
     cdef int rows = img0.shape[0]
@@ -25,7 +24,7 @@ cdef _correspond_pixels(double[::1,:] img0, double[::1,:] img1, double max_dist,
 
     # Copy data to Matrix types; construct matrices, get views of their contents and copy
     # over
-    # Constructing a Matrix from a double* acquired from views of im0 and img1 don't
+    # Constructing a Matrix from a double* acquired from views of img0 and img1 don't
     # work well at all...
     cdef Matrix i0 = Matrix(rows, cols)
     cdef Matrix i1 = Matrix(rows, cols)
