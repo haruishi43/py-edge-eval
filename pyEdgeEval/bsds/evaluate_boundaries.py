@@ -9,7 +9,10 @@ from pyEdgeEval.utils import thin
 
 
 def evaluate_boundaries_bin(
-    predicted_boundaries_bin, gt_boundaries, max_dist=0.0075, apply_thinning=True
+    predicted_boundaries_bin,
+    gt_boundaries,
+    max_dist=0.0075,
+    apply_thinning=True,
 ):
     """
     Evaluate the accuracy of a predicted boundary.
@@ -127,7 +130,9 @@ def evaluate_boundaries(
         acc_prec = np.zeros(predicted_boundaries_bin.shape, dtype=bool)
 
         if apply_thinning:
-            predicted_boundaries_bin = thin.binary_thin(predicted_boundaries_bin)
+            predicted_boundaries_bin = thin.binary_thin(
+                predicted_boundaries_bin
+            )
 
         for gt in gt_boundaries:
 
@@ -329,7 +334,10 @@ def pr_evaluation(
         area_pr = 0.0
 
     rec_best, prec_best, f1_best = compute_rec_prec_f1(
-        float(count_r_best), float(sum_r_best), float(count_p_best), float(sum_p_best)
+        float(count_r_best),
+        float(sum_r_best),
+        float(count_p_best),
+        float(sum_p_best),
     )
 
     overall_result = OverallResult(

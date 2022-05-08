@@ -86,7 +86,9 @@ def apply_lut(x, lut):
         raise ValueError("lut should have 1 dimension, not {}".format(lut.ndim))
 
     if lut.shape[0] != 512:
-        raise ValueError("lut should have 512 entries, not {}".format(lut.shape[0]))
+        raise ValueError(
+            "lut should have 512 entries, not {}".format(lut.shape[0])
+        )
 
     lut_indices = binary_image_to_lut_indices(x)
 
@@ -170,7 +172,8 @@ def _thin_cond_g3():
     :return: a LUT index mask
     """
     return (
-        (lut_masks_one(2) | lut_masks_one(3) | lut_masks_zero(8)) & lut_masks_one(1)
+        (lut_masks_one(2) | lut_masks_one(3) | lut_masks_zero(8))
+        & lut_masks_one(1)
     ) == 0
 
 
@@ -180,7 +183,8 @@ def _thin_cond_g3_prime():
     :return: a LUT index mask
     """
     return (
-        (lut_masks_one(6) | lut_masks_one(7) | lut_masks_zero(4)) & lut_masks_one(5)
+        (lut_masks_one(6) | lut_masks_one(7) | lut_masks_zero(4))
+        & lut_masks_one(5)
     ) == 0
 
 

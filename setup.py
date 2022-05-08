@@ -62,6 +62,8 @@ def get_extentions():
 
     - `correspond_pixels.pyx`
     - `nms.pyx`
+
+    # FIXME: need to compile sourcefiles everytime... but I guess -fPIC is saving me
     """
 
     ROOT = osp.join(PKG_NAME, "_lib")
@@ -141,7 +143,11 @@ setup(
         "Programming Language :: Python :: 3.8",
     ],
     python_requires=">=3.6",
-    keywords=["Edge Detection", "Semantic Boundary Detection", "Computer Vision"],
+    keywords=[
+        "Edge Detection",
+        "Semantic Boundary Detection",
+        "Computer Vision",
+    ],
     packages=find_packages(
         exclude=[
             "tests",

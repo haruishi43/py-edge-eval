@@ -18,6 +18,8 @@ cdef _nms(double[::1,:] out, double[::1,:] edge, double[::1,:] ori, int r, int s
     cdef int rows = edge.shape[0]
     cdef int cols = edge.shape[1]
 
+    # need to convert numpy to Matrix
+    # FIXME: implement a version without dependencies for Matrix
     cdef Matrix medge = Matrix(rows, cols)
     cdef Matrix mori = Matrix(rows, cols)
     cdef double[::1,:] medge_view = <double[:edge.shape[0]:1,:edge.shape[1]]>medge.data()
@@ -25,6 +27,7 @@ cdef _nms(double[::1,:] out, double[::1,:] edge, double[::1,:] ori, int r, int s
     medge_view[:,:] = edge[:,:]
     mori_view[:,:] = ori[:,:]
 
+    # define output
     cdef Matrix mout
 
     benms(mout, medge, mori, r, s, m)

@@ -133,7 +133,10 @@ class BSDSDataset(object):
         """
         gt = BSDSDataset.load_ground_truth_mat(path)
         num_gts = gt.shape[1]
-        return [gt[0, i]["Segmentation"][0, 0].astype(np.int32) for i in range(num_gts)]
+        return [
+            gt[0, i]["Segmentation"][0, 0].astype(np.int32)
+            for i in range(num_gts)
+        ]
 
     @staticmethod
     def load_boundaries(path):
@@ -193,7 +196,9 @@ class BSDSHEDAugDataset(object):
 
     AUG_FLIPS = ["1_0", "1_1"]
 
-    ALL_AUGS = [(s, r, f) for f in AUG_FLIPS for r in AUG_ROTS for s in AUG_SCALES]
+    ALL_AUGS = [
+        (s, r, f) for f in AUG_FLIPS for r in AUG_ROTS for s in AUG_SCALES
+    ]
 
     def __init__(self, bsds_dataset, root_path):
         """
@@ -221,7 +226,9 @@ class BSDSHEDAugDataset(object):
             )
         if scale not in self.AUG_SCALES:
             raise ValueError(
-                "scale should be one of {}, not {}".format(self.AUG_SCALES, scale)
+                "scale should be one of {}, not {}".format(
+                    self.AUG_SCALES, scale
+                )
             )
         if rot not in self.AUG_ROTS:
             raise ValueError(

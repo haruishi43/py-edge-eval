@@ -20,7 +20,9 @@ N_THRESHOLDS = 5
 parser = argparse.ArgumentParser(
     description="Verify the BSDS-500 boundary " "evaluation suite"
 )
-parser.add_argument("bsds_path", type=str, help="the root path of the BSDS-500 dataset")
+parser.add_argument(
+    "bsds_path", type=str, help="the root path of the BSDS-500 dataset"
+)
 
 args = parser.parse_args()
 
@@ -29,17 +31,29 @@ bench_dir_path = os.path.join(bsds_path, "bench", "data")
 
 
 def load_gt_boundaries(sample_name):
-    gt_path = os.path.join(bench_dir_path, "groundTruth", "{}.mat".format(sample_name))
+    gt_path = os.path.join(
+        bench_dir_path, "groundTruth", "{}.mat".format(sample_name)
+    )
     return BSDSDataset.load_boundaries(gt_path)
 
 
 def load_pred(sample_name):
-    pred_path = os.path.join(bench_dir_path, "png", "{}.png".format(sample_name))
+    pred_path = os.path.join(
+        bench_dir_path, "png", "{}.png".format(sample_name)
+    )
     return img_as_float(imread(pred_path))
 
 
-sample_results, threshold_results, overall_result = evaluate_boundaries.pr_evaluation(
-    N_THRESHOLDS, SAMPLE_NAMES, load_gt_boundaries, load_pred, progress=tqdm.tqdm
+(
+    sample_results,
+    threshold_results,
+    overall_result,
+) = evaluate_boundaries.pr_evaluation(
+    N_THRESHOLDS,
+    SAMPLE_NAMES,
+    load_gt_boundaries,
+    load_pred,
+    progress=tqdm.tqdm,
 )
 
 print("Per image:")

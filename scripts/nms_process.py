@@ -4,7 +4,7 @@ import numpy as np
 from scipy.io import loadmat
 
 from pyEdgeEval import nms
-from pyEdgeEval.other.toolbox import conv_tri, grad2
+from pyEdgeEval.utils.toolbox import conv_tri, grad2
 
 
 # NOTE:

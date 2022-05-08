@@ -38,6 +38,7 @@ G123P_LUT = np.array([0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0
 
 # fmt: on
 
+
 def bwmorph_thin(image, n_iter=None):
     """
     Perform morphological thinning of a binary image
@@ -109,7 +110,7 @@ def bwmorph_thin(image, n_iter=None):
     if n_iter is None:
         n = -1
     elif n_iter <= 0:
-        raise ValueError('n_iter must be > 0')
+        raise ValueError("n_iter must be > 0")
     else:
         n = n_iter
 
@@ -118,14 +119,12 @@ def bwmorph_thin(image, n_iter=None):
     skel = np.array(image).astype(np.uint8)
 
     if skel.ndim != 2:
-        raise ValueError('2D array required')
+        raise ValueError("2D array required")
     if not np.all(np.in1d(image.flat, (0, 1))):
-        raise ValueError('Image contains values other than 0 and 1')
+        raise ValueError("Image contains values other than 0 and 1")
 
     # neighborhood mask
-    mask = np.array([[8, 4, 2],
-                     [16, 0, 1],
-                     [32, 64, 128]], dtype=np.uint8)
+    mask = np.array([[8, 4, 2], [16, 0, 1], [32, 64, 128]], dtype=np.uint8)
 
     # iterate either 1) indefinitely or 2) up to iteration limit
     while n != 0:
@@ -134,7 +133,7 @@ def bwmorph_thin(image, n_iter=None):
         # for each subiteration
         for lut in [G123_LUT, G123P_LUT]:
             # correlate image with neighborhood mask
-            N = ndi.correlate(skel, mask, mode='constant')
+            N = ndi.correlate(skel, mask, mode="constant")
             # take deletion decision from this subiteration's LUT
             D = np.take(lut, N)
             # perform deletion

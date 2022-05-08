@@ -10,8 +10,12 @@ from skimage.io import imread
 
 
 parser = argparse.ArgumentParser(description="Test output")
-parser.add_argument("bsds_path", type=str, help="the root path of the BSDS-500 dataset")
-parser.add_argument("pred_path", type=str, help="the root path of the predictions")
+parser.add_argument(
+    "bsds_path", type=str, help="the root path of the BSDS-500 dataset"
+)
+parser.add_argument(
+    "pred_path", type=str, help="the root path of the predictions"
+)
 parser.add_argument("val_test", type=str, help="val or test")
 parser.add_argument(
     "thresholds", type=str, default="5", help="the number of thresholds"
@@ -33,14 +37,18 @@ except ValueError:
     try:
         if thresholds.startswith("[") and thresholds.endswith("]"):
             thresholds = thresholds[1:-1]
-            thresholds = np.array([float(t.strip()) for t in thresholds.split(",")])
+            thresholds = np.array(
+                [float(t.strip()) for t in thresholds.split(",")]
+            )
         else:
             print(
                 "Bad threshold format; should be a python list of floats (`[a, b, c]`)"
             )
             sys.exit()
     except ValueError:
-        print("Bad threshold format; should be a python list of ints (`[a, b, c]`)")
+        print(
+            "Bad threshold format; should be a python list of ints (`[a, b, c]`)"
+        )
         sys.exit()
 
 ds = BSDSDataset(bsds_path)
@@ -59,7 +67,9 @@ def load_gt_boundaries(sample_name):
 
 
 def load_pred(sample_name):
-    sample_path = os.path.join(pred_path, "{}{}".format(sample_name, suffix_ext))
+    sample_path = os.path.join(
+        pred_path, "{}{}".format(sample_name, suffix_ext)
+    )
     pred = rgb2grey(img_as_float(imread(sample_path)))
     bnds = ds.boundaries(sample_name)
     tgt_shape = bnds[0].shape
@@ -72,7 +82,11 @@ def load_pred(sample_name):
     return pred
 
 
-sample_results, threshold_results, overall_result = evaluate_boundaries.pr_evaluation(
+(
+    sample_results,
+    threshold_results,
+    overall_result,
+) = evaluate_boundaries.pr_evaluation(
     thresholds, SAMPLE_NAMES, load_gt_boundaries, load_pred, progress=tqdm.tqdm
 )
 
