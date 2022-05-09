@@ -35,7 +35,7 @@ jobs:
     - name: Build package
       run: |
         python -m build
-        audit repair dist/*-linux_x86_64.whl --plat manylinux_2_24_x86_64
+        auditwheel repair dist/*-linux_x86_64.whl --plat manylinux_2_24_x86_64
         mv wheelhouse/* dist
         rm dist/*-linux_x86_64.whel
     - name: Publish package
