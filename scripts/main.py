@@ -1,8 +1,8 @@
 import os
 from argparse import ArgumentParser
 
-from nms_process import nms_process
-from eval_edge import eval_edge
+from pyEdgeEval.utils.nms_process import nms_process
+from pyEdgeEval.bsds.eval_edge import eval_edge
 
 
 def main(args):
