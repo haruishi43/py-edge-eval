@@ -16,7 +16,7 @@ from pyEdgeEval.utils.toolbox import conv_tri, grad2
 
 
 def nms_process_one_image(image, save_path=None, save=True):
-    """"
+    """
     :param image: numpy array, edge, model output
     :param save_path: str, save path
     :param save: bool, if True, save .png
@@ -44,7 +44,9 @@ def nms_process_one_image(image, save_path=None, save=True):
     return edge
 
 
-def nms_process(model_name_list, result_dir, save_dir, key=None, file_format=".mat"):
+def nms_process(
+    model_name_list, result_dir, save_dir, key=None, file_format=".mat"
+):
     if not isinstance(model_name_list, list):
         model_name_list = [model_name_list]
     assert file_format in {".mat", ".npy"}
@@ -56,7 +58,9 @@ def nms_process(model_name_list, result_dir, save_dir, key=None, file_format=".m
             os.makedirs(model_save_dir)
 
         for file in os.listdir(result_dir):
-            save_name = os.path.join(model_save_dir, "{}.png".format(os.path.splitext(file)[0]))
+            save_name = os.path.join(
+                model_save_dir, "{}.png".format(os.path.splitext(file)[0])
+            )
             if os.path.isfile(save_name):
                 continue
 
@@ -73,5 +77,5 @@ def nms_process(model_name_list, result_dir, save_dir, key=None, file_format=".m
             nms_process_one_image(image, save_name, True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     nms_process("hed", "hed_result", "NMS_RESULT_FOLDER", key="result")

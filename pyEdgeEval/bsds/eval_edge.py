@@ -13,11 +13,13 @@ def eval_edge(alg, model_name_list, result_dir, gt_dir, workers=1):
         tic = time.time()
         res_dir = os.path.join(result_dir, model_name)
         print(res_dir)
-        edges_eval_dir(res_dir, gt_dir, thin=1, max_dist=0.0075, workers=workers)
+        edges_eval_dir(
+            res_dir, gt_dir, thin=1, max_dist=0.0075, workers=workers
+        )
         toc = time.time()
         print("TIME: {}s".format(toc - tic))
         edges_eval_plot(res_dir, alg)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     eval_edge("HED", "hed", "NMS_RESULT_FOLDER", "test", 10)
