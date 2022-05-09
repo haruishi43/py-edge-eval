@@ -1,0 +1,4 @@
+include pyEdgeEval/_lib/include/*.hh
+include pyEdgeEval/_lib/include/*.h
+include pyEdgeEval/_lib/src/*.cc
+include pyEdgeEval/_lib/*.pyx

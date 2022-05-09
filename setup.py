@@ -159,8 +159,9 @@ setup(
             "notebooks",
         ]
     ),
+    setup_requires=["numpy", "Cython"],
     install_requires=["numpy", "Cython"],
-    include_package_data=False,  # used for MANIFEST.in
+    include_package_data=True,  # used for MANIFEST.in
     zip_safe=False,
     ext_modules=cythonize(
         get_extentions(),
