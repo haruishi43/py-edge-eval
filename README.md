@@ -1,16 +1,37 @@
-# Python Binding for BSDS Edge Evaluation Code
+# Python Binding for Edge Evaluation Code
+
+## Installation
 
 ```Bash
-# build the project (doesn't install as a package)
+# Install dependencies
+pip install -r requirements.txt
+
+# Option 1. build the project (doesn't install as a package)
 python setup.py build_ext --inplace
 
-# install as a pip package (install as a package)
+# Option 2. install as a pip package (install as a package)
 git clone https://github.com/haruishi43/py-edge-eval.git
 pip install -e .
 
-# install without cloning the project
+# Option 3. install without cloning the project
 pip install pyEdgeEval
+```
 
-# debugging purposes
+## Developing
+
+```Bash
+# Install dependencies
+pip install -r requirements-dev.txt
+
+# [try to build]
+# verbose build
 pip install -e . -v
+
+# [build distribution]
+python -m build
+
+# [convert wheel (for linux)]
+auditwheel -v repair dist/<package>.whl
+mv wheelhouse/<new package>.whl dist/
+rm dist/<old package>.whl
 ```
