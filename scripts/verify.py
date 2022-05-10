@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Verify the functionality of the evaluation suite.
 
@@ -6,13 +8,17 @@ results. Compare them with the results from the BSDS dataset to verify
 that this Python port works properly.
 """
 
-import os, argparse
+import argparse
+import os
 
 import tqdm
-from bsds.bsds_dataset import BSDSDataset
-from bsds import evaluate_boundaries
+
 from skimage.util import img_as_float
 from skimage.io import imread
+
+from pyEdgeEval.bsds.bsds_dataset import BSDSDataset
+from pyEdgeEval.bsds import evaluate_boundaries
+
 
 SAMPLE_NAMES = ["2018", "3063", "5096", "6046", "8068"]
 N_THRESHOLDS = 5

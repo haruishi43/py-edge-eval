@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
 import os
+
 import numpy as np
 from PIL import Image
+from scipy.io import loadmat
 from skimage.util import img_as_float
 from skimage.color import rgb2grey
 from skimage.io import imread
-from scipy.io import loadmat
 
 
 class BSDSDataset(object):

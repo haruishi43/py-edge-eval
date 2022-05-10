@@ -4,7 +4,7 @@
 Information about this module
 """
 
-__version__ = "0.0.3"
+__version__ = "0.0.3.dev0"
 __author__ = "haruishi43"
 __email__ = "toraudonn@gmail.com"
 __description__ = "Python Edge Evaluation Benchmark"

@@ -1,12 +1,17 @@
-import os, argparse, sys
+#!/usr/bin/env python3
+
+import os
+import sys
+import argparse
 
 import tqdm
 import numpy as np
-from bsds.bsds_dataset import BSDSDataset
-from bsds import evaluate_boundaries
 from skimage.util import img_as_float
 from skimage.color import rgb2grey
 from skimage.io import imread
+
+from pyEdgeEval.bsds import evaluate_boundaries
+from pyEdgeEval.bsds.bsds_dataset import BSDSDataset
 
 
 parser = argparse.ArgumentParser(description="Test output")
