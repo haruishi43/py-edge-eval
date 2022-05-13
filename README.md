@@ -5,9 +5,6 @@
 ```Bash
 # Install dependencies
 pip install -r requirements.txt
-# install mat loader of your choice
-pip install pymatreader
-pip install mat73
 
 # Option 1. build the project (doesn't install as a package)
 python setup.py build_ext --inplace
@@ -30,3 +27,7 @@ python scripts/evaluate_bsds500.py <path/to/bsds500> <path/to/pred> <path/to/out
 
 Tested with [@xwjabc's HED implementation](https://github.com/xwjabc/hed).
 For better testing, the number of thresholds should be 99 (but it will take a couple hours to finish testing).
+
+## SBD
+
+WIP

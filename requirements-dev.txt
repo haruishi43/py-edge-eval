@@ -4,3 +4,4 @@ pre-commit
 auditwheel
 build
 twine
+tqdm

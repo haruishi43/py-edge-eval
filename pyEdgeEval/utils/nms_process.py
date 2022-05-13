@@ -40,6 +40,7 @@ def nms_process_one_image(image, save_path=None, save=True):
     out = nms(edge, ori, r=r, s=s, m=m)
     edge = np.round(out * 255).astype(np.uint8)
     if save:
+        # remove cv2 dependencies
         cv2.imwrite(save_path, edge)
     return edge
 
