@@ -75,7 +75,3 @@ def nms_process(
             else:
                 raise NotImplementedError
             nms_process_one_image(image, save_name, True)
-
-
-if __name__ == "__main__":
-    nms_process("hed", "hed_result", "NMS_RESULT_FOLDER", key="result")

@@ -18,7 +18,7 @@ from functools import partial
 
 from tqdm import tqdm
 
-from pyEdgeEval.bsds import evaluate_boundaries
+from pyEdgeEval.bsds.evaluate import pr_evaluation
 from pyEdgeEval.bsds.utils import (
     load_bsds_gt_boundaries,
     load_predictions,
@@ -64,7 +64,7 @@ def test(bench_dir_path: str, output_dir_path: str):
         sample_results,
         threshold_results,
         overall_result,
-    ) = evaluate_boundaries.pr_evaluation(
+    ) = pr_evaluation(
         N_THRESHOLDS,
         SAMPLE_NAMES,
         partial(load_gt_boundaries, bench_dir_path=bench_dir_path),

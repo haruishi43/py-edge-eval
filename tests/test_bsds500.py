@@ -8,7 +8,7 @@ from typing import List, Union
 import numpy as np
 from tqdm import tqdm
 
-from pyEdgeEval.bsds import evaluate_boundaries
+from pyEdgeEval.bsds.evaluate import pr_evaluation
 from pyEdgeEval.bsds.utils import (
     load_bsds_gt_boundaries,
     load_predictions,
@@ -47,7 +47,7 @@ def run_evaluation(
         sample_results,
         threshold_results,
         overall_result,
-    ) = evaluate_boundaries.pr_evaluation(
+    ) = pr_evaluation(
         thresholds,
         SAMPLE_NAMES,
         partial(load_gt_boundaries, bench_dir_path=bench_dir_path),

@@ -7,10 +7,11 @@ from functools import partial
 import numpy as np
 from tqdm import tqdm
 
-from pyEdgeEval.bsds import evaluate_boundaries
+from pyEdgeEval.bsds.evaluate import pr_evaluation
 from pyEdgeEval.bsds.utils import (
     load_bsds_gt_boundaries,
     load_predictions,
+    save_results,
 )
 
 
@@ -21,6 +22,11 @@ def parse_args():
     )
     parser.add_argument(
         "pred_path", type=str, help="the root path of the predictions",
+    )
+    parser.add_argument(
+        "output_path",
+        type=str,
+        help="the root path of where the results are populated",
     )
     parser.add_argument(
         "--use-val",
@@ -91,10 +97,16 @@ def load_pred(
 def evaluate_bsds500(
     bsds_path: str,
     pred_path: str,
+    output_path: str,
     pred_suffix: str,
     use_val: bool,
     thresholds: str,
 ):
+    """Evaluate BSDS500"""
+    assert os.path.exists(bsds_path), f"ERR: {bsds_path} doesn't exist"
+    assert os.path.exists(pred_path), f"ERR: {pred_path} doesn't exist"
+    assert os.path.exists(output_path), f"ERR: {output_path} doesn't exist"
+
     thresholds = thresholds.strip()
     try:
         n_thresholds = int(thresholds)
@@ -130,7 +142,7 @@ def evaluate_bsds500(
         sample_results,
         threshold_results,
         overall_result,
-    ) = evaluate_boundaries.pr_evaluation(
+    ) = pr_evaluation(
         thresholds,
         sample_names,
         _load_gt_boundaries,
@@ -138,22 +150,22 @@ def evaluate_bsds500(
         progress=tqdm,
     )
 
-    print("Per image:")
-    for sample_index, res in enumerate(sample_results):
-        print(
-            "{:<10d} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
-                sample_index + 1, res.threshold, res.recall, res.precision, res.f1
-            )
-        )
+    # print("Per image:")
+    # for sample_index, res in enumerate(sample_results):
+    #     print(
+    #         "{:<10d} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
+    #             sample_index + 1, res.threshold, res.recall, res.precision, res.f1
+    #         )
+    #     )
 
-    print("")
-    print("Per threshold:")
-    for thresh_i, res in enumerate(threshold_results):
-        print(
-            "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
-                res.threshold, res.recall, res.precision, res.f1
-            )
-        )
+    # print("")
+    # print("Per threshold:")
+    # for thresh_i, res in enumerate(threshold_results):
+    #     print(
+    #         "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
+    #             res.threshold, res.recall, res.precision, res.f1
+    #         )
+    #     )
 
     print("")
     print("Summary:")
@@ -171,6 +183,12 @@ def evaluate_bsds500(
     )
 
     # TODO: add a script to save the results as txt file
+    save_results(
+        path=output_path,
+        sample_results=sample_results,
+        threshold_results=threshold_results,
+        overall_result=overall_result,
+    )
 
 
 def main():
@@ -179,6 +197,7 @@ def main():
     evaluate_bsds500(
         bsds_path=args.bsds_path,
         pred_path=args.pred_path,
+        output_path=args.output_path,
         pred_suffix=args.pred_suffix,
         use_val=args.use_val,
         thresholds=args.thresholds,
