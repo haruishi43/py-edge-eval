@@ -224,7 +224,7 @@ def pr_evaluation(
         the given sample
     - `recall`: the recall score obtained at the best threshold
     - `precision`: the precision score obtained at the best threshold
-    - `f1`: the F1-score obtained at the best threshold\
+    - `f1`: the F1-score obtained at the best threshold
 
     `ThresholdResult`:
     - `threshold`: the threshold value to which this result applies
