@@ -22,6 +22,7 @@ from pyEdgeEval.bsds import evaluate_boundaries
 from pyEdgeEval.bsds.utils import (
     load_bsds_gt_boundaries,
     load_predictions,
+    save_results,
 )
 
 
@@ -33,6 +34,11 @@ def parse_args():
         "bench_path",
         type=str,
         help="the root path of the BSDS-500 benchmark",
+    )
+    parser.add_argument(
+        "output_dir",
+        type=str,
+        help="directory to output the results",
     )
     return parser.parse_args()
 
@@ -47,11 +53,12 @@ def load_pred(sample_name: str, bench_dir_path: str):
     return load_predictions(pred_path)  # np.ndarray(dtype=float)
 
 
-def test(bench_dir_path: str):
+def test(bench_dir_path: str, output_dir_path: str):
     SAMPLE_NAMES = ["2018", "3063", "5096", "6046", "8068"]
     N_THRESHOLDS = 5
 
     assert os.path.exists(bench_dir_path), f"{bench_dir_path} doesn't exist"
+    assert os.path.exists(output_dir_path), f"{output_dir_path} doesn't exist"
 
     (
         sample_results,
@@ -104,11 +111,20 @@ def test(bench_dir_path: str):
         )
     )
 
+    # save the results
+    save_results(
+        path=output_dir_path,
+        sample_results=sample_results,
+        threshold_results=threshold_results,
+        overall_result=overall_result,
+    )
+
 
 def main():
     args = parse_args()
     test(
         bench_dir_path=args.bench_path,
+        output_dir_path=args.output_dir,
     )
 
 

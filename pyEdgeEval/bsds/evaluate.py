@@ -347,14 +347,14 @@ def pr_evaluation(
     )
 
     overall_result = OverallResult(
-        used_thresholds[best_i_ovr],
-        rec_overall[best_i_ovr],
-        prec_overall[best_i_ovr],
-        f1_overall[best_i_ovr],
-        rec_best,
-        prec_best,
-        f1_best,
-        area_pr,
+        used_thresholds[best_i_ovr],  # ODS threshold
+        rec_overall[best_i_ovr],  # ODS Recall
+        prec_overall[best_i_ovr],  # ODS Precision
+        f1_overall[best_i_ovr],  # ODS F
+        rec_best,  # OIS Recall
+        prec_best,  # OIS Precision
+        f1_best,  # OIS F
+        area_pr,  # AP
     )
 
     return sample_results, threshold_results, overall_result
