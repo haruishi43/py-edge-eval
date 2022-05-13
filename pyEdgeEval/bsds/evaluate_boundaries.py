@@ -124,6 +124,8 @@ def evaluate_boundaries(
     sum_r = np.zeros(thresholds.shape)
     count_r = np.zeros(thresholds.shape)
 
+    # FIXME: add multithreading
+
     for i_t, thresh in enumerate(progress(list(thresholds))):
         predicted_boundaries_bin = predicted_boundaries >= thresh
 
@@ -193,7 +195,11 @@ OverallResult = namedtuple(
 
 
 def pr_evaluation(
-    thresholds, sample_names, load_gt_boundaries, load_pred, progress=None
+    thresholds,
+    sample_names,
+    load_gt_boundaries,
+    load_pred,
+    progress=None,
 ):
     """
     Perform an evaluation of predictions against ground truths for an image

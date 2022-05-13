@@ -31,7 +31,7 @@ def parse_args():
         "--thresholds",
         type=str,
         default="5",
-        help="the number of thresholds (could be a list of floats)",
+        help="the number of thresholds (could be a list of floats); use 99 for eval",
     )
     parser.add_argument(
         "--pred-suffix",
