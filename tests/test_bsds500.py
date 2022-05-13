@@ -26,11 +26,11 @@ def load_pred(sample_name: str, bench_dir_path: str):
 
 
 def load_actual_results(bench_dir_path: str):
-    bdry_img_path = os.path.join(bench_dir_path, 'test_2', 'eval_bdry_img.txt')
+    bdry_img_path = os.path.join(bench_dir_path, "test_2", "eval_bdry_img.txt")
     bdry_img = np.loadtxt(bdry_img_path)
-    bdry_thr_path = os.path.join(bench_dir_path, 'test_2', 'eval_bdry_thr.txt')
+    bdry_thr_path = os.path.join(bench_dir_path, "test_2", "eval_bdry_thr.txt")
     bdry_thr = np.loadtxt(bdry_thr_path)
-    bdry_path = os.path.join(bench_dir_path, 'test_2', 'eval_bdry.txt')
+    bdry_path = os.path.join(bench_dir_path, "test_2", "eval_bdry.txt")
     bdry = np.loadtxt(bdry_path)
     return bdry_img, bdry_thr, bdry
 
@@ -43,11 +43,7 @@ def run_evaluation(
 
     assert os.path.exists(bench_dir_path), f"{bench_dir_path} doesn't exist"
 
-    (
-        sample_results,
-        threshold_results,
-        overall_result,
-    ) = pr_evaluation(
+    (sample_results, threshold_results, overall_result,) = pr_evaluation(
         thresholds,
         SAMPLE_NAMES,
         partial(load_gt_boundaries, bench_dir_path=bench_dir_path),
@@ -55,11 +51,7 @@ def run_evaluation(
         progress=tqdm,
     )
 
-    (
-        actual_sample,
-        actual_threshold,
-        actual_overall,
-    ) = load_actual_results(
+    (actual_sample, actual_threshold, actual_overall,) = load_actual_results(
         bench_dir_path=bench_dir_path,
     )
 

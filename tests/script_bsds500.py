@@ -60,11 +60,7 @@ def test(bench_dir_path: str, output_dir_path: str):
     assert os.path.exists(bench_dir_path), f"{bench_dir_path} doesn't exist"
     assert os.path.exists(output_dir_path), f"{output_dir_path} doesn't exist"
 
-    (
-        sample_results,
-        threshold_results,
-        overall_result,
-    ) = pr_evaluation(
+    (sample_results, threshold_results, overall_result,) = pr_evaluation(
         N_THRESHOLDS,
         SAMPLE_NAMES,
         partial(load_gt_boundaries, bench_dir_path=bench_dir_path),
