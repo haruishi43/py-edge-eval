@@ -5,6 +5,9 @@
 ```Bash
 # Install dependencies
 pip install -r requirements.txt
+# install mat loader of your choice
+pip install pymatreader
+pip install mat73
 
 # Option 1. build the project (doesn't install as a package)
 python setup.py build_ext --inplace

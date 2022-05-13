@@ -136,7 +136,7 @@ def evaluate_boundaries(
 
         for gt in gt_boundaries:
 
-            match1, match2, cost, oc = correspond_pixels.correspond_pixels(
+            match1, match2, cost, oc = correspond_pixels(
                 predicted_boundaries_bin, gt, max_dist=max_dist
             )
             match1 = match1 > 0

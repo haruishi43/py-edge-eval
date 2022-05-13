@@ -20,6 +20,8 @@ def conv_tri(image, r, s=1):
         )
     f = f.astype(image.dtype)
     image = np.pad(image, ((r, r), (r, r)), mode="symmetric")
+
+    # FIXME: remove scipy dependencies
     image = signal.convolve2d(
         signal.convolve2d(image, f, "valid"), f.T, "valid"
     )
