@@ -170,6 +170,8 @@ def evaluate_bsds500(
         )
     )
 
+    # TODO: add a script to save the results as txt file
+
 
 def main():
     args = parse_args()

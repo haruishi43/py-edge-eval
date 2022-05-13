@@ -38,16 +38,12 @@ def parse_args():
 
 
 def load_gt_boundaries(sample_name: str, bench_dir_path: str):
-    gt_path = os.path.join(
-        bench_dir_path, "groundTruth", f"{sample_name}.mat"
-    )
+    gt_path = os.path.join(bench_dir_path, "groundTruth", f"{sample_name}.mat")
     return load_bsds_gt_boundaries(gt_path)  # List[np.ndarray]
 
 
 def load_pred(sample_name: str, bench_dir_path: str):
-    pred_path = os.path.join(
-        bench_dir_path, "png", f"{sample_name}.png"
-    )
+    pred_path = os.path.join(bench_dir_path, "png", f"{sample_name}.png")
     return load_predictions(pred_path)  # np.ndarray(dtype=float)
 
 
@@ -73,7 +69,11 @@ def test(bench_dir_path: str):
     for sample_index, res in enumerate(sample_results):
         print(
             "{:<10d} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
-                sample_index + 1, res.threshold, res.recall, res.precision, res.f1
+                sample_index + 1,
+                res.threshold,
+                res.recall,
+                res.precision,
+                res.f1,
             )
         )
 
@@ -87,7 +87,9 @@ def test(bench_dir_path: str):
         )
 
     print("")
-    print("Summary:")
+    print(
+        "Summary: (threshold, recall, precision, f1, best recall, best precision, best f1, Area under PR"
+    )
     print(
         "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}"
         "{:<10.6f}".format(

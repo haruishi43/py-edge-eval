@@ -20,6 +20,17 @@ pip install -e .
 pip install pyEdgeEval
 ```
 
+## BSDS500
+
+Script:
+
+```Bash
+python scripts/evaluate_bsds500.py <path/to/bsds500> <path/to/pred>
+```
+
+Tested with [@xwjabc's HED implementation](https://github.com/xwjabc/hed).
+For better testing, the number of thresholds should be 99 (but it will take a couple hours to finish testing).
+
 ## Developing
 
 ```Bash
