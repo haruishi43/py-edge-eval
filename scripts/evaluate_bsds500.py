@@ -188,7 +188,7 @@ def evaluate_bsds500(
         )
     )
 
-    # TODO: add a script to save the results as txt file
+    # save results
     save_results(
         path=output_path,
         sample_results=sample_results,
