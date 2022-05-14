@@ -275,7 +275,7 @@ def pr_evaluation(
         sample_data = track_parallel_progress(
             single_run,
             sample_names,
-            nproc=8,
+            nproc=nproc,
             keep_order=True,
         )
     else:
