@@ -16,8 +16,6 @@ import argparse
 import os
 from functools import partial
 
-from tqdm import tqdm
-
 from pyEdgeEval.bsds.evaluate import pr_evaluation
 from pyEdgeEval.bsds.utils import (
     load_bsds_gt_boundaries,
@@ -40,6 +38,12 @@ def parse_args():
         type=str,
         help="directory to output the results",
     )
+    parser.add_argument(
+        "--nproc",
+        type=int,
+        default=1,
+        help="number of parallel processes",
+    )
     return parser.parse_args()
 
 
@@ -53,7 +57,7 @@ def load_pred(sample_name: str, bench_dir_path: str):
     return load_predictions(pred_path)  # np.ndarray(dtype=float)
 
 
-def test(bench_dir_path: str, output_dir_path: str):
+def test(bench_dir_path: str, output_dir_path: str, nproc: int):
     SAMPLE_NAMES = ["2018", "3063", "5096", "6046", "8068"]
     N_THRESHOLDS = 5
 
@@ -65,7 +69,7 @@ def test(bench_dir_path: str, output_dir_path: str):
         SAMPLE_NAMES,
         partial(load_gt_boundaries, bench_dir_path=bench_dir_path),
         partial(load_pred, bench_dir_path=bench_dir_path),
-        progress=tqdm,
+        nproc=nproc,
     )
 
     print("Per image:")
@@ -121,6 +125,7 @@ def main():
     test(
         bench_dir_path=args.bench_path,
         output_dir_path=args.output_dir,
+        nproc=args.nproc,
     )
 
 

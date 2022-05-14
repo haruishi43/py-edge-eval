@@ -6,7 +6,6 @@ import math
 from typing import List, Union
 
 import numpy as np
-from tqdm import tqdm
 
 from pyEdgeEval.bsds.evaluate import pr_evaluation
 from pyEdgeEval.bsds.utils import (
@@ -38,6 +37,8 @@ def load_actual_results(bench_dir_path: str):
 def run_evaluation(
     bench_dir_path: str,
     thresholds: Union[int, List[float]] = 5,
+    nproc: int = 1,
+    abs_tol: float = 1e-03,
 ):
     SAMPLE_NAMES = ["2018", "3063", "5096", "6046", "8068"]
 
@@ -48,7 +49,7 @@ def run_evaluation(
         SAMPLE_NAMES,
         partial(load_gt_boundaries, bench_dir_path=bench_dir_path),
         partial(load_pred, bench_dir_path=bench_dir_path),
-        progress=tqdm,
+        nproc=nproc,
     )
 
     (actual_sample, actual_threshold, actual_overall,) = load_actual_results(
@@ -56,7 +57,7 @@ def run_evaluation(
     )
 
     def _isclose(a, b):
-        return math.isclose(a, b, abs_tol=1e-03)
+        return math.isclose(a, b, abs_tol=abs_tol)
 
     # compare with actual
     print(sample_results)
@@ -90,7 +91,21 @@ def run_evaluation(
 
 
 def test_bsds500():
+    nproc = 1
+    abs_tol = 1e-03
     run_evaluation(
         bench_dir_path="data/BSDS500_bench",
         thresholds=5,
+        nproc=nproc,
+        abs_tol=abs_tol,
+    )
+
+    # FIXME: nproc > 1 results in different results
+    nproc = 8
+    abs_tol = 1e-02
+    run_evaluation(
+        bench_dir_path="data/BSDS500_bench",
+        thresholds=5,
+        nproc=nproc,
+        abs_tol=abs_tol,
     )

@@ -1,11 +1,16 @@
 #!/usr/bin/env python2
 
 from collections import namedtuple
+from functools import partial
 
 import numpy as np
 
 from pyEdgeEval._lib import correspond_pixels
-from pyEdgeEval.utils import thin
+from pyEdgeEval.utils.progressbar import (
+    track_parallel_progress,
+    track_progress,
+)
+from pyEdgeEval.utils.thin import binary_thin
 
 
 def evaluate_boundaries_bin(
@@ -18,28 +23,28 @@ def evaluate_boundaries_bin(
     Evaluate the accuracy of a predicted boundary.
 
     :param predicted_boundaries_bin: the predicted boundaries as a (H,W)
-    binary array
+        binary array
     :param gt_boundaries: a list of ground truth boundaries, as returned
-    by the `load_boundaries` or `boundaries` methods
+        by the `load_boundaries` or `boundaries` methods
     :param max_dist: (default=0.0075) maximum distance parameter
-    used for determining pixel matches. This value is multiplied by the
-    length of the diagonal of the image to get the threshold used
-    for matching pixels.
+        used for determining pixel matches. This value is multiplied by the
+        length of the diagonal of the image to get the threshold used
+        for matching pixels.
     :param apply_thinning: (default=True) if True, apply morphologial
-    thinning to the predicted boundaries before evaluation
+        thinning to the predicted boundaries before evaluation
     :return: tuple `(count_r, sum_r, count_p, sum_p)` where each of
-    the four entries are float values that can be used to compute
-    recall and precision with:
-    ```
-    recall = count_r / (sum_r + (sum_r == 0))
-    precision = count_p / (sum_p + (sum_p == 0))
-    ```
+        the four entries are float values that can be used to compute
+        recall and precision with:
+        ```
+        recall = count_r / (sum_r + (sum_r == 0))
+        precision = count_p / (sum_p + (sum_p == 0))
+        ```
     """
     acc_prec = np.zeros(predicted_boundaries_bin.shape, dtype=bool)
     predicted_boundaries_bin = predicted_boundaries_bin != 0
 
     if apply_thinning:
-        predicted_boundaries_bin = thin.binary_thin(predicted_boundaries_bin)
+        predicted_boundaries_bin = binary_thin(predicted_boundaries_bin)
 
     sum_r = 0
     count_r = 0
@@ -68,39 +73,32 @@ def evaluate_boundaries(
     thresholds=99,
     max_dist=0.0075,
     apply_thinning=True,
-    progress=None,
 ):
     """
     Evaluate the accuracy of a predicted boundary and a range of thresholds
 
     :param predicted_boundaries: the predicted boundaries as a (H,W)
-    floating point array where each pixel represents the strength of the
-    predicted boundary
+        floating point array where each pixel represents the strength of the
+        predicted boundary
     :param gt_boundaries: a list of ground truth boundaries, as returned
-    by the `load_boundaries` or `boundaries` methods
+        by the `load_boundaries` or `boundaries` methods
     :param thresholds: either an integer specifying the number of thresholds
-    to use or a 1D array specifying the thresholds
+        to use or a 1D array specifying the thresholds
     :param max_dist: (default=0.0075) maximum distance parameter
-    used for determining pixel matches. This value is multiplied by the
-    length of the diagonal of the image to get the threshold used
-    for matching pixels.
+        used for determining pixel matches. This value is multiplied by the
+        length of the diagonal of the image to get the threshold used
+        for matching pixels.
     :param apply_thinning: (default=True) if True, apply morphologial
-    thinning to the predicted boundaries before evaluation
-    :param progress: a function that can be used to monitor progress;
-    use `tqdm.tqdm` or `tdqm.tqdm_notebook` from the `tqdm` package
-    to generate a progress bar.
+        thinning to the predicted boundaries before evaluation
     :return: tuple `(count_r, sum_r, count_p, sum_p, thresholds)` where each
-    of the first four entries are arrays that can be used to compute
-    recall and precision at each threshold with:
-    ```
-    recall = count_r / (sum_r + (sum_r == 0))
-    precision = count_p / (sum_p + (sum_p == 0))
-    ```
-    The thresholds are also returned.
+        of the first four entries are arrays that can be used to compute
+        recall and precision at each threshold with:
+        ```
+        recall = count_r / (sum_r + (sum_r == 0))
+        precision = count_p / (sum_p + (sum_p == 0))
+        ```
+        The thresholds are also returned.
     """
-    if progress is None:
-        progress = lambda x, *args, **kwargs: x
-
     # Handle thresholds
     if isinstance(thresholds, int):
         thresholds = np.linspace(
@@ -124,17 +122,13 @@ def evaluate_boundaries(
     sum_r = np.zeros(thresholds.shape)
     count_r = np.zeros(thresholds.shape)
 
-    # FIXME: add multithreading
-
-    for i_t, thresh in enumerate(progress(list(thresholds))):
+    for i_t, thresh in enumerate(list(thresholds)):
         predicted_boundaries_bin = predicted_boundaries >= thresh
 
         acc_prec = np.zeros(predicted_boundaries_bin.shape, dtype=bool)
 
         if apply_thinning:
-            predicted_boundaries_bin = thin.binary_thin(
-                predicted_boundaries_bin
-            )
+            predicted_boundaries_bin = binary_thin(predicted_boundaries_bin)
 
         for gt in gt_boundaries:
 
@@ -194,12 +188,22 @@ OverallResult = namedtuple(
 )
 
 
+def _single_run(sample_name, func_load_pred, func_load_gt, func_eval_bdry):
+    pred = func_load_pred(sample_name)
+    gt_b = func_load_gt(sample_name)
+    count_r, sum_r, count_p, sum_p, used_thresholds = func_eval_bdry(
+        predicted_boundaries=pred,
+        gt_boundaries=gt_b,
+    )
+    return count_r, sum_r, count_p, sum_p, used_thresholds
+
+
 def pr_evaluation(
     thresholds,
     sample_names,
     load_gt_boundaries,
     load_pred,
-    progress=None,
+    nproc: int = 8,
 ):
     """
     Perform an evaluation of predictions against ground truths for an image
@@ -214,14 +218,12 @@ def pr_evaluation(
     :param load_pred: a callable that loads the prediction for a
         named sample; of the form `load_gt_boundaries(sample_name) -> gt`
         where `gt` is a 2D NumPy array
-    :param progress: default=None a callable -- such as `tqdm` -- that
-        accepts an iterator over the sample names in order to track progress
     :return: `(sample_results, threshold_results, overall_result)`
-    where `sample_results` is a list of `SampleResult` named tuples with one
-    for each sample, `threshold_results` is a list of `ThresholdResult`
-    named tuples, with one for each threshold and `overall_result`
-    is an `OverallResult` named tuple giving the over all results. The
-    attributes in these structures will now be described:
+        where `sample_results` is a list of `SampleResult` named tuples with one
+        for each sample, `threshold_results` is a list of `ThresholdResult`
+        named tuples, with one for each threshold and `overall_result`
+        is an `OverallResult` named tuple giving the over all results. The
+        attributes in these structures will now be described:
 
     `SampleResult`:
     - `sample_name`: the name identifying the sample to which this result
@@ -253,8 +255,34 @@ def pr_evaluation(
     - `area_pr`: the area under the precision-recall curve at `threshold`
     `
     """
-    if progress is None:
-        progress = lambda x, *args: x
+
+    # intialize the partial function for evaluating boundaries
+    _evaluate_boundaries = partial(
+        evaluate_boundaries,
+        thresholds=thresholds,
+        max_dist=0.0075,
+        apply_thinning=True,
+    )
+    single_run = partial(
+        _single_run,
+        func_load_pred=load_pred,
+        func_load_gt=load_gt_boundaries,
+        func_eval_bdry=_evaluate_boundaries,
+    )
+
+    # initial run (process heavy)
+    if nproc > 1:
+        sample_data = track_parallel_progress(
+            single_run,
+            sample_names,
+            nproc=8,
+            keep_order=True,
+        )
+    else:
+        sample_data = track_progress(
+            single_run,
+            sample_names,
+        )
 
     if isinstance(thresholds, int):
         n_thresh = thresholds
@@ -272,17 +300,12 @@ def pr_evaluation(
     sum_p_best = 0
 
     sample_results = []
-    for sample_index, sample_name in enumerate(progress(sample_names)):
+    for sample_index, sample_name in enumerate(sample_names):
         # Get the paths for the ground truth and predicted boundaries
 
-        # Load them
-        pred = load_pred(sample_name)
-        gt_b = load_gt_boundaries(sample_name)
-
-        # Evaluate predictions
-        count_r, sum_r, count_p, sum_p, used_thresholds = evaluate_boundaries(
-            pred, gt_b, thresholds=thresholds, apply_thinning=True
-        )
+        count_r, sum_r, count_p, sum_p, used_thresholds = sample_data[
+            sample_index
+        ]
 
         count_r_overall += count_r
         sum_r_overall += sum_r

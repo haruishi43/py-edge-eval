@@ -30,4 +30,9 @@ rm dist/<old package>.whl
 - [ ] Plot PR curves
 - [ ] NMS preprocess script
 - [ ] SBD evaluation script
-- [ ] Multiprocessing for evaluation
+- [x] Multiprocessing for evaluation
+- [ ] Set random seed for `correspond_pixels`
+
+## Bugs
+
+- Using multiprocessing causes a bug where every run produces different results. The seed for random number generator used in `correspond_pixels.pyx` causes the randomness which is the same as the original MATLAB code. To solve the issue, we would need to set the random seed every time we call `correspond_pixels` so that the results are reproducible (TODO).

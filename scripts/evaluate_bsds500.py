@@ -5,7 +5,6 @@ import argparse
 from functools import partial
 
 import numpy as np
-from tqdm import tqdm
 
 from pyEdgeEval.bsds.evaluate import pr_evaluation
 from pyEdgeEval.bsds.utils import (
@@ -38,6 +37,12 @@ def parse_args():
         type=str,
         default="5",
         help="the number of thresholds (could be a list of floats); use 99 for eval",
+    )
+    parser.add_argument(
+        "--nproc",
+        type=int,
+        default=4,
+        help="the number of parallel threads",
     )
     parser.add_argument(
         "--pred-suffix",
@@ -101,6 +106,7 @@ def evaluate_bsds500(
     pred_suffix: str,
     use_val: bool,
     thresholds: str,
+    nproc: int,
 ):
     """Evaluate BSDS500"""
     assert os.path.exists(bsds_path), f"ERR: {bsds_path} doesn't exist"
@@ -147,7 +153,7 @@ def evaluate_bsds500(
         sample_names,
         _load_gt_boundaries,
         _load_pred,
-        progress=tqdm,
+        nproc=nproc,
     )
 
     # print("Per image:")
@@ -201,6 +207,7 @@ def main():
         pred_suffix=args.pred_suffix,
         use_val=args.use_val,
         thresholds=args.thresholds,
+        nproc=args.nproc,
     )
 
 

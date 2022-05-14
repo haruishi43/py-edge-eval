@@ -22,11 +22,12 @@ pip install pyEdgeEval
 Script:
 
 ```Bash
-python scripts/evaluate_bsds500.py <path/to/bsds500> <path/to/pred> <path/to/output> --thresholds=5
+python scripts/evaluate_bsds500.py <path/to/bsds500> <path/to/pred> <path/to/output> --thresholds=5 --nproc=8
 ```
 
 Tested with [@xwjabc's HED implementation](https://github.com/xwjabc/hed).
-For better testing, the number of thresholds should be 99 (but it will take a couple hours to finish testing).
+Setting `--nproc` will drastically improve the evaluation.
+However, due to the randomness in the original MATLAB (C++) codebase, the results will be different.
 
 ## SBD
 
