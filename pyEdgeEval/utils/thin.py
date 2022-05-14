@@ -53,7 +53,7 @@ def binary_image_to_lut_indices(x):
         raise ValueError("x should have 2 dimensions, not {}".format(x.ndim))
 
     # If the dtype of x is not bool, convert
-    if x.dtype != np.bool:
+    if x.dtype != bool:
         x = x != 0
 
     # Add

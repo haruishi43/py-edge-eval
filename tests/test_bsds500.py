@@ -92,7 +92,7 @@ def run_evaluation(
 
 def test_bsds500():
     nproc = 1
-    abs_tol = 1e-03
+    abs_tol = 1e-02
     run_evaluation(
         bench_dir_path="data/BSDS500_bench",
         thresholds=5,

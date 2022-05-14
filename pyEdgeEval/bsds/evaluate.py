@@ -2,6 +2,7 @@
 
 from collections import namedtuple
 from functools import partial
+from typing import Callable, List, Tuple, Union
 
 import numpy as np
 
@@ -14,11 +15,11 @@ from pyEdgeEval.utils.thin import binary_thin
 
 
 def evaluate_boundaries_bin(
-    predicted_boundaries_bin,
-    gt_boundaries,
-    max_dist=0.0075,
-    apply_thinning=True,
-):
+    predicted_boundaries_bin: np.ndarray,
+    gt_boundaries: np.ndarray,
+    max_dist: float = 0.0075,
+    apply_thinning: bool = True,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """
     Evaluate the accuracy of a predicted boundary.
 
@@ -68,12 +69,12 @@ def evaluate_boundaries_bin(
 
 
 def evaluate_boundaries(
-    predicted_boundaries,
-    gt_boundaries,
-    thresholds=99,
-    max_dist=0.0075,
-    apply_thinning=True,
-):
+    predicted_boundaries: np.ndarray,
+    gt_boundaries: np.ndarray,
+    thresholds: Union[int, np.ndarray] = 99,
+    max_dist: float = 0.0075,
+    apply_thinning: bool = True,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """
     Evaluate the accuracy of a predicted boundary and a range of thresholds
 
@@ -150,7 +151,12 @@ def evaluate_boundaries(
     return count_r, sum_r, count_p, sum_p, thresholds
 
 
-def compute_rec_prec_f1(count_r, sum_r, count_p, sum_p):
+def compute_rec_prec_f1(
+    count_r: np.ndarray,
+    sum_r: np.ndarray,
+    count_p: np.ndarray,
+    sum_p: np.ndarray,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Computer recall, precision and F1-score given `count_r`, `sum_r`,
     `count_p` and `sum_p`; see `evaluate_boundaries`.
@@ -199,12 +205,13 @@ def _single_run(sample_name, func_load_pred, func_load_gt, func_eval_bdry):
 
 
 def pr_evaluation(
-    thresholds,
-    sample_names,
-    load_gt_boundaries,
-    load_pred,
+    thresholds: Union[int, np.ndarray],
+    sample_names: List[str],
+    load_gt_boundaries: Callable[[str], np.ndarray],
+    load_pred: Callable[[str], np.ndarray],
+    max_dist: float = 0.0075,
     nproc: int = 8,
-):
+) -> Tuple[List[SampleResult], List[ThresholdResult], OverallResult]:
     """
     Perform an evaluation of predictions against ground truths for an image
     set over a given set of thresholds.
@@ -260,7 +267,7 @@ def pr_evaluation(
     _evaluate_boundaries = partial(
         evaluate_boundaries,
         thresholds=thresholds,
-        max_dist=0.0075,
+        max_dist=max_dist,
         apply_thinning=True,
     )
     single_run = partial(
