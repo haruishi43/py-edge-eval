@@ -171,7 +171,7 @@ def _single_run(sample_name, category, func_load_pred, func_load_gt, func_load_s
     pred = func_load_pred(sample_name)[category, :, :]
     gt_b = func_load_gt(sample_name)[category, :, :]
     if func_load_seg is not None:
-        seg = func_load_seg(sample_name)[category, :, :]
+        seg = func_load_seg(sample_name) == category
     else:
         seg = None
     count_r, sum_r, count_p, sum_p, used_thresholds = func_eval_bdry(
