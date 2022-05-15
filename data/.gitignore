@@ -3,4 +3,6 @@
 !/images/
 !/images/*
 !/BSDS500_bench/
-!/BSDS500_bench/*
+!/BSDS500_bench/**
+!/SBD_bench/
+!/SBD_bench/**
