@@ -7,11 +7,11 @@ from typing import Callable, List, Tuple, Union
 import numpy as np
 
 from pyEdgeEval._lib import correspond_pixels
-from pyEdgeEval.utils.progressbar import (
+from pyEdgeEval.utils import (
     track_parallel_progress,
     track_progress,
 )
-from pyEdgeEval.utils.thin import binary_thin
+from pyEdgeEval.preprocess.thin import binary_thin
 
 
 def evaluate_boundaries_bin(

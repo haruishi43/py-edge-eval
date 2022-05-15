@@ -1,8 +1,16 @@
+#!/usr/bin/env python3
+
+from typing import Tuple
+
 import numpy as np
 from scipy import signal
 
 
-def conv_tri(image, r, s=1):
+def conv_tri(
+    image: np.ndarray,
+    r: int,
+    s: int = 1,
+) -> np.ndarray:
     """2D image convolution with a triangle filter (no fast)
     See https://github.com/pdollar/toolbox/blob/master/channels/convTri.m
     Note: signal.convolve2d does not support float16('single' in MATLAB)
@@ -34,7 +42,7 @@ def conv_tri(image, r, s=1):
     return image
 
 
-def grad2(image):
+def grad2(image: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """numerical gradients along x and y directions (no fast)
     See https://github.com/pdollar/toolbox/blob/master/channels/gradient2.m
     Note: np.gradient return [oy, ox], MATLAB version return [ox, oy]
