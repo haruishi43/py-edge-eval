@@ -7,25 +7,25 @@ from typing import Callable, List, Tuple, Union
 import numpy as np
 
 from pyEdgeEval._lib import correspond_pixels
+from pyEdgeEval.preprocess.thin import binary_thin
 from pyEdgeEval.utils import (
     track_parallel_progress,
     track_progress,
 )
-from pyEdgeEval.preprocess.thin import binary_thin
 
 
 def evaluate_boundaries_bin(
-    predicted_boundaries_bin: np.ndarray,
-    gt_boundaries: np.ndarray,
+    pred: np.ndarray,
+    gts: np.ndarray,
     max_dist: float = 0.0075,
     apply_thinning: bool = True,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """
     Evaluate the accuracy of a predicted boundary.
 
-    :param predicted_boundaries_bin: the predicted boundaries as a (H,W)
+    :param pred: the predicted boundaries as a (H,W)
         binary array
-    :param gt_boundaries: a list of ground truth boundaries, as returned
+    :param gts: a list of ground truth boundaries, as returned
         by the `load_boundaries` or `boundaries` methods
     :param max_dist: (default=0.0075) maximum distance parameter
         used for determining pixel matches. This value is multiplied by the
@@ -41,17 +41,17 @@ def evaluate_boundaries_bin(
         precision = count_p / (sum_p + (sum_p == 0))
         ```
     """
-    acc_prec = np.zeros(predicted_boundaries_bin.shape, dtype=bool)
-    predicted_boundaries_bin = predicted_boundaries_bin != 0
+    acc_prec = np.zeros(pred.shape, dtype=bool)
+    pred = pred != 0
 
     if apply_thinning:
-        predicted_boundaries_bin = binary_thin(predicted_boundaries_bin)
+        pred = binary_thin(pred)
 
     sum_r = 0
     count_r = 0
-    for gt in gt_boundaries:
+    for gt in gts:
         match1, match2, cost, oc = correspond_pixels(
-            predicted_boundaries_bin, gt, max_dist=max_dist
+            pred, gt, max_dist=max_dist
         )
         match1 = match1 > 0
         match2 = match2 > 0
@@ -62,15 +62,15 @@ def evaluate_boundaries_bin(
         count_r += match2.sum()
 
     # Precision
-    sum_p = predicted_boundaries_bin.sum()
+    sum_p = pred.sum()
     count_p = acc_prec.sum()
 
     return count_r, sum_r, count_p, sum_p
 
 
 def evaluate_boundaries(
-    predicted_boundaries: np.ndarray,
-    gt_boundaries: np.ndarray,
+    pred: np.ndarray,
+    gts: np.ndarray,
     thresholds: Union[int, np.ndarray] = 99,
     max_dist: float = 0.0075,
     apply_thinning: bool = True,
@@ -78,10 +78,10 @@ def evaluate_boundaries(
     """
     Evaluate the accuracy of a predicted boundary and a range of thresholds
 
-    :param predicted_boundaries: the predicted boundaries as a (H,W)
+    :param pred: the predicted boundaries as a (H,W)
         floating point array where each pixel represents the strength of the
         predicted boundary
-    :param gt_boundaries: a list of ground truth boundaries, as returned
+    :param gts: a list of ground truth boundaries, as returned
         by the `load_boundaries` or `boundaries` methods
     :param thresholds: either an integer specifying the number of thresholds
         to use or a 1D array specifying the thresholds
@@ -124,17 +124,17 @@ def evaluate_boundaries(
     count_r = np.zeros(thresholds.shape)
 
     for i_t, thresh in enumerate(list(thresholds)):
-        predicted_boundaries_bin = predicted_boundaries >= thresh
+        _pred = pred >= thresh
 
-        acc_prec = np.zeros(predicted_boundaries_bin.shape, dtype=bool)
+        acc_prec = np.zeros(_pred.shape, dtype=bool)
 
         if apply_thinning:
-            predicted_boundaries_bin = binary_thin(predicted_boundaries_bin)
+            _pred = binary_thin(_pred)
 
-        for gt in gt_boundaries:
+        for gt in gts:
 
             match1, match2, cost, oc = correspond_pixels(
-                predicted_boundaries_bin, gt, max_dist=max_dist
+                _pred, gt, max_dist=max_dist
             )
             match1 = match1 > 0
             match2 = match2 > 0
@@ -145,7 +145,7 @@ def evaluate_boundaries(
             count_r[i_t] += match2.sum()
 
         # Precision
-        sum_p[i_t] = predicted_boundaries_bin.sum()
+        sum_p[i_t] = _pred.sum()
         count_p[i_t] = acc_prec.sum()
 
     return count_r, sum_r, count_p, sum_p, thresholds
@@ -198,8 +198,8 @@ def _single_run(sample_name, func_load_pred, func_load_gt, func_eval_bdry):
     pred = func_load_pred(sample_name)
     gt_b = func_load_gt(sample_name)
     count_r, sum_r, count_p, sum_p, used_thresholds = func_eval_bdry(
-        predicted_boundaries=pred,
-        gt_boundaries=gt_b,
+        pred=pred,
+        gts=gt_b,
     )
     return count_r, sum_r, count_p, sum_p, used_thresholds
 
@@ -207,7 +207,7 @@ def _single_run(sample_name, func_load_pred, func_load_gt, func_eval_bdry):
 def pr_evaluation(
     thresholds: Union[int, np.ndarray],
     sample_names: List[str],
-    load_gt_boundaries: Callable[[str], np.ndarray],
+    load_gts: Callable[[str], np.ndarray],
     load_pred: Callable[[str], np.ndarray],
     max_dist: float = 0.0075,
     nproc: int = 8,
@@ -219,7 +219,7 @@ def pr_evaluation(
     :param thresholds: either an integer specifying the number of thresholds
     to use or a 1D array specifying the thresholds
     :param sample_names: the names of the samples that are to be evaluated
-    :param load_gt_boundaries: a callable that loads the ground truth for a
+    :param load_gts: a callable that loads the ground truth for a
         named sample; of the form `load_gt_boundaries(sample_name) -> gt`
         where `gt` is a 2D NumPy array
     :param load_pred: a callable that loads the prediction for a
@@ -273,7 +273,7 @@ def pr_evaluation(
     single_run = partial(
         _single_run,
         func_load_pred=load_pred,
-        func_load_gt=load_gt_boundaries,
+        func_load_gt=load_gts,
         func_eval_bdry=_evaluate_boundaries,
     )
 
