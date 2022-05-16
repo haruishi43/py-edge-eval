@@ -38,10 +38,11 @@ def run_nms(
 
     if img.dtype == np.uint8:
         # NOTE: input image must be normalized between 0~1
-        img = (img / 255.).astype(np.float64)
+        img = (img / 255.0).astype(np.float64)
 
-    assert (img.dtype == np.float64) or (img.dtype == np.float32), \
-        f"ERR: input dtype should be float64 or float32 but got {img.dtype}"
+    assert (img.dtype == np.float64) or (
+        img.dtype == np.float32
+    ), f"ERR: input dtype should be float64 or float32 but got {img.dtype}"
 
     edge = conv_tri(img, 1)
     # edge = np.float32(edge)  # faster preprocessing
@@ -78,8 +79,7 @@ def nms_process_one_image(img, save_path=None, save=True):
 
 
 def nms_results(result_dir, save_dir, loader):
-    assert os.path.exists(result_dir), \
-        f"ERR: {result_dir} does not exist"
+    assert os.path.exists(result_dir), f"ERR: {result_dir} does not exist"
     if not os.path.isdir(save_dir):
         os.makedirs(save_dir)
 

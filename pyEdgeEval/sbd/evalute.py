@@ -21,9 +21,8 @@ def kill_internal_prediction(
     seg: np.ndarray,
     max_dist: float = 0.02,
 ) -> np.ndarray:
-    """Remove predicted pixels inside boundaries
-    """
-    diag = np.sqrt(pred.shape[0]**2 + pred.shape[1]**2)
+    """Remove predicted pixels inside boundaries"""
+    diag = np.sqrt(pred.shape[0] ** 2 + pred.shape[1] ** 2)
     buffer = diag * max_dist
     distmap = distance_transform_edt(1 - gt)
     killmask = (distmap > buffer) and seg
@@ -98,8 +97,9 @@ def evaluate_boundaries(
             _pred = binary_thin(_pred)
 
         if kill_internal:
-            assert isinstance(gt_seg, np.ndarray), \
-                "ERR: `seg` is not np.ndarray"
+            assert isinstance(
+                gt_seg, np.ndarray
+            ), "ERR: `seg` is not np.ndarray"
             _pred = kill_internal_prediction(
                 pred=_pred,
                 gt=gt,
@@ -167,16 +167,29 @@ OverallResult = namedtuple(
 )
 
 
-def _single_run(sample_name, category, func_load_pred, func_load_gt, func_load_seg, func_eval_bdry):
-    pred = func_load_pred(sample_name)[category, :, :]
-    gt_b = func_load_gt(sample_name)[category, :, :]
+def _single_run(
+    sample_name,
+    category,
+    func_load_pred,
+    func_load_gt,
+    func_load_seg,
+    func_eval_bdry,
+):
+    preds = func_load_pred(sample_name)
+    gts = func_load_gt(sample_name)
+
+    assert len(preds.shape) == 3
+    assert len(gts.shape) == 3
+    cat_pred = preds[category, :, :]
+    cat_gt = gts[category, :, :]
+
     if func_load_seg is not None:
         seg = func_load_seg(sample_name) == category
     else:
         seg = None
     count_r, sum_r, count_p, sum_p, used_thresholds = func_eval_bdry(
-        pred=pred,
-        gt=gt_b,
+        pred=cat_pred,
+        gt=cat_gt,
         gt_seg=seg,
     )
     return count_r, sum_r, count_p, sum_p, used_thresholds
