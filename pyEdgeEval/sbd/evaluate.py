@@ -21,12 +21,18 @@ def kill_internal_prediction(
     seg: np.ndarray,
     max_dist: float = 0.02,
 ) -> np.ndarray:
-    """Remove predicted pixels inside boundaries"""
+    """Remove predicted pixels inside boundaries
+
+    NOTE: the distance transform may differ from MATLAB implementation
+    """
     diag = np.sqrt(pred.shape[0] ** 2 + pred.shape[1] ** 2)
     buffer = diag * max_dist
+
+    # buggy output when input is only 0s or 1s
     distmap = distance_transform_edt(1 - gt)
-    killmask = (distmap > buffer) and seg
-    return pred @ killmask
+    killmask = np.invert((distmap > buffer) * seg)
+    assert killmask.shape == pred.shape
+    return pred * killmask
 
 
 def evaluate_boundaries(
@@ -89,37 +95,43 @@ def evaluate_boundaries(
     count_r = np.zeros(thresholds.shape)
 
     for i_t, thresh in enumerate(list(thresholds)):
-        _pred = pred >= thresh
 
-        acc_prec = np.zeros(_pred.shape, dtype=bool)
+        _pred = pred >= thresh
 
         if apply_thinning:
             _pred = binary_thin(_pred)
 
-        if kill_internal:
-            assert isinstance(
-                gt_seg, np.ndarray
-            ), "ERR: `seg` is not np.ndarray"
-            _pred = kill_internal_prediction(
-                pred=_pred,
-                gt=gt,
-                seg=gt_seg,
-                max_dist=max_dist,
-            )
+        # skip correspond pixels when gt is empty
+        if gt.any():
+            if kill_internal:
+                assert isinstance(
+                    gt_seg, np.ndarray
+                ), "ERR: `seg` is not np.ndarray"
+                _pred = kill_internal_prediction(
+                    pred=_pred,
+                    gt=gt,
+                    seg=gt_seg,
+                    max_dist=max_dist,
+                )
 
-        match1, match2, cost, oc = correspond_pixels(
-            _pred, gt, max_dist=max_dist
-        )
-        match1 = match1 > 0
-        match2 = match2 > 0
-        # Precision accumulator
-        acc_prec = acc_prec | match1
-        # Recall
-        sum_r[i_t] += gt.sum()
-        count_r[i_t] += match2.sum()
-        # Precision
-        sum_p[i_t] = _pred.sum()
-        count_p[i_t] = acc_prec.sum()
+            match1, match2, cost, oc = correspond_pixels(
+                _pred, gt, max_dist=max_dist
+            )
+            match1 = match1 > 0
+            match2 = match2 > 0
+
+            # Recall
+            sum_r[i_t] = gt.sum()
+            count_r[i_t] = match2.sum()
+
+            # Precision
+            sum_p[i_t] = _pred.sum()
+            count_p[i_t] = match1.sum()
+        else:
+            sum_r[i_t] = 0
+            count_r[i_t] = 0
+            sum_p[i_t] = _pred.sum()
+            count_p[i_t] = 0
 
     return count_r, sum_r, count_p, sum_p, thresholds
 
@@ -172,26 +184,26 @@ def _single_run(
     category,
     func_load_pred,
     func_load_gt,
-    func_load_seg,
     func_eval_bdry,
+    use_seg,
 ):
-    preds = func_load_pred(sample_name)
-    gts = func_load_gt(sample_name)
+    cat_pred = func_load_pred(sample_name, category=category)
+    gt, seg, present_categories = func_load_gt(sample_name)
 
-    assert len(preds.shape) == 3
-    assert len(gts.shape) == 3
-    cat_pred = preds[category, :, :]
-    cat_gt = gts[category, :, :]
+    assert len(gt.shape) == 3
+    cat_gt = gt[category - 1, :, :]  # 0 indexed
 
-    if func_load_seg is not None:
-        seg = func_load_seg(sample_name) == category
+    if use_seg:
+        seg = seg == category  # 0 is background
     else:
         seg = None
+
     count_r, sum_r, count_p, sum_p, used_thresholds = func_eval_bdry(
         pred=cat_pred,
         gt=cat_gt,
         gt_seg=seg,
     )
+
     return count_r, sum_r, count_p, sum_p, used_thresholds
 
 
@@ -201,7 +213,6 @@ def pr_evaluation(
     sample_names: List[str],
     load_gt: Callable[[str], np.ndarray],
     load_pred: Callable[[str], np.ndarray],
-    load_seg: Optional[Callable[[str], np.ndarray]] = None,
     max_dist: float = 0.02,
     kill_internal: bool = True,
     nproc: int = 8,
@@ -242,6 +253,8 @@ def pr_evaluation(
 
     # FIXME: currently, this function is "per-category"
 
+    # FIXME: passing functions that loads gt and pred might be confusing
+
     # intialize the partial function for evaluating boundaries
     _evaluate_boundaries = partial(
         evaluate_boundaries,
@@ -255,8 +268,8 @@ def pr_evaluation(
         category=category,
         func_load_pred=load_pred,
         func_load_gt=load_gt,
-        func_load_seg=load_seg,
         func_eval_bdry=_evaluate_boundaries,
+        use_seg=kill_internal,  # NOTE: need seg when killing internal bdry
     )
 
     # initial run (process heavy)
