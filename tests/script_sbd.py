@@ -4,11 +4,10 @@ import argparse
 import os
 from functools import partial
 
-import numpy as np
 from skimage.io import imread
 
 from pyEdgeEval.sbd.evaluate import pr_evaluation
-from pyEdgeEval.sbd.utils import load_instance_insensitive_gt
+from pyEdgeEval.sbd.utils import load_instance_insensitive_gt, save_results
 
 
 def parse_args():
@@ -110,12 +109,12 @@ def test(bench_dir_path: str, output_dir_path: str, nproc: int):
     )
 
     # save the results
-    # save_results(
-    #     path=output_dir_path,
-    #     sample_results=sample_results,
-    #     threshold_results=threshold_results,
-    #     overall_result=overall_result,
-    # )
+    save_results(
+        path=output_dir_path,
+        sample_results=sample_results,
+        threshold_results=threshold_results,
+        overall_result=overall_result,
+    )
 
 
 def main():

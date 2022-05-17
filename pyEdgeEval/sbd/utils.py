@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import copy
+import os
 
 import numpy as np
 from scipy.sparse import csc_matrix
@@ -102,3 +103,58 @@ def load_instance_sensitive_gt(path: str, new_loader: bool = False):
         new_bdry[inst_cat] = new_bdry[inst_cat] or _inst_bdry
 
     return new_bdry, cls_seg, present_cats
+
+
+def save_results(
+    path: str,
+    category: int,
+    sample_results,
+    threshold_results,
+    overall_result,
+):
+    """Save results as BSDS500 format"""
+    assert os.path.exists(path), f"ERR: {path} doesn't exist"
+
+    # FIXME: change the name of the output file so that we know the category
+
+    # save per sample results
+    tmp_line = "{i:<10d} {thrs:<10.6f} {rec:<10.6f} {prec:<10.6f} {f1:<10.6f}\n"
+    with open(os.path.join(path, "eval_bdry_img.txt"), "w") as f:
+        for i, res in enumerate(sample_results):
+            f.write(
+                tmp_line.format(
+                    i=i,
+                    thrs=res.threshold,
+                    rec=res.recall,
+                    prec=res.precision,
+                    f1=res.f1,
+                )
+            )
+
+    # save per threshold results
+    tmp_line = "{thrs:<10.6f} {rec:<10.6f} {prec:<10.6f} {f1:<10.6f}\n"
+    with open(os.path.join(path, "eval_bdry_thr.txt"), "w") as f:
+        for res in threshold_results:
+            f.write(
+                tmp_line.format(
+                    thrs=res.threshold,
+                    rec=res.recall,
+                    prec=res.precision,
+                    f1=res.f1,
+                )
+            )
+
+    # save summary results
+    with open(os.path.join(path, "eval_bdry.txt"), "w") as f:
+        f.write(
+            "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
+                overall_result.threshold,
+                overall_result.recall,
+                overall_result.precision,
+                overall_result.f1,
+                overall_result.best_recall,
+                overall_result.best_precision,
+                overall_result.best_f1,
+                overall_result.area_pr,
+            )
+        )

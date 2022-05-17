@@ -29,7 +29,7 @@ rm dist/<old package>.whl
 - [x] BSDS evaluation test codes
 - [ ] Plot PR curves
 - [ ] NMS preprocess script
-- [ ] SBD evaluation script
+- [x] SBD evaluation script
 - [x] Multiprocessing for evaluation
 - [ ] Set random seed for `correspond_pixels`
 

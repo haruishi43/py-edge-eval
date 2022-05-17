@@ -31,4 +31,10 @@ However, due to the randomness in the original MATLAB (C++) codebase, the result
 
 ## SBD
 
-WIP
+Script:
+
+```Bash
+python scripts/evaluate_sbd.py <path/to/sbd> <path/to/pred> <path/to/output> --category=15 --thresholds=5 --nproc=8
+```
+
+Per-category evaluation is currently supported.

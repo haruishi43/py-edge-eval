@@ -35,7 +35,7 @@ def parse_args():
     parser.add_argument(
         "--thresholds",
         type=str,
-        default="5",
+        default="99",
         help="the number of thresholds (could be a list of floats); use 99 for eval",
     )
     parser.add_argument(
