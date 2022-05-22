@@ -12,8 +12,8 @@ from typing import List, Union
 import numpy as np
 from skimage.io import imread
 
-from pyEdgeEval.sbd.evaluate import pr_evaluation
-from pyEdgeEval.sbd.utils import load_instance_insensitive_gt
+from pyEdgeEval.datasets.sbd.evaluate import per_category_pr_evaluation
+from pyEdgeEval.datasets.sbd.utils import load_instance_insensitive_gt
 
 
 def load_gt_boundaries(sample_name: str, bench_dir_path: str):
@@ -56,7 +56,11 @@ def run_evaluation(
 
     assert os.path.exists(bench_dir_path), f"{bench_dir_path} doesn't exist"
 
-    (sample_results, threshold_results, overall_result,) = pr_evaluation(
+    (
+        sample_results,
+        threshold_results,
+        overall_result,
+    ) = per_category_pr_evaluation(
         thresholds=thresholds,
         category=CATEGORY,
         sample_names=SAMPLE_NAMES,

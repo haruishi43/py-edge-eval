@@ -6,8 +6,11 @@ from functools import partial
 
 from skimage.io import imread
 
-from pyEdgeEval.sbd.evaluate import pr_evaluation
-from pyEdgeEval.sbd.utils import load_instance_insensitive_gt, save_results
+from pyEdgeEval.datasets.sbd.evaluate import per_category_pr_evaluation
+from pyEdgeEval.datasets.sbd.utils import (
+    load_instance_insensitive_gt,
+    save_results,
+)
 
 
 def parse_args():
@@ -59,12 +62,16 @@ def test(bench_dir_path: str, output_dir_path: str, nproc: int):
     assert os.path.exists(bench_dir_path), f"{bench_dir_path} doesn't exist"
     assert os.path.exists(output_dir_path), f"{output_dir_path} doesn't exist"
 
-    (sample_results, threshold_results, overall_result,) = pr_evaluation(
-        N_THRESHOLDS,
-        CATEGORY,
-        SAMPLE_NAMES,
-        partial(load_gt_boundaries, bench_dir_path=bench_dir_path),
-        partial(load_pred, bench_dir_path=bench_dir_path),
+    (
+        sample_results,
+        threshold_results,
+        overall_result,
+    ) = per_category_pr_evaluation(
+        thresholds=N_THRESHOLDS,
+        category=CATEGORY,
+        sample_names=SAMPLE_NAMES,
+        load_gt=partial(load_gt_boundaries, bench_dir_path=bench_dir_path),
+        load_pred=partial(load_pred, bench_dir_path=bench_dir_path),
         kill_internal=True,
         nproc=nproc,
     )

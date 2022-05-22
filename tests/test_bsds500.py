@@ -7,8 +7,8 @@ from typing import List, Union
 
 import numpy as np
 
-from pyEdgeEval.bsds.evaluate import pr_evaluation
-from pyEdgeEval.bsds.utils import (
+from pyEdgeEval.datasets.bsds.evaluate import pr_evaluation
+from pyEdgeEval.datasets.bsds.utils import (
     load_bsds_gt_boundaries,
     load_predictions,
 )
@@ -45,10 +45,10 @@ def run_evaluation(
     assert os.path.exists(bench_dir_path), f"{bench_dir_path} doesn't exist"
 
     (sample_results, threshold_results, overall_result,) = pr_evaluation(
-        thresholds,
-        SAMPLE_NAMES,
-        partial(load_gt_boundaries, bench_dir_path=bench_dir_path),
-        partial(load_pred, bench_dir_path=bench_dir_path),
+        sample_names=SAMPLE_NAMES,
+        thresholds=thresholds,
+        load_gts=partial(load_gt_boundaries, bench_dir_path=bench_dir_path),
+        load_pred=partial(load_pred, bench_dir_path=bench_dir_path),
         nproc=nproc,
     )
 

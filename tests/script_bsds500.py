@@ -16,8 +16,8 @@ import argparse
 import os
 from functools import partial
 
-from pyEdgeEval.bsds.evaluate import pr_evaluation
-from pyEdgeEval.bsds.utils import (
+from pyEdgeEval.datasets.bsds.evaluate import pr_evaluation
+from pyEdgeEval.datasets.bsds.utils import (
     load_bsds_gt_boundaries,
     load_predictions,
     save_results,
@@ -65,10 +65,10 @@ def test(bench_dir_path: str, output_dir_path: str, nproc: int):
     assert os.path.exists(output_dir_path), f"{output_dir_path} doesn't exist"
 
     (sample_results, threshold_results, overall_result,) = pr_evaluation(
-        N_THRESHOLDS,
-        SAMPLE_NAMES,
-        partial(load_gt_boundaries, bench_dir_path=bench_dir_path),
-        partial(load_pred, bench_dir_path=bench_dir_path),
+        thresholds=N_THRESHOLDS,
+        sample_names=SAMPLE_NAMES,
+        load_gts=partial(load_gt_boundaries, bench_dir_path=bench_dir_path),
+        load_pred=partial(load_pred, bench_dir_path=bench_dir_path),
         nproc=nproc,
     )
 

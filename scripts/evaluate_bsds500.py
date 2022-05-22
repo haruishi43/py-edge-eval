@@ -6,8 +6,8 @@ from functools import partial
 
 import numpy as np
 
-from pyEdgeEval.bsds.evaluate import pr_evaluation
-from pyEdgeEval.bsds.utils import (
+from pyEdgeEval.datasets.bsds.evaluate import pr_evaluation
+from pyEdgeEval.datasets.bsds.utils import (
     load_bsds_gt_boundaries,
     load_predictions,
     save_results,
@@ -149,10 +149,10 @@ def evaluate_bsds500(
         threshold_results,
         overall_result,
     ) = pr_evaluation(
-        thresholds,
-        sample_names,
-        _load_gt_boundaries,
-        _load_pred,
+        thresholds=thresholds,
+        sample_names=sample_names,
+        load_gts=_load_gt_boundaries,
+        load_pred=_load_pred,
         nproc=nproc,
     )
 

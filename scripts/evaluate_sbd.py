@@ -6,8 +6,8 @@ from functools import partial
 
 import numpy as np
 
-from pyEdgeEval.sbd.evaluate import pr_evaluation
-from pyEdgeEval.sbd.utils import (
+from pyEdgeEval.datasets.sbd.evaluate import per_category_pr_evaluation
+from pyEdgeEval.datasets.sbd.utils import (
     load_instance_insensitive_gt,
     load_instance_sensitive_gt,
     save_results,
@@ -128,12 +128,12 @@ def evaluate_sbd(
     _load_gt_boundaries = partial(load_gt_boundaries, data_root=sbd_path, instance_sensitive=instance_sensitive)
     _load_pred = partial(load_pred, category=category, data_root=pred_path),
 
-    (sample_results, threshold_results, overall_result,) = pr_evaluation(
-        thresholds,
-        category,
-        sample_names,
-        _load_gt_boundaries,
-        _load_pred,
+    (sample_results, threshold_results, overall_result,) = per_category_pr_evaluation(
+        thresholds=thresholds,
+        category=category,
+        sample_names=sample_names,
+        load_gt=_load_gt_boundaries,
+        load_pred=_load_pred,
         kill_internal=kill_internal,
         nproc=nproc,
     )
