@@ -224,6 +224,7 @@ def evaluate_single_sample_threshold(
     apply_thinning: bool = True,
     kill_internal: bool = False,
 ):
+    assert isinstance(category, int)
     cat_pred = func_load_pred(sample, category=category)
     gt, seg, present_categories = func_load_gt(sample)
 
