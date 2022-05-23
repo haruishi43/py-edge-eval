@@ -39,6 +39,11 @@ def parse_args():
         help="the number of thresholds (could be a list of floats); use 99 for eval",
     )
     parser.add_argument(
+        "--raw",
+        action="store_true",
+        help="option to remove the thinning process (i.e. uses raw predition)",
+    )
+    parser.add_argument(
         "--nproc",
         type=int,
         default=4,
@@ -106,6 +111,7 @@ def evaluate_bsds500(
     pred_suffix: str,
     use_val: bool,
     thresholds: str,
+    apply_thinning: bool,
     nproc: int,
 ):
     """Evaluate BSDS500"""
@@ -153,6 +159,7 @@ def evaluate_bsds500(
         sample_names=sample_names,
         load_gts=_load_gt_boundaries,
         load_pred=_load_pred,
+        apply_thinning=apply_thinning,
         nproc=nproc,
     )
 
@@ -207,6 +214,7 @@ def main():
         pred_suffix=args.pred_suffix,
         use_val=args.use_val,
         thresholds=args.thresholds,
+        apply_thinning=not args.raw,
         nproc=args.nproc,
     )
 

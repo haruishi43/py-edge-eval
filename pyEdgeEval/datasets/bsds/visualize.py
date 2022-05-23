@@ -81,8 +81,7 @@ def plot_pr_curve(
         prefix = "ODS={:.3f}, OIS={:.3f}, AP={:.3f}, R50={:.3f}".format(
             *res[i, [3, 6, 7, 8]]
         )
-        if names:
-            prefix += " - {}".format(names[i])
+        prefix += " - {}".format(names[i])
         print(prefix)
 
     # add legends

@@ -38,6 +38,11 @@ def parse_args():
         help="instance sensitive",
     )
     parser.add_argument(
+        "--raw",
+        action="store_true",
+        help="option to remove the thinning process (i.e. uses raw predition)",
+    )
+    parser.add_argument(
         "--kill-internal",
         action="store_true",
         help="kill internal contour",
@@ -92,6 +97,7 @@ def evaluate_sbd(
     output_path: str,
     category: int,
     instance_sensitive: bool,
+    apply_thinning: bool,
     kill_internal: bool,
     thresholds: str,
     nproc: int,
@@ -134,6 +140,7 @@ def evaluate_sbd(
         sample_names=sample_names,
         load_gt=_load_gt_boundaries,
         load_pred=_load_pred,
+        apply_thinning=apply_thinning,
         kill_internal=kill_internal,
         nproc=nproc,
     )
@@ -165,12 +172,14 @@ def evaluate_sbd(
 
 def main():
     args = parse_args()
+
     evaluate_sbd(
         sbd_path=args.bsds_path,
         pred_path=args.pred_path,
         output_path=args.output_path,
         category=args.category,
         instance_sensitive=args.inst_sensitive,
+        apply_thinning=not args.raw,
         kill_internal=args.kill_internal,
         thresholds=args.thresholds,
         nproc=args.nproc,

@@ -27,7 +27,7 @@ rm dist/<old package>.whl
 - [x] Packaging script
 - [x] BSDS evaluation script
 - [x] BSDS evaluation test codes
-- [ ] Plot PR curves
+- [x] Plot PR curves
 - [ ] NMS preprocess script
 - [x] SBD evaluation script
 - [x] Multiprocessing for evaluation
