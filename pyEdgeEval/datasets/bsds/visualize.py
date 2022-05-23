@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+"""Try to mimic the original MATLAB PR Curves
+Reference: https://github.com/xwjabc/hed/blob/master/eval/edges/edgesEvalPlot.m
+"""
+
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm
 import numpy as np

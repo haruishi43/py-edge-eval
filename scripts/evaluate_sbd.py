@@ -73,12 +73,18 @@ def parse_sbd_sample_names(data_root: str, split: str):
 
 
 def load_gt_boundaries(sample_name: str, data_root: str, instance_sensitive: bool = False):
-    gt_path = os.path.join(
-        data_root, "datadir", "cls", f"{sample_name}.mat"
-    )
     if instance_sensitive:
-        return load_instance_sensitive_gt(gt_path)
+        cls_path = os.path.join(
+            data_root, "datadir", "cls", f"{sample_name}.mat"
+        )
+        inst_path = os.path.join(
+            data_root, "datadir", "inst", f"{sample_name}.mat"
+        )
+        return load_instance_sensitive_gt(cls_path=cls_path, inst_path=inst_path)
     else:
+        gt_path = os.path.join(
+            data_root, "datadir", "cls", f"{sample_name}.mat"
+        )
         return load_instance_insensitive_gt(gt_path)
 
 

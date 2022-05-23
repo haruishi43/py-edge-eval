@@ -189,6 +189,7 @@ def evaluate_single_sample_bin(
     max_dist: float = 0.0075,
     apply_thinning: bool = True,
     kill_internal: bool = False,
+    instance_sensitive: bool = False,
 ):
     assert isinstance(category, int)
     cat_pred = func_load_pred(sample, category=category)

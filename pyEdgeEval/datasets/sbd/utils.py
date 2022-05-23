@@ -87,9 +87,9 @@ def load_instance_insensitive_gt(path: str, new_loader: bool = False):
     return load_sbd_gt_cls_mat(path, new_loader)
 
 
-def load_instance_sensitive_gt(path: str, new_loader: bool = False):
-    cls_bdry, cls_seg, present_cats = load_sbd_gt_cls_mat(path, new_loader)
-    inst_bdry, inst_seg, inst_cats = load_sbd_gt_inst_mat(path, new_loader)
+def load_instance_sensitive_gt(cls_path: str, inst_path: str, new_loader: bool = False):
+    cls_bdry, cls_seg, present_cats = load_sbd_gt_cls_mat(cls_path, new_loader)
+    inst_bdry, inst_seg, inst_cats = load_sbd_gt_inst_mat(inst_path, new_loader)
 
     for inst_cat in inst_cats:
         assert (
@@ -100,7 +100,8 @@ def load_instance_sensitive_gt(path: str, new_loader: bool = False):
     new_bdry = copy.deepcopy(cls_bdry)
     for i, inst_cat in enumerate(inst_cats):
         _inst_bdry = inst_bdry[i]
-        new_bdry[inst_cat] = new_bdry[inst_cat] or _inst_bdry
+        # NOTE: inst_cat is indexed from 1
+        new_bdry[inst_cat - 1] = new_bdry[inst_cat - 1] or _inst_bdry
 
     return new_bdry, cls_seg, present_cats
 

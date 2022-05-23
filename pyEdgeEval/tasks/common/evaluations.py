@@ -59,6 +59,8 @@ def base_evaluation_wo_threshold(
         overall_count_r, overall_sum_r, overall_count_p, overall_sum_p
     )
 
+    # NOTE: no precision-recall curve and AP (area-under-curve)
+
     return SingleResult(rec, prec, f1)
 
 
@@ -192,7 +194,6 @@ def base_pr_evaluation(
 
     # Calculate AP
     # FIXME: why do we use increments of 0.01?
-
     rec_unique, rec_unique_ndx = np.unique(rec_overall, return_index=True)
     prec_unique = prec_overall[rec_unique_ndx]
     if rec_unique.shape[0] > 1:
