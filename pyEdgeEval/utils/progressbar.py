@@ -69,7 +69,9 @@ class ProgressBar:
         self.file.flush()
 
 
-def track_progress(func, tasks, bar_width=50, file=sys.stdout, **kwargs):
+def track_progress(
+    func, tasks, bar_width=50, file=sys.stdout, no_bar=False, **kwargs
+):
     """Track the progress of tasks execution with a progress bar.
     Tasks are done with a simple for-loop.
     Args:
@@ -92,12 +94,15 @@ def track_progress(func, tasks, bar_width=50, file=sys.stdout, **kwargs):
         raise TypeError(
             '"tasks" must be an iterable object or a (iterator, int) tuple'
         )
-    prog_bar = ProgressBar(task_num, bar_width, file=file)
+    if not no_bar:
+        prog_bar = ProgressBar(task_num, bar_width, file=file)
     results = []
     for task in tasks:
         results.append(func(task, **kwargs))
-        prog_bar.update()
-    prog_bar.file.write("\n")
+        if not no_bar:
+            prog_bar.update()
+    if not no_bar:
+        prog_bar.file.write("\n")
     return results
 
 
@@ -123,6 +128,7 @@ def track_parallel_progress(
     skip_first=False,
     keep_order=True,
     file=sys.stdout,
+    no_bar=False,
 ):
     """Track the progress of parallel task execution with a progress bar.
     The built-in :mod:`multiprocessing` module is used for process pools and
@@ -161,7 +167,8 @@ def track_parallel_progress(
     pool = init_pool(nproc, initializer, initargs)
     start = not skip_first
     task_num -= nproc * chunksize * int(skip_first)
-    prog_bar = ProgressBar(task_num, bar_width, start, file=file)
+    if not no_bar:
+        prog_bar = ProgressBar(task_num, bar_width, start, file=file)
     results = []
     if keep_order:
         gen = pool.imap(func, tasks, chunksize)
@@ -173,10 +180,13 @@ def track_parallel_progress(
             if len(results) < nproc * chunksize:
                 continue
             elif len(results) == nproc * chunksize:
-                prog_bar.start()
+                if not no_bar:
+                    prog_bar.start()
                 continue
-        prog_bar.update()
-    prog_bar.file.write("\n")
+        if not no_bar:
+            prog_bar.update()
+    if not no_bar:
+        prog_bar.file.write("\n")
     pool.close()
     pool.join()
     return results

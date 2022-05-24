@@ -5,6 +5,7 @@
 ```Bash
 # Install dependencies
 pip install -r requirements.txt
+pip install opencv-python  # cv2
 
 # Option 1. build the project (doesn't install as a package)
 python setup.py build_ext --inplace
@@ -38,3 +39,8 @@ python scripts/evaluate_sbd.py <path/to/sbd> <path/to/pred> <path/to/output> --c
 ```
 
 Per-category evaluation is currently supported.
+
+
+## CityScapes
+
+WIP
