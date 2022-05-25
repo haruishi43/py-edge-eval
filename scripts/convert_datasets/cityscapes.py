@@ -42,6 +42,11 @@ def parse_args():
         help="format choices=(png, bin, tif)",
     )
     parser.add_argument(
+        "--insensitive",
+        action="store_true",
+        help="default to instance-sensitive, but this argument makes it insensitive",
+    )
+    parser.add_argument(
         "--nproc",
         default=4,
         type=int,
@@ -72,8 +77,10 @@ def convert_json_to_label(
 
 def convert_label_to_semantic_edges(
     label_file: str,
+    inst_sensitive: bool = True,
     proc_dir: str = "gtEval",
     label_suffix: str = "_gtFine_labelIds.png",
+    inst_suffix: str = "_gtFine_instanceIds.png",
     edge_suffix: str = "_gtProc_edge.png",
     radius: int = 2,
 ) -> None:
@@ -81,12 +88,23 @@ def convert_label_to_semantic_edges(
     label_fn = os.path.basename(label_file)
     proc_dir = label_dir.replace("gtFine", proc_dir)
     proc_fn = label_fn.replace(label_suffix, edge_suffix)
+
+    # try to find instance file
+    if inst_sensitive:
+        inst_file = os.path.join(label_dir, label_fn.replace(label_suffix, inst_suffix))
+    else:
+        inst_file = None
+
     mkdir_or_exist(proc_dir)
     proc_file = os.path.join(proc_dir, proc_fn)
     label2edge(
         label_path=label_file,
         save_path=proc_file,
         radius=radius,
+        inst_sensitive=inst_sensitive,
+        inst_path=inst_file,
+        faster=True,
+        nproc=1,
     )
 
 
@@ -139,12 +157,14 @@ def main():
     gt_dir = os.path.join(cityscapes_root, "gtFine")
     assert os.path.exists(gt_dir), f"cannot find {gt_dir}"
 
+    inst_sensitive = not args.insensitive
+
     split_names = ["train", "val", "test"]
 
     # img_suffix = "_leftImg8bit.png"
     # color_suffix = "_gtFine_color.png"
     labelIds_suffix = "_gtFine_labelIds.png"
-    # instIds_suffix = "_gtFine_instanceIds.png"
+    instIds_suffix = "_gtFine_instanceIds.png"
     labelTrainIds_suffix = "_gtFine_labelTrainIds.png"
     polygons_suffix = "_gtFine_polygons.json"
 
@@ -193,8 +213,10 @@ def main():
 
         convert_to_edges = partial(
             convert_label_to_semantic_edges,
+            inst_sensitive=inst_sensitive,
             proc_dir=proc_dir,
             label_suffix=labelIds_suffix,
+            inst_suffix=instIds_suffix,
             edge_suffix=edge_suffix,
             radius=2,  # NOTE: hard-coded
         )

@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 
+"""
+References:
+- https://github.com/mcordts/cityscapesScripts/blob/master/cityscapesscripts/helpers/labels.py
+"""
+
 import numpy as np
 
 from cityscapesscripts.helpers.labels import labels
 
 __all__ = [
     "convert_label2trainId",
+    "inst_labelIds",
     "label_mapping",
 ]
 
@@ -35,6 +41,17 @@ label_mapping = {
     32: 17,
     33: 18,
 }
+
+inst_labelIds = [
+    24,  # "person"
+    25,  # "rider"
+    26,  # "car"
+    27,  # "truck"
+    28,  # "bus"
+    31,  # "train"
+    32,  # "motorcycle"
+    33,  # "bicycle"
+]
 
 
 def convert_label2trainId(label_img: np.ndarray) -> np.ndarray:

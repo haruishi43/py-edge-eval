@@ -3,9 +3,10 @@
 from functools import partial
 from typing import List
 
-import cv2
 import numpy as np
-from scipy.ndimage.morphology import distance_transform_edt
+
+from .distance_transforms import seg2bdry
+from .labels import inst_labelIds
 
 from pyEdgeEval.utils import (
     track_parallel_progress,
@@ -13,25 +14,13 @@ from pyEdgeEval.utils import (
 )
 
 
-inst_labelIds = [
-    24,  # "person"
-    25,  # "rider"
-    26,  # "car"
-    27,  # "truck"
-    28,  # "bus"
-    31,  # "train"
-    32,  # "motorcycle"
-    33,  # "bicycle"
-]
-
-
-def single_run(
+def instance_sensitive_run(
     c,
     mask,
     inst_mask,
     ignore_classes,
     cls_inst,
-    calc_dist,
+    func_seg2bdry,
 ):
     m = mask[c]
 
@@ -39,56 +28,63 @@ def single_run(
         return np.zeros_like(m)
 
     # if there are no class labels in the mask
-    if not np.count_nonzero(mask[c]):
+    if not np.count_nonzero(m):
         return np.zeros_like(m)
 
-    dist = calc_dist(m)
+    # class-wise distances
+    dist = func_seg2bdry(mask=m)
 
+    # per instance boundaries
     if c in cls_inst.keys():
         instances = cls_inst[c]  # list
         for instance in instances:
             iid = int(str(c) + str(instance).zfill(3))
-            imask = inst_mask == iid
-            idist = calc_dist(imask)
-            dist = dist | idist
+            dist = dist | func_seg2bdry(inst_mask == iid)
 
     return dist
 
 
-def scipy_calc_dist(m, ignore_mask, radius):
-    inner = distance_transform_edt((m + ignore_mask) > 0)
-    outer = distance_transform_edt(1.0 - m)
-    dist = outer + inner
+def instance_insensitive_run(
+    c,
+    mask,
+    ignore_classes,
+    func_seg2bdry,
+):
+    m = mask[c]
 
-    dist[dist > radius] = 0
-    dist = (dist > 0).astype(np.uint8)
-    return dist
+    if c in ignore_classes:
+        return np.zeros_like(m)
 
+    # if there are no class labels in the mask
+    if not np.count_nonzero(m):
+        return np.zeros_like(m)
 
-def cv2_calc_dist(m, ignore_mask, radius, quality):
-    inner = cv2.distanceTransform(
-        ((m + ignore_mask) > 0).astype(np.uint8), cv2.DIST_L2, quality
-    )
-    outer = cv2.distanceTransform(
-        ((1.0 - m) > 0).astype(np.uint8), cv2.DIST_L2, quality
-    )
-    dist = outer + inner
-
-    dist[dist > radius] = 0
-    dist = (dist > 0).astype(np.uint8)
-    return dist
+    # class-wise distances
+    return func_seg2bdry(mask=m)
 
 
-def onehot_mask_to_instance_sensitive_multilabel_edges(
+def instance_sensitive_seg2edges(
     mask: np.ndarray,
     inst_mask: np.ndarray,
     radius: int = 2,
     num_classes: int = 34,
     ignore_classes: List[int] = [2, 3],
     nproc: int = 1,
+    use_cv2: bool = True,
+    quality: int = 0,
 ) -> np.ndarray:
     """
     Converts a segmentation mask (K,H,W) to an edgemap (K,H,W)
+
+    NOTE: `use_cv2` is around x10 faster
+    NOTE: quality doesn't really change speed
+    NOTE: nproc > 1 is slower
+
+    FIXME: try to reduce the serialization/deserialization size for mp
+
+    There might be inconsistent instance segmentation between the json file and
+    png file:
+    - https://github.com/mcordts/cityscapesScripts/issues/136
     """
     if radius < 1:
         return mask
@@ -112,19 +108,21 @@ def onehot_mask_to_instance_sensitive_multilabel_edges(
         else:
             cls_inst[_c].append(_i)
 
-    _calc_dist = partial(
-        scipy_calc_dist,
+    _seg2bdry = partial(
+        seg2bdry,
         ignore_mask=ignore_mask,
         radius=radius,
+        use_cv2=use_cv2,
+        quality=quality,
     )
 
     _single_run = partial(
-        single_run,
+        instance_sensitive_run,
         mask=mask,
         inst_mask=inst_mask,
         ignore_classes=ignore_classes,
         cls_inst=cls_inst,
-        calc_dist=_calc_dist,
+        func_seg2bdry=_seg2bdry,
     )
 
     if nproc > 1:
@@ -149,22 +147,17 @@ def onehot_mask_to_instance_sensitive_multilabel_edges(
     return edges
 
 
-def faster_onehot_mask_to_instance_sensitive_multilabel_edges(
+def instance_insensitive_seg2edges(
     mask: np.ndarray,
-    inst_mask: np.ndarray,
     radius: int = 2,
     num_classes: int = 34,
     ignore_classes: List[int] = [2, 3],
-    quality: int = 0,
     nproc: int = 1,
+    use_cv2: bool = True,
+    quality: int = 0,
 ) -> np.ndarray:
     """
     Converts a segmentation mask (K,H,W) to an edgemap (K,H,W)
-
-    NOTE: quality doesn't really change speed
-    NOTE: nproc > 1 is slower
-
-    FIXME: try to reduce the serialization/deserialization size for mp
     """
     if radius < 1:
         return mask
@@ -176,32 +169,19 @@ def faster_onehot_mask_to_instance_sensitive_multilabel_edges(
     for i in ignore_classes:
         ignore_mask += mask[i]
 
-    cls_inst = {}
-    _cand_insts = np.unique(inst_mask)
-    for c in _cand_insts:
-        if c < inst_labelIds[0] * 1000:  # 24000
-            continue
-        _c = int(str(c)[:2])
-        _i = int(str(c)[2:])
-        if _c not in cls_inst.keys():
-            cls_inst[_c] = [_i]
-        else:
-            cls_inst[_c].append(_i)
-
-    _calc_dist = partial(
-        cv2_calc_dist,
+    _seg2bdry = partial(
+        seg2bdry,
         ignore_mask=ignore_mask,
         radius=radius,
+        use_cv2=use_cv2,
         quality=quality,
     )
 
     _single_run = partial(
-        single_run,
+        instance_insensitive_run,
         mask=mask,
-        inst_mask=inst_mask,
         ignore_classes=ignore_classes,
-        cls_inst=cls_inst,
-        calc_dist=_calc_dist,
+        func_seg2bdry=_seg2bdry,
     )
 
     if nproc > 1:

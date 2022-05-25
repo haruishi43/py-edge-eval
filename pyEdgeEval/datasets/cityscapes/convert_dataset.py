@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
 
 import os
+from typing import Optional
 
 import numpy as np
 from PIL import Image
 
-from .edges import (
-    faster_onehot_mask_to_multilabel_edges,
-    mask_to_onehot,
-    onehot_mask_to_multilabel_edges,
-)
 from .edge_encoding import default_encoding, rgb_encoding
-from .label2trainId import label_mapping
+from .labels import label_mapping
+from .seg2edges import (
+    instance_insensitive_seg2edges,
+    instance_sensitive_seg2edges,
+)
+from .utils import mask_to_onehot
 
 
-def ids_to_trainIds(edges_ids: np.ndarray, trainIds: int = 19):
+def ids2trainIds(edges_ids: np.ndarray, trainIds: int = 19):
     _, h, w = edges_ids.shape
     edges_trainIds = np.zeros((trainIds, h, w), dtype=np.uint8)
     for labelId, trainId in label_mapping.items():
@@ -26,9 +27,12 @@ def label2edge(
     label_path: str,
     save_path: str,
     radius: int = 2,
+    inst_sensitive: bool = True,
+    inst_path: Optional[str] = None,
     faster: bool = True,
+    nproc: int = 1,
 ) -> None:
-    """Instance-insensitive edge"""
+    """main function for converting label-file to multi-label edges"""
     assert os.path.exists(label_path)
     _, save_format = os.path.splitext(save_path)
     assert save_format in (".png", ".tif", ".bin")
@@ -46,24 +50,34 @@ def label2edge(
     m = mask_to_onehot(mask, num_ids)
 
     # create label edge maps
-    if faster:
-        edges_ids = faster_onehot_mask_to_multilabel_edges(
+    if inst_sensitive:
+        assert os.path.exists(inst_path)
+        inst_img = Image.open(inst_path)
+        inst_mask = np.array(inst_img)  # int32
+
+        edges_ids = instance_sensitive_seg2edges(
             mask=m,
+            inst_mask=inst_mask,
             radius=radius,
             num_classes=num_ids,
             ignore_classes=ignore_classes,
+            nproc=nproc,
+            use_cv2=faster,
             quality=0,
         )
     else:
-        edges_ids = onehot_mask_to_multilabel_edges(
+        edges_ids = instance_insensitive_seg2edges(
             mask=m,
             radius=radius,
             num_classes=num_ids,
             ignore_classes=ignore_classes,
+            nproc=nproc,
+            use_cv2=faster,
+            quality=0,
         )
 
     # post-process labels
-    edges_trainIds = ids_to_trainIds(edges_ids, num_trainIds)
+    edges_trainIds = ids2trainIds(edges_ids, num_trainIds)
 
     # encode and save
     if save_format == ".png":
