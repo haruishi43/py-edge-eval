@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+from .convert_formats import (
+    mask_to_onehot,
+    multilabel_to_binary_edges,
+    onehot_edges_to_multilabel_edges,
+)
 from .mat_utils import loadmat
 from .path import (
     check_file_exist,
@@ -15,6 +20,9 @@ from .progressbar import (
 
 __all__ = [
     "check_file_exist",
+    "mask_to_onehot",
+    "multilabel_to_binary_edges",
+    "onehot_edges_to_multilabel_edges",
     "mkdir_or_exist",
     "scandir",
     "symlink",
