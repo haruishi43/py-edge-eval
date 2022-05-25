@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from functools import partial
-from typing import Callable, List, Union
+from typing import Callable, List, Optional, Union
 
 import numpy as np
 
@@ -15,45 +15,12 @@ from pyEdgeEval.tasks.semantic_boundary_detection import (
 )
 
 
-def evaluate_single_sample_bin(
+def evaluate_single_sample(
     sample,
     category,
     func_load_pred,
     func_load_gt,
-    max_dist: float = 0.0075,
-    apply_thinning: bool = True,
-    kill_internal: bool = False,
-):
-    assert isinstance(category, int)
-    cat_pred = func_load_pred(sample, category=category)
-    gt, seg, present_categories = func_load_gt(sample)
-
-    assert len(gt.shape) == 3
-    cat_gt = gt[category - 1, :, :]  # 0 indexed
-
-    if kill_internal:
-        seg = seg == category - 1  # 255 is background
-    else:
-        seg = None
-
-    count_r, sum_r, count_p, sum_p = evaluate_boundaries_bin(
-        pred=cat_pred,
-        gt=cat_gt,
-        gt_seg=seg,
-        max_dist=max_dist,
-        apply_thinning=apply_thinning,
-        kill_internal=kill_internal,
-    )
-
-    return count_r, sum_r, count_p, sum_p
-
-
-def evaluate_single_sample_threshold(
-    sample,
-    category,
-    thresholds,
-    func_load_pred,
-    func_load_gt,
+    thresholds: Optional[np.ndarray] = None,
     max_dist: float = 0.0075,
     apply_thinning: bool = True,
     kill_internal: bool = False,
@@ -66,23 +33,35 @@ def evaluate_single_sample_threshold(
     cat_pred = func_load_pred(sample, category=category)
     gt, seg, present_categories = func_load_gt(sample)
 
+    cat_idx = category - 1
+
     assert len(gt.shape) == 3
-    cat_gt = gt[category - 1, :, :]  # 0 indexed
+    cat_gt = gt[cat_idx, :, :]  # 0 indexed
 
     if kill_internal:
-        seg = seg == category - 1  # 255 is background
+        seg = seg == cat_idx  # 255 is background
     else:
         seg = None
 
-    count_r, sum_r, count_p, sum_p = evaluate_boundaries_threshold(
-        thresholds=thresholds,
-        pred=cat_pred,
-        gt=cat_gt,
-        gt_seg=seg,
-        max_dist=max_dist,
-        apply_thinning=apply_thinning,
-        kill_internal=kill_internal,
-    )
+    if thresholds is None:
+        count_r, sum_r, count_p, sum_p = evaluate_boundaries_bin(
+            pred=cat_pred,
+            gt=cat_gt,
+            gt_seg=seg,
+            max_dist=max_dist,
+            apply_thinning=apply_thinning,
+            kill_internal=kill_internal,
+        )
+    else:
+        count_r, sum_r, count_p, sum_p = evaluate_boundaries_threshold(
+            thresholds=thresholds,
+            pred=cat_pred,
+            gt=cat_gt,
+            gt_seg=seg,
+            max_dist=max_dist,
+            apply_thinning=apply_thinning,
+            kill_internal=kill_internal,
+        )
 
     return count_r, sum_r, count_p, sum_p
 
@@ -99,7 +78,7 @@ def per_category_evaluation_wo_threshold(
 ):
     # intialize the partial function for evaluating boundaries
     _wrapper = partial(
-        evaluate_single_sample_bin,
+        evaluate_single_sample,
         category=category,
         func_load_pred=load_pred,
         func_load_gt=load_gt,
@@ -148,7 +127,7 @@ def per_category_pr_evaluation(
 
     # intialize the partial function for evaluating boundaries
     _wrapper = partial(
-        evaluate_single_sample_threshold,
+        evaluate_single_sample,
         category=category,
         thresholds=thresholds,
         func_load_pred=load_pred,

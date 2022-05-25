@@ -131,7 +131,7 @@ def evaluate_cityscapes(
     assert os.path.exists(pred_path), f"{pred_path} doesn't exist"
     assert os.path.exists(output_path), f"{output_path} doesn't exist"
 
-    assert 0 < category < 21, f"category needs to be between 1 ~ 20, but got {category}"
+    assert 0 < category < 20, f"category needs to be between 1 ~ 19, but got {category}"
 
     thresholds = thresholds.strip()
     try:

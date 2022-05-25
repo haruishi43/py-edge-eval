@@ -9,10 +9,7 @@ from pyEdgeEval.tasks.common.evaluations import (
     base_evaluation_wo_threshold,
     base_pr_evaluation,
 )
-from pyEdgeEval.tasks.semantic_boundary_detection import (
-    evaluate_single_sample_bin,
-    evaluate_single_sample_threshold,
-)
+from pyEdgeEval.tasks.semantic_boundary_detection import evaluate_single_sample
 
 
 def per_category_evaluation_wo_threshold(
@@ -27,7 +24,7 @@ def per_category_evaluation_wo_threshold(
 ):
     # intialize the partial function for evaluating boundaries
     _wrapper = partial(
-        evaluate_single_sample_bin,
+        evaluate_single_sample,
         category=category,
         func_load_pred=load_pred,
         func_load_gt=load_gt,
@@ -76,7 +73,7 @@ def per_category_pr_evaluation(
 
     # intialize the partial function for evaluating boundaries
     _wrapper = partial(
-        evaluate_single_sample_threshold,
+        evaluate_single_sample,
         category=category,
         thresholds=thresholds,
         func_load_pred=load_pred,
