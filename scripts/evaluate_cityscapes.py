@@ -7,18 +7,17 @@ from functools import partial
 import numpy as np
 from PIL import Image
 
-from pyEdgeEval.datasets.sbd.evaluate import per_category_pr_evaluation
-from pyEdgeEval.datasets.sbd.utils import (
-    load_instance_insensitive_gt,
-    load_instance_sensitive_gt,
+from pyEdgeEval.datasets.cityscapes.evaluate import per_category_pr_evaluation
+from pyEdgeEval.datasets.cityscapes.utils import (
+    load_gt,
     save_results,
 )
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Evaluate SBD output")
+    parser = argparse.ArgumentParser(description="Evaluate Cityscapes output")
     parser.add_argument(
-        "sbd_path", type=str, help="the root path of the SBD dataset",
+        "cityscapes_path", type=str, help="the root path of the cityscapes dataset",
     )
     parser.add_argument(
         "pred_path", type=str, help="the root path of the predictions",
@@ -34,19 +33,14 @@ def parse_args():
         help="the category number to evaluate",
     )
     parser.add_argument(
-        "--insensitive",
+        "--pre-seal",
         action="store_true",
-        help="instance sensitive",
+        help="prior to SEAL, the evaluations were not as strict",
     )
     parser.add_argument(
         "--raw",
         action="store_true",
         help="option to remove the thinning process (i.e. uses raw predition)",
-    )
-    parser.add_argument(
-        "--kill-internal",
-        action="store_true",
-        help="kill internal contour",
     )
     parser.add_argument(
         "--thresholds",
@@ -64,36 +58,41 @@ def parse_args():
     return parser.parse_args()
 
 
-def parse_sbd_sample_names(data_root: str, split: str):
+def parse_cityscapes_sample_names(data_root: str, split: str):
 
-    file_path = os.path.join(data_root, f'{split}.txt')
+    file_path = os.path.join(data_root, 'splits', f'{split}.txt')
     with open(file_path, 'r') as f:
         sample_names = f.read().splitlines()
 
     return sample_names
 
 
-def load_gt_boundaries(sample_name: str, data_root: str, instance_sensitive: bool = False):
+def load_gt_boundaries(
+    sample_name: str,
+    data_root: str,
+    split: str = 'val',
+    instance_sensitive: bool = True,
+    gt_dir: str = 'gtEval',
+):
     if instance_sensitive:
-        cls_path = os.path.join(
-            data_root, "datadir", "cls", f"{sample_name}.mat"
-        )
-        inst_path = os.path.join(
-            data_root, "datadir", "inst", f"{sample_name}.mat"
-        )
-        return load_instance_sensitive_gt(cls_path=cls_path, inst_path=inst_path)
+        edge_path = os.path.join(data_root, gt_dir, split, f"{sample_name}_gtProc_isedge.png")
+        seg_path = os.path.join(data_root, gt_dir, split, f"{sample_name}_gtFine_labelTrainIds.png")
+        assert os.path.exists(edge_path), f"ERR: {edge_path} is not valid"
+        assert os.path.exists(seg_path), f"ERR: {seg_path} is not valid"
+        return load_gt(edge_path=edge_path, seg_path=seg_path, num_trainIds=19)
     else:
-        gt_path = os.path.join(
-            data_root, "datadir", "cls", f"{sample_name}.mat"
-        )
-        return load_instance_insensitive_gt(gt_path)
+        edge_path = os.path.join(data_root, gt_dir, split, f"{sample_name}_gtProc_edge.png")
+        seg_path = os.path.join(data_root, gt_dir, split, f"{sample_name}_gtFine_labelTrainIds.png")
+        assert os.path.exists(edge_path), f"ERR: {edge_path} is not valid"
+        assert os.path.exists(seg_path), f"ERR: {seg_path} is not valid"
+        return load_gt(edge_path=edge_path, seg_path=seg_path, num_trainIds=19)
 
 
 def load_pred(
     sample_name: str,
     data_root: str,
     category: int,
-    suffix: str = ".png",
+    suffix: str = "_leftImg8bit.png",
 ):
     """Load prediction
 
@@ -103,9 +102,9 @@ def load_pred(
     `{data_root}/{category}/<img>{suffix}`
 
     - The output is a single class numpy array.
-    - in matlab, the category is 15 (human)
     - instead of .bmp, it is better to save predictions as .png
     """
+    sample_name = sample_name.split("/")[1]  # assert city/img
     pred_path = os.path.join(
         data_root,
         f"class_{str(category).zfill(3)}",
@@ -116,20 +115,19 @@ def load_pred(
     return pred
 
 
-def evaluate_sbd(
-    sbd_path: str,
+def evaluate_cityscapes(
+    cityscapes_path: str,
     pred_path: str,
     output_path: str,
     category: int,
     suffix: str,
-    instance_sensitive: bool,
+    pre_seal: bool,
     apply_thinning: bool,
-    kill_internal: bool,
     thresholds: str,
     nproc: int,
 ):
-    """Evaluate SBD"""
-    assert os.path.exists(sbd_path), f"{sbd_path} doesn't exist"
+    """Evaluate Cityscapes"""
+    assert os.path.exists(cityscapes_path), f"{cityscapes_path} doesn't exist"
     assert os.path.exists(pred_path), f"{pred_path} doesn't exist"
     assert os.path.exists(output_path), f"{output_path} doesn't exist"
 
@@ -157,11 +155,21 @@ def evaluate_sbd(
             )
             return
 
-    sample_names = parse_sbd_sample_names(data_root=sbd_path, split='val')
+    if pre_seal:
+        max_dist = 0.02
+        kill_internal = True
+        instance_sensitive = False
+    else:
+        max_dist = 0.0035
+        kill_internal = False
+        instance_sensitive = True
+
+    sample_names = parse_cityscapes_sample_names(data_root=cityscapes_path, split='val')
 
     _load_gt_boundaries = partial(
         load_gt_boundaries,
-        data_root=sbd_path,
+        data_root=cityscapes_path,
+        split='val',
         instance_sensitive=instance_sensitive,
     )
     _load_pred = partial(
@@ -177,6 +185,7 @@ def evaluate_sbd(
         sample_names=sample_names,
         load_gt=_load_gt_boundaries,
         load_pred=_load_pred,
+        max_dist=max_dist,
         apply_thinning=apply_thinning,
         kill_internal=kill_internal,
         nproc=nproc,
@@ -210,20 +219,19 @@ def evaluate_sbd(
 def main():
     args = parse_args()
 
-    suffix = ".bmp"
+    # might need to specify suffix
+    suffix = "_leftImg8bit.png"
 
-    inst_sensitive = not args.insensitive
     apply_thinning = not args.raw
 
-    evaluate_sbd(
-        sbd_path=args.sbd_path,
+    evaluate_cityscapes(
+        cityscapes_path=args.cityscapes_path,
         pred_path=args.pred_path,
         output_path=args.output_path,
         category=args.category,
         suffix=suffix,
-        instance_sensitive=inst_sensitive,
+        pre_seal=args.pre_seal,
         apply_thinning=apply_thinning,
-        kill_internal=args.kill_internal,
         thresholds=args.thresholds,
         nproc=args.nproc,
     )

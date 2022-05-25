@@ -168,14 +168,24 @@ def main():
     labelTrainIds_suffix = "_gtFine_labelTrainIds.png"
     polygons_suffix = "_gtFine_polygons.json"
 
-    if args.ext == "png":
-        edge_suffix = "_gtProc_edge.png"
-    elif args.ext == "bin":
-        edge_suffix = "_gtProc_edge.bin"
-    elif args.ext == "tif":
-        edge_suffix = "_gtProc_edge.tif"
+    if inst_sensitive:
+        if args.ext == "png":
+            edge_suffix = "_gtProc_isedge.png"
+        elif args.ext == "bin":
+            edge_suffix = "_gtProc_isedge.bin"
+        elif args.ext == "tif":
+            edge_suffix = "_gtProc_isedge.tif"
+        else:
+            raise ValueError()
     else:
-        raise ValueError()
+        if args.ext == "png":
+            edge_suffix = "_gtProc_edge.png"
+        elif args.ext == "bin":
+            edge_suffix = "_gtProc_edge.bin"
+        elif args.ext == "tif":
+            edge_suffix = "_gtProc_edge.tif"
+        else:
+            raise ValueError()
 
     if not args.test_mode:
 

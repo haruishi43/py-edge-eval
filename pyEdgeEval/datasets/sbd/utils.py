@@ -6,7 +6,7 @@ import os
 import numpy as np
 from scipy.sparse import csc_matrix
 
-from pyEdgeEval.utils import loadmat
+from pyEdgeEval.utils import loadmat, mkdir_or_exist
 
 
 def sparse2numpy(data: csc_matrix):
@@ -120,9 +120,14 @@ def save_results(
 
     # FIXME: change the name of the output file so that we know the category
 
+    cat_name = "class_" + str(category).zfill(3)
+
+    cat_dir = os.path.join(path, cat_name)
+    mkdir_or_exist(cat_dir)
+
     # save per sample results
     tmp_line = "{i:<10d} {thrs:<10.6f} {rec:<10.6f} {prec:<10.6f} {f1:<10.6f}\n"
-    with open(os.path.join(path, "eval_bdry_img.txt"), "w") as f:
+    with open(os.path.join(cat_dir, "eval_bdry_img.txt"), "w") as f:
         for i, res in enumerate(sample_results):
             f.write(
                 tmp_line.format(
@@ -136,7 +141,7 @@ def save_results(
 
     # save per threshold results
     tmp_line = "{thrs:<10.6f} {rec:<10.6f} {prec:<10.6f} {f1:<10.6f}\n"
-    with open(os.path.join(path, "eval_bdry_thr.txt"), "w") as f:
+    with open(os.path.join(cat_dir, "eval_bdry_thr.txt"), "w") as f:
         for res in threshold_results:
             f.write(
                 tmp_line.format(
@@ -148,7 +153,7 @@ def save_results(
             )
 
     # save summary results
-    with open(os.path.join(path, "eval_bdry.txt"), "w") as f:
+    with open(os.path.join(cat_dir, "eval_bdry.txt"), "w") as f:
         f.write(
             "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
                 overall_result.threshold,

@@ -93,5 +93,5 @@ def rgb_decoding(edge_path: str, num_trainIds: int, is_png: bool = True):
             bitorder="little",
         )
 
-    edge = np.transpose(edge, (2, 0, 1))
+    edge = np.ascontiguousarray(edge.transpose(2, 0, 1))
     return edge

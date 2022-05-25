@@ -12,7 +12,7 @@ from .seg2edges import (
     instance_insensitive_seg2edges,
     instance_sensitive_seg2edges,
 )
-from .utils import mask_to_onehot
+from pyEdgeEval.utils import mask_to_onehot
 
 
 def ids2trainIds(edges_ids: np.ndarray, trainIds: int = 19):
