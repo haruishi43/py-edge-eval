@@ -5,11 +5,11 @@ import os
 from functools import partial
 
 import numpy as np
-from PIL import Image
 
 from pyEdgeEval.datasets.cityscapes.evaluate import per_category_pr_evaluation
 from pyEdgeEval.datasets.cityscapes.utils import (
     load_gt,
+    load_pred,
     save_results,
 )
 
@@ -36,6 +36,12 @@ def parse_args():
         "--pre-seal",
         action="store_true",
         help="prior to SEAL, the evaluations were not as strict",
+    )
+    parser.add_argument(
+        "--scale",
+        type=float,
+        default=0.5,
+        help="scale of the data for evaluations"
     )
     parser.add_argument(
         "--raw",
@@ -70,6 +76,7 @@ def parse_cityscapes_sample_names(data_root: str, split: str):
 def load_gt_boundaries(
     sample_name: str,
     data_root: str,
+    scale: float,
     split: str = 'val',
     instance_sensitive: bool = True,
     gt_dir: str = 'gtEval',
@@ -79,40 +86,13 @@ def load_gt_boundaries(
         seg_path = os.path.join(data_root, gt_dir, split, f"{sample_name}_gtFine_labelTrainIds.png")
         assert os.path.exists(edge_path), f"ERR: {edge_path} is not valid"
         assert os.path.exists(seg_path), f"ERR: {seg_path} is not valid"
-        return load_gt(edge_path=edge_path, seg_path=seg_path, num_trainIds=19)
+        return load_gt(edge_path=edge_path, seg_path=seg_path, num_trainIds=19, scale=scale)
     else:
         edge_path = os.path.join(data_root, gt_dir, split, f"{sample_name}_gtProc_edge.png")
         seg_path = os.path.join(data_root, gt_dir, split, f"{sample_name}_gtFine_labelTrainIds.png")
         assert os.path.exists(edge_path), f"ERR: {edge_path} is not valid"
         assert os.path.exists(seg_path), f"ERR: {seg_path} is not valid"
-        return load_gt(edge_path=edge_path, seg_path=seg_path, num_trainIds=19)
-
-
-def load_pred(
-    sample_name: str,
-    data_root: str,
-    category: int,
-    suffix: str = "_leftImg8bit.png",
-):
-    """Load prediction
-
-    Since loading predictions using image extensions is complicated, we need a custom loader
-    We assume that the predictions are located inside the `data_root` directory and
-    the predictions are separated by categories.
-    `{data_root}/{category}/<img>{suffix}`
-
-    - The output is a single class numpy array.
-    - instead of .bmp, it is better to save predictions as .png
-    """
-    sample_name = sample_name.split("/")[1]  # assert city/img
-    pred_path = os.path.join(
-        data_root,
-        f"class_{str(category).zfill(3)}",
-        f"{sample_name}{suffix}",
-    )
-    pred = np.array(Image.open(pred_path))
-    pred = (pred / 255).astype(float)
-    return pred
+        return load_gt(edge_path=edge_path, seg_path=seg_path, num_trainIds=19, scale=scale)
 
 
 def evaluate_cityscapes(
@@ -122,6 +102,7 @@ def evaluate_cityscapes(
     category: int,
     suffix: str,
     pre_seal: bool,
+    scale: float,
     apply_thinning: bool,
     thresholds: str,
     nproc: int,
@@ -155,6 +136,9 @@ def evaluate_cityscapes(
             )
             return
 
+    assert isinstance(scale, (float, int))
+    assert 0 <= scale <= 1
+
     if pre_seal:
         max_dist = 0.02
         kill_internal = True
@@ -171,10 +155,12 @@ def evaluate_cityscapes(
         data_root=cityscapes_path,
         split='val',
         instance_sensitive=instance_sensitive,
+        scale=scale,
     )
     _load_pred = partial(
         load_pred,
         category=category,
+        scale=scale,
         data_root=pred_path,
         suffix=suffix,
     )
@@ -231,6 +217,7 @@ def main():
         category=args.category,
         suffix=suffix,
         pre_seal=args.pre_seal,
+        scale=args.scale,
         apply_thinning=apply_thinning,
         thresholds=args.thresholds,
         nproc=args.nproc,

@@ -69,12 +69,18 @@ def binary_decoding(edge_path: str, h: int, w: int, num_trainIds: int):
     return edge
 
 
-def rgb_decoding(edge_path: str, num_trainIds: int, is_png: bool = True):
+def rgb_decoding(
+    edge_path: str, num_trainIds: int, scale: float, is_png: bool = True
+):
     """Load RGB file to edge map
     - tested with '.png' file
     - output type is `uint8`
     """
     edge = Image.open(edge_path)
+    _edge = np.array(edge)
+    (h, w, _) = _edge.shape
+    oh, ow = int(h * scale + 0.5), int(w * scale + 0.5)
+    edge = edge.resize((ow, oh), Image.NEAREST)
 
     if is_png:
         edge = np.array(edge, dtype=np.uint8)

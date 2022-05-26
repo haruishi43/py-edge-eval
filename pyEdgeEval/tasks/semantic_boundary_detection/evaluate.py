@@ -203,6 +203,8 @@ def evaluate_single_sample(
     else:
         seg = None
 
+    # reduce scale
+
     if thresholds is None:
         count_r, sum_r, count_p, sum_p = evaluate_boundaries_bin(
             pred=cat_pred,
