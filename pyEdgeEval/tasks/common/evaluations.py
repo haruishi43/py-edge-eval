@@ -71,7 +71,11 @@ def base_pr_evaluation(
     wrapper: Callable[[Any], Any],
     nproc: int = 8,
     is_sbd: bool = False,
-) -> Tuple[List[SampleResult], List[ThresholdResult], Union[OverallResult, OverallResultSBD]]:
+) -> Tuple[
+    List[SampleResult],
+    List[ThresholdResult],
+    Union[OverallResult, OverallResultSBD],
+]:
     """
     Perform an evaluation of predictions against ground truths for an image
     set over a given set of thresholds.
@@ -210,9 +214,7 @@ def base_pr_evaluation(
     ap = 0
     for t in np.arange(0, 1, 0.01):
         _r = rec_overall >= t
-        p = np.max(prec_overall[_r])
-        if p.size == 0:
-            p = 0
+        p = np.max(prec_overall[_r], initial=0)
         ap = ap + p / 101
 
     # Calculate ODS metrics

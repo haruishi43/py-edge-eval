@@ -41,7 +41,7 @@ def parse_args():
         "--scale",
         type=float,
         default=0.5,
-        help="scale of the data for evaluations"
+        help="scale of the data for evaluations",
     )
     parser.add_argument(
         "--raw",
@@ -110,7 +110,6 @@ def evaluate_cityscapes(
     """Evaluate Cityscapes"""
     assert os.path.exists(cityscapes_path), f"{cityscapes_path} doesn't exist"
     assert os.path.exists(pred_path), f"{pred_path} doesn't exist"
-    assert os.path.exists(output_path), f"{output_path} doesn't exist"
 
     assert 0 < category < 20, f"category needs to be between 1 ~ 19, but got {category}"
 
@@ -148,7 +147,10 @@ def evaluate_cityscapes(
         kill_internal = False
         instance_sensitive = True
 
-    sample_names = parse_cityscapes_sample_names(data_root=cityscapes_path, split='val')
+    sample_names = parse_cityscapes_sample_names(
+        data_root=cityscapes_path,
+        split='val',
+    )
 
     _load_gt_boundaries = partial(
         load_gt_boundaries,
@@ -166,9 +168,9 @@ def evaluate_cityscapes(
     )
 
     (sample_results, threshold_results, overall_result,) = per_category_pr_evaluation(
-        thresholds=thresholds,
         category=category,
         sample_names=sample_names,
+        thresholds=thresholds,
         load_gt=_load_gt_boundaries,
         load_pred=_load_pred,
         max_dist=max_dist,
@@ -180,7 +182,7 @@ def evaluate_cityscapes(
     print("")
     print("Summary:")
     print(
-        "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
+        "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
             overall_result.threshold,
             overall_result.recall,
             overall_result.precision,
@@ -189,6 +191,7 @@ def evaluate_cityscapes(
             overall_result.best_precision,
             overall_result.best_f1,
             overall_result.area_pr,
+            overall_result.ap,
         )
     )
 

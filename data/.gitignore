@@ -6,3 +6,5 @@
 !/BSDS500_bench/**
 !/SBD_bench/
 !/SBD_bench/**
+!/cityscapes_test/
+!/cityscapes_test/**

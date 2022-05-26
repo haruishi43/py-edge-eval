@@ -70,7 +70,10 @@ def binary_decoding(edge_path: str, h: int, w: int, num_trainIds: int):
 
 
 def rgb_decoding(
-    edge_path: str, num_trainIds: int, scale: float, is_png: bool = True
+    edge_path: str,
+    num_trainIds: int,
+    scale: float,
+    is_png: bool = True,
 ):
     """Load RGB file to edge map
     - tested with '.png' file

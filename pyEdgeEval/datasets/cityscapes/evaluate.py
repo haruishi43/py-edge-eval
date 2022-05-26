@@ -21,7 +21,7 @@ def evaluate_single_sample(
     func_load_pred,
     func_load_gt,
     thresholds: Optional[np.ndarray] = None,
-    max_dist: float = 0.0075,
+    max_dist: float = 0.0035,
     apply_thinning: bool = True,
     kill_internal: bool = False,
 ):
@@ -142,4 +142,5 @@ def per_category_pr_evaluation(
         samples=sample_names,
         wrapper=_wrapper,
         nproc=nproc,
+        is_sbd=True,
     )

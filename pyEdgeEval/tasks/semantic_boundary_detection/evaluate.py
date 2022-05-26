@@ -38,7 +38,6 @@ def evaluate_boundaries_bin(
     apply_thinning: bool = True,
     kill_internal: bool = True,
 ):
-    acc_prec = np.zeros(pred.shape, dtype=bool)
     pred = pred != 0
 
     if apply_thinning:
@@ -61,8 +60,6 @@ def evaluate_boundaries_bin(
         )
         match1 = match1 > 0
         match2 = match2 > 0
-        # Precision accumulator
-        acc_prec = acc_prec | match1
         # Recall
         sum_r = gt.sum()
         count_r = match2.sum()
@@ -70,7 +67,7 @@ def evaluate_boundaries_bin(
         # Precision
         # TODO: check if using pred after kill_internal is correct
         sum_p = pred.sum()
-        count_p = acc_prec.sum()
+        count_p = match1.sum()
     else:
         sum_r = 0
         count_r = 0
@@ -111,7 +108,6 @@ def evaluate_boundaries_threshold(
         recall = count_r / (sum_r + (sum_r == 0))
         precision = count_p / (sum_p + (sum_p == 0))
         ```
-        The thresholds are also returned.
 
     NOTE: compared to BSDS500, we don't have multiple GTs
     """
@@ -169,7 +165,6 @@ def evaluate_boundaries_threshold(
             count_r[i_t] = match2.sum()
 
             # Precision
-            # TODO: check if using pred after kill_internal is correct
             sum_p[i_t] = _pred.sum()
             count_p[i_t] = match1.sum()
         else:

@@ -64,12 +64,14 @@ def load_pred(
         f"{sample_name}{suffix}",
     )
     pred = Image.open(pred_path)
+
     _pred = np.array(pred)
     (h, w) = _pred.shape
     oh, ow = int(h * scale + 0.5), int(w * scale + 0.5)
+    # interpolation (MATLAB uses bicubic)
     pred = pred.resize((ow, oh), Image.NEAREST)
-    pred = np.array(pred)
 
+    pred = np.array(pred)
     pred = (pred / 255).astype(float)
     return pred
 
@@ -81,13 +83,8 @@ def save_results(
     threshold_results,
     overall_result,
 ):
-    """Save results as BSDS500 format"""
-    assert os.path.exists(path), f"ERR: {path} doesn't exist"
-
-    # FIXME: change the name of the output file so that we know the category
-
+    """Save results as SBD format"""
     cat_name = "class_" + str(category).zfill(3)
-
     cat_dir = os.path.join(path, cat_name)
     mkdir_or_exist(cat_dir)
 
@@ -121,7 +118,7 @@ def save_results(
     # save summary results
     with open(os.path.join(cat_dir, "eval_bdry.txt"), "w") as f:
         f.write(
-            "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
+            "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
                 overall_result.threshold,
                 overall_result.recall,
                 overall_result.precision,
@@ -130,5 +127,6 @@ def save_results(
                 overall_result.best_precision,
                 overall_result.best_f1,
                 overall_result.area_pr,
+                overall_result.ap,
             )
         )

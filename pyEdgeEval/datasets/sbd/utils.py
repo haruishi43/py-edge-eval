@@ -115,7 +115,7 @@ def save_results(
     threshold_results,
     overall_result,
 ):
-    """Save results as BSDS500 format"""
+    """Save results as SBD format"""
     assert os.path.exists(path), f"ERR: {path} doesn't exist"
 
     # FIXME: change the name of the output file so that we know the category

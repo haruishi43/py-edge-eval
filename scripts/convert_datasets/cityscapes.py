@@ -56,6 +56,10 @@ def parse_args():
         "--test_mode",
         action="store_true",
     )
+    parser.add_argument(
+        "--debug_mode",
+        action="store_true",
+    )
     args = parser.parse_args()
     return args
 
@@ -160,6 +164,8 @@ def main():
     inst_sensitive = not args.insensitive
 
     split_names = ["train", "val", "test"]
+    if args.debug_mode:
+        split_names = ["val"]
 
     # img_suffix = "_leftImg8bit.png"
     # color_suffix = "_gtFine_color.png"
@@ -212,31 +218,37 @@ def main():
             track_progress(convert_to_trainIds, poly_files)
 
         # 2. convert labelIds to edge maps
-        label_files = []
         for split in split_names:
             if split == "test":
                 continue
+            print(f"processsing {split}")
+            label_files = []
             gt_split_dir = os.path.join(gt_dir, split)
             for label in scandir(gt_split_dir, labelIds_suffix, recursive=True):
                 label_file = os.path.join(gt_split_dir, label)
                 label_files.append(label_file)
 
-        convert_to_edges = partial(
-            convert_label_to_semantic_edges,
-            inst_sensitive=inst_sensitive,
-            proc_dir=proc_dir,
-            label_suffix=labelIds_suffix,
-            inst_suffix=instIds_suffix,
-            edge_suffix=edge_suffix,
-            radius=2,  # NOTE: hard-coded
-        )
+            if split == "val":
+                radius = 1
+            else:
+                radius = 2
 
-        if args.nproc > 1:
-            track_parallel_progress(convert_to_edges, label_files, args.nproc)
-        else:
-            track_progress(convert_to_edges, label_files)
+            convert_to_edges = partial(
+                convert_label_to_semantic_edges,
+                inst_sensitive=inst_sensitive,
+                proc_dir=proc_dir,
+                label_suffix=labelIds_suffix,
+                inst_suffix=instIds_suffix,
+                edge_suffix=edge_suffix,
+                radius=radius,
+            )
 
-        # save split information
+            if args.nproc > 1:
+                track_parallel_progress(convert_to_edges, label_files, args.nproc)
+            else:
+                track_progress(convert_to_edges, label_files)
+
+        # 3. save split information
         split_save_root = os.path.join(cityscapes_root, "splits")
         mkdir_or_exist(split_save_root)
 
