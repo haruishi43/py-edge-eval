@@ -25,6 +25,20 @@ OverallResult = namedtuple(
         "area_pr",
     ],
 )
+OverallResultSBD = namedtuple(
+    "OverallResult",
+    [
+        "threshold",
+        "recall",
+        "precision",
+        "f1",
+        "best_recall",
+        "best_precision",
+        "best_f1",
+        "area_pr",
+        "ap",
+    ],
+)
 SingleResult = namedtuple(
     "SingleResult",
     [

@@ -57,7 +57,7 @@ def load_pred(sample_name: str, bench_dir_path: str, category: int = 15):
 def test(bench_dir_path: str, output_dir_path: str, nproc: int):
     SAMPLE_NAMES = ["2008_000051", "2008_000195"]
     CATEGORY = 15  # human
-    N_THRESHOLDS = 5
+    N_THRESHOLDS = 99
 
     assert os.path.exists(bench_dir_path), f"{bench_dir_path} doesn't exist"
     assert os.path.exists(output_dir_path), f"{output_dir_path} doesn't exist"
@@ -103,7 +103,7 @@ def test(bench_dir_path: str, output_dir_path: str, nproc: int):
     )
     print(
         "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}"
-        "{:<10.6f}".format(
+        "{:<10.6f} {:<10.6f}".format(
             overall_result.threshold,
             overall_result.recall,
             overall_result.precision,
@@ -112,12 +112,14 @@ def test(bench_dir_path: str, output_dir_path: str, nproc: int):
             overall_result.best_precision,
             overall_result.best_f1,
             overall_result.area_pr,
+            overall_result.ap,
         )
     )
 
     # save the results
     save_results(
         path=output_dir_path,
+        category=CATEGORY,
         sample_results=sample_results,
         threshold_results=threshold_results,
         overall_result=overall_result,

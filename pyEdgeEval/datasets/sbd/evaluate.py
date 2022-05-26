@@ -88,4 +88,5 @@ def per_category_pr_evaluation(
         samples=sample_names,
         wrapper=_wrapper,
         nproc=nproc,
+        is_sbd=True,
     )

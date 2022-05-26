@@ -127,7 +127,7 @@ def plot_pr_curve(
             *res[i, [3, 6, 7, 8]]
         )
         prefix += " - {}".format(names[i])
-        print(prefix)
+        print(prefix)  # should remove
 
     # add legends
     legend_texts = [

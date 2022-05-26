@@ -155,7 +155,7 @@ def save_results(
     # save summary results
     with open(os.path.join(cat_dir, "eval_bdry.txt"), "w") as f:
         f.write(
-            "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
+            "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
                 overall_result.threshold,
                 overall_result.recall,
                 overall_result.precision,
@@ -164,5 +164,6 @@ def save_results(
                 overall_result.best_precision,
                 overall_result.best_f1,
                 overall_result.area_pr,
+                overall_result.ap,
             )
         )

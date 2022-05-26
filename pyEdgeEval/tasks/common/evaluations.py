@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-from typing import Any, Callable, List, Tuple
+from typing import Any, Callable, List, Tuple, Union
 
 import numpy as np
 
 from .metrics import (
     OverallResult,
+    OverallResultSBD,
     SampleResult,
     SingleResult,
     ThresholdResult,
@@ -69,7 +70,8 @@ def base_pr_evaluation(
     samples: List[Any],
     wrapper: Callable[[Any], Any],
     nproc: int = 8,
-) -> Tuple[List[SampleResult], List[ThresholdResult], OverallResult]:
+    is_sbd: bool = False,
+) -> Tuple[List[SampleResult], List[ThresholdResult], Union[OverallResult, OverallResultSBD]]:
     """
     Perform an evaluation of predictions against ground truths for an image
     set over a given set of thresholds.
@@ -192,7 +194,7 @@ def base_pr_evaluation(
             )
         )
 
-    # Calculate AP
+    # Calculate AUC
     # FIXME: why do we use increments of 0.01?
     rec_unique, rec_unique_ndx = np.unique(rec_overall, return_index=True)
     prec_unique = prec_overall[rec_unique_ndx]
@@ -204,6 +206,15 @@ def base_pr_evaluation(
     else:
         area_pr = 0.0
 
+    # Calculate AP
+    ap = 0
+    for t in np.arange(0, 1, 0.01):
+        _r = rec_overall >= t
+        p = np.max(prec_overall[_r])
+        if p.size == 0:
+            p = 0
+        ap = ap + p / 101
+
     # Calculate ODS metrics
 
     rec_best, prec_best, f1_best = compute_rec_prec_f1(
@@ -213,15 +224,28 @@ def base_pr_evaluation(
         float(sum_p_best),
     )
 
-    overall_result = OverallResult(
-        thresholds[best_i_ovr],  # ODS threshold
-        rec_overall[best_i_ovr],  # ODS Recall
-        prec_overall[best_i_ovr],  # ODS Precision
-        f1_overall[best_i_ovr],  # ODS F
-        rec_best,  # OIS Recall
-        prec_best,  # OIS Precision
-        f1_best,  # OIS F
-        area_pr,  # AP
-    )
+    if is_sbd:
+        overall_result = OverallResultSBD(
+            thresholds[best_i_ovr],  # ODS threshold
+            rec_overall[best_i_ovr],  # ODS Recall
+            prec_overall[best_i_ovr],  # ODS Precision
+            f1_overall[best_i_ovr],  # ODS F
+            rec_best,  # OIS Recall
+            prec_best,  # OIS Precision
+            f1_best,  # OIS F
+            area_pr,  # AUC
+            ap,
+        )
+    else:
+        overall_result = OverallResult(
+            thresholds[best_i_ovr],  # ODS threshold
+            rec_overall[best_i_ovr],  # ODS Recall
+            prec_overall[best_i_ovr],  # ODS Precision
+            f1_overall[best_i_ovr],  # ODS F
+            rec_best,  # OIS Recall
+            prec_best,  # OIS Precision
+            f1_best,  # OIS F
+            area_pr,  # AUC
+        )
 
     return sample_results, threshold_results, overall_result
