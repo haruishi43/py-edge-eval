@@ -43,4 +43,17 @@ Per-category evaluation is currently supported.
 
 ## CityScapes
 
-WIP
+First, create GT data using this script:
+```Bash
+# if you plan on evaluating with instance-sensitive edges (IS edges)
+python scripts/convert_dataset/cityscapes.py
+# if you plan on evaluating with instance-insensitive edges
+python scripts/convert_dataset/cityscapes.py --insensitive
+```
+
+Evaluation script:
+```Bash
+python scripts/evaluate_cityscapes.py <path/to/cityscapes> <path/to/predictions> <path/to/output> --category 14 --thresholds 99 --nproc 8
+```
+
+For instance-insensitive edges, you would need to supply `--pre-seal` argument.

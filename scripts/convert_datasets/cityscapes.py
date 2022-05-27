@@ -228,6 +228,8 @@ def main():
                 label_file = os.path.join(gt_split_dir, label)
                 label_files.append(label_file)
 
+            # NOTE: THIS PART IS IMPORTANT!!!
+            # The original code makes the radius
             if split == "val":
                 radius = 1
             else:

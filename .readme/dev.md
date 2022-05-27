@@ -30,8 +30,11 @@ rm dist/<old package>.whl
 - [x] Plot PR curves
 - [ ] NMS preprocess script
 - [x] SBD evaluation script
+- [x] Cityscapes evaluation script
 - [x] Multiprocessing for evaluation
 - [ ] Set random seed for `correspond_pixels`
+- [ ] Move the scripts into the source code (currently moved to `scripts` for testing)
+- [ ] Make a CLI interface
 
 ## Bugs
 
