@@ -229,7 +229,8 @@ def main():
                 label_files.append(label_file)
 
             # NOTE: THIS PART IS IMPORTANT!!!
-            # The original code makes the radius
+            # The radius differs for each splits
+            # For "raw" evaluation, I think the radius should match
             if split == "val":
                 radius = 1
             else:
