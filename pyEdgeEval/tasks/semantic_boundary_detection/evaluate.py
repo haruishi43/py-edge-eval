@@ -65,7 +65,6 @@ def evaluate_boundaries_bin(
         count_r = match2.sum()
 
         # Precision
-        # TODO: check if using pred after kill_internal is correct
         sum_p = pred.sum()
         count_p = match1.sum()
     else:

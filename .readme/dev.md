@@ -7,8 +7,10 @@
 pip install -r requirements-dev.txt
 
 # [try to build]
-# verbose build
+# Option 1. build as a package (`-v` for complete output)
 pip install -e . -v
+# Option 2. build, but don't install it as a pip package (doesn't conflict with pip installed versions)
+python setup.py build_ext --inplace
 
 # [build distribution]
 python -m build
@@ -18,6 +20,36 @@ auditwheel -v repair dist/<package>.whl
 mv wheelhouse/<new package>.whl dist/
 rm dist/<old package>.whl
 ```
+
+## Testing validity
+
+BSDS500 provides a benchmark to test if the code is running as expected (on MATLAB). I used the same benchmark and created a test script to check if the results are the same. SBD also provides a similar benchmark which I converted to Python.
+
+Theoratically the results should match exactly, but due to the results coming from two complete languages as well as the dependencies being diffferent, it is understandable to have some minor diferences.
+
+
+### BSDS500
+
+- Test code: `tests/test_bsds500.py`
+- Benchmark data: `data/BSDS500_bench`
+
+### SBD
+
+- Test code: `tests/test_sbd.py`
+- Benchmark data: `data/SBD_bench`
+
+### Cityscapes
+
+- Test code: WIP
+- Benchmark data: `data/cityscapes_test`
+
+How I perfromed the test:
+- I created a test dataset for Cityscapes which consists of 3 validation images.
+- I trained DFF (Resnet101) on the train split (original cityscapes) and ran the evaluation on MATLAB and Python.
+- The boundaries have radius of 2 for the training split whereas validation split has raidus of 1 (created using the `convert_datasets/cityscapes.py` script).
+- Compared the overall metrics as well as the PR curves.
+- Results are quite different, but shows similar characteristics.
+- This maybe an issue with the hyperparameters for the evaluation (converting the dataset, preprocessing the boundaries, re-scaling, etc). It will take sometime to figure out all the differences.
 
 ## TODO
 
@@ -36,6 +68,7 @@ rm dist/<old package>.whl
 - [ ] Move the scripts into the source code (currently moved to `scripts` for testing)
 - [ ] Make a CLI interface
 
-## Bugs
+## Bugs and Problems
 
+- `pyEdgeEval` and MATLAB results differ slightly. This is due to various factors such as randomness in `correspond_pixels` and slight differences in preprocessing algorithms (`thin`, `kill_internal`, etc...). I would love to do a more comprehensive study on the differences MATLAB and Python, but I believe this benchmark code is currently robust enough to evaluate models. Note that MATLAB results and `pyEdgeEval` results should not be compared against each other because of this.
 - Using multiprocessing causes a bug where every run produces different results. The seed for random number generator used in `correspond_pixels.pyx` causes the randomness which is the same as the original MATLAB code. To solve the issue, we would need to set the random seed every time we call `correspond_pixels` so that the results are reproducible (TODO).
