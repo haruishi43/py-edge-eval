@@ -217,7 +217,7 @@ def base_pr_evaluation(
         p = np.max(prec_overall[_r], initial=0)
         ap = ap + p / 101
 
-    # Calculate ODS metrics
+    # Calculate OIS metrics
 
     rec_best, prec_best, f1_best = compute_rec_prec_f1(
         float(count_r_best),
