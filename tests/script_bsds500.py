@@ -13,15 +13,20 @@ how MATLAB and Python handles data types (unsure).
 """
 
 import argparse
-import os
-from functools import partial
 
-from pyEdgeEval.datasets.bsds.evaluate import pr_evaluation
-from pyEdgeEval.datasets.bsds.utils import (
-    load_bsds_gt_boundaries,
-    load_predictions,
-    save_results,
-)
+# import os
+import os.path as osp
+
+# from functools import partial
+
+# from pyEdgeEval.datasets.bsds.evaluate import pr_evaluation
+# from pyEdgeEval.datasets.bsds.utils import (
+#     load_bsds_gt_boundaries,
+#     load_predictions,
+#     save_results,
+# )
+
+from pyEdgeEval.evaluators import BSDS500Evaluator
 
 
 def parse_args():
@@ -47,76 +52,96 @@ def parse_args():
     return parser.parse_args()
 
 
-def load_gt_boundaries(sample_name: str, bench_dir_path: str):
-    gt_path = os.path.join(bench_dir_path, "groundTruth", f"{sample_name}.mat")
-    return load_bsds_gt_boundaries(gt_path)  # List[np.ndarray]
+# def load_gt_boundaries(sample_name: str, bench_dir_path: str):
+#     gt_path = os.path.join(bench_dir_path, "groundTruth", f"{sample_name}.mat")
+#     return load_bsds_gt_boundaries(gt_path)  # List[np.ndarray]
 
 
-def load_pred(sample_name: str, bench_dir_path: str):
-    pred_path = os.path.join(bench_dir_path, "png", f"{sample_name}.png")
-    return load_predictions(pred_path)  # np.ndarray(dtype=float)
+# def load_pred(sample_name: str, bench_dir_path: str):
+#     pred_path = os.path.join(bench_dir_path, "png", f"{sample_name}.png")
+#     return load_predictions(pred_path)  # np.ndarray(dtype=float)
+
+
+# def test(bench_dir_path: str, output_dir_path: str, nproc: int):
+#     SAMPLE_NAMES = ["2018", "3063", "5096", "6046", "8068"]
+#     N_THRESHOLDS = 5
+
+#     assert os.path.exists(bench_dir_path), f"{bench_dir_path} doesn't exist"
+#     assert os.path.exists(output_dir_path), f"{output_dir_path} doesn't exist"
+
+#     (sample_results, threshold_results, overall_result,) = pr_evaluation(
+#         thresholds=N_THRESHOLDS,
+#         sample_names=SAMPLE_NAMES,
+#         load_gts=partial(load_gt_boundaries, bench_dir_path=bench_dir_path),
+#         load_pred=partial(load_pred, bench_dir_path=bench_dir_path),
+#         nproc=nproc,
+#     )
+
+#     print("Per image:")
+#     for sample_index, res in enumerate(sample_results):
+#         print(
+#             "{:<10d} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
+#                 sample_index + 1,
+#                 res.threshold,
+#                 res.recall,
+#                 res.precision,
+#                 res.f1,
+#             )
+#         )
+
+#     print("")
+#     print("Overall:")
+#     for thresh_i, res in enumerate(threshold_results):
+#         print(
+#             "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
+#                 res.threshold, res.recall, res.precision, res.f1
+#             )
+#         )
+
+#     print("")
+#     print(
+#         "Summary: (threshold, recall, precision, f1, best recall, best precision, best f1, Area under PR"
+#     )
+#     print(
+#         "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}"
+#         "{:<10.6f}".format(
+#             overall_result.threshold,
+#             overall_result.recall,
+#             overall_result.precision,
+#             overall_result.f1,
+#             overall_result.best_recall,
+#             overall_result.best_precision,
+#             overall_result.best_f1,
+#             overall_result.area_pr,
+#         )
+#     )
+
+#     # save the results
+#     save_results(
+#         path=output_dir_path,
+#         sample_results=sample_results,
+#         threshold_results=threshold_results,
+#         overall_result=overall_result,
+#     )
 
 
 def test(bench_dir_path: str, output_dir_path: str, nproc: int):
     SAMPLE_NAMES = ["2018", "3063", "5096", "6046", "8068"]
     N_THRESHOLDS = 5
 
-    assert os.path.exists(bench_dir_path), f"{bench_dir_path} doesn't exist"
-    assert os.path.exists(output_dir_path), f"{output_dir_path} doesn't exist"
+    assert osp.exists(bench_dir_path), f"{bench_dir_path} doesn't exist"
+    # assert osp.exists(output_dir_path), f"{output_dir_path} doesn't exist"
 
-    (sample_results, threshold_results, overall_result,) = pr_evaluation(
-        thresholds=N_THRESHOLDS,
-        sample_names=SAMPLE_NAMES,
-        load_gts=partial(load_gt_boundaries, bench_dir_path=bench_dir_path),
-        load_pred=partial(load_pred, bench_dir_path=bench_dir_path),
-        nproc=nproc,
+    evaluator = BSDS500Evaluator(
+        dataset_root=bench_dir_path,
+        pred_root=osp.join(bench_dir_path, "png"),
     )
-
-    print("Per image:")
-    for sample_index, res in enumerate(sample_results):
-        print(
-            "{:<10d} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
-                sample_index + 1,
-                res.threshold,
-                res.recall,
-                res.precision,
-                res.f1,
-            )
-        )
-
-    print("")
-    print("Overall:")
-    for thresh_i, res in enumerate(threshold_results):
-        print(
-            "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
-                res.threshold, res.recall, res.precision, res.f1
-            )
-        )
-
-    print("")
-    print(
-        "Summary: (threshold, recall, precision, f1, best recall, best precision, best f1, Area under PR"
+    evaluator.set_sample_names(sample_names=SAMPLE_NAMES)
+    evaluator.set_eval_params(
+        apply_thinning=True,
     )
-    print(
-        "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}"
-        "{:<10.6f}".format(
-            overall_result.threshold,
-            overall_result.recall,
-            overall_result.precision,
-            overall_result.f1,
-            overall_result.best_recall,
-            overall_result.best_precision,
-            overall_result.best_f1,
-            overall_result.area_pr,
-        )
-    )
-
-    # save the results
-    save_results(
-        path=output_dir_path,
-        sample_results=sample_results,
-        threshold_results=threshold_results,
-        overall_result=overall_result,
+    evaluator.evaluate(
+        thresholds=N_THRESHOLDS, nproc=nproc, save_dir=output_dir_path
     )
 
 

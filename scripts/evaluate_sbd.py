@@ -1,18 +1,8 @@
 #!/usr/bin/env python3
 
 import argparse
-import os
-from functools import partial
 
-import numpy as np
-from PIL import Image
-
-from pyEdgeEval.datasets.sbd.evaluate import per_category_pr_evaluation
-from pyEdgeEval.datasets.sbd.utils import (
-    load_instance_insensitive_gt,
-    load_instance_sensitive_gt,
-    save_results,
-)
+from pyEdgeEval.evaluators.sbd import SBDEvaluator
 
 
 def parse_args():
@@ -29,19 +19,20 @@ def parse_args():
         help="the root path of where the results are populated",
     )
     parser.add_argument(
-        "--category",
-        type=int,
-        help="the category number to evaluate",
-    )
-    parser.add_argument(
-        "--insensitive",
-        action="store_true",
-        help="instance sensitive",
+        "--categories",
+        type=str,
+        default="[15]",
+        help="the category number to evaluate; can be multiple values'[1, 14]'",
     )
     parser.add_argument(
         "--raw",
         action="store_true",
         help="option to remove the thinning process (i.e. uses raw predition)",
+    )
+    parser.add_argument(
+        "--apply-nms",
+        action="store_true",
+        help="applies NMS before evaluation",
     )
     parser.add_argument(
         "--kill-internal",
@@ -64,77 +55,42 @@ def parse_args():
     return parser.parse_args()
 
 
-def parse_sbd_sample_names(data_root: str, split: str):
-
-    file_path = os.path.join(data_root, f'{split}.txt')
-    with open(file_path, 'r') as f:
-        sample_names = f.read().splitlines()
-
-    return sample_names
-
-
-def load_gt_boundaries(sample_name: str, data_root: str, instance_sensitive: bool = False):
-    if instance_sensitive:
-        cls_path = os.path.join(
-            data_root, "datadir", "cls", f"{sample_name}.mat"
-        )
-        inst_path = os.path.join(
-            data_root, "datadir", "inst", f"{sample_name}.mat"
-        )
-        return load_instance_sensitive_gt(cls_path=cls_path, inst_path=inst_path)
-    else:
-        gt_path = os.path.join(
-            data_root, "datadir", "cls", f"{sample_name}.mat"
-        )
-        return load_instance_insensitive_gt(gt_path)
-
-
-def load_pred(
-    sample_name: str,
-    data_root: str,
-    category: int,
-    suffix: str = ".png",
-):
-    """Load prediction
-
-    Since loading predictions using image extensions is complicated, we need a custom loader
-    We assume that the predictions are located inside the `data_root` directory and
-    the predictions are separated by categories.
-    `{data_root}/{category}/<img>{suffix}`
-
-    - The output is a single class numpy array.
-    - in matlab, the category is 15 (human)
-    - instead of .bmp, it is better to save predictions as .png
-    """
-    pred_path = os.path.join(
-        data_root,
-        f"class_{str(category).zfill(3)}",
-        f"{sample_name}{suffix}",
-    )
-    pred = np.array(Image.open(pred_path))
-    pred = (pred / 255).astype(float)
-    return pred
-
-
 def evaluate_sbd(
     sbd_path: str,
     pred_path: str,
     output_path: str,
-    category: int,
-    suffix: str,
-    instance_sensitive: bool,
+    categories: str,
     apply_thinning: bool,
-    kill_internal: bool,
+    apply_nms: bool,
     thresholds: str,
     nproc: int,
 ):
     """Evaluate SBD"""
-    assert os.path.exists(sbd_path), f"{sbd_path} doesn't exist"
-    assert os.path.exists(pred_path), f"{pred_path} doesn't exist"
-    assert os.path.exists(output_path), f"{output_path} doesn't exist"
 
-    assert 0 < category < 21, f"category needs to be between 1 ~ 20, but got {category}"
+    # string evaluation for categories
+    categories = categories.strip()
+    try:
+        categories = [int(categories)]
+    except ValueError:
+        try:
+            if categories.startswith("[") and categories.endswith("]"):
+                categories = categories[1:-1]
+                categories = [int(cat.strip()) for cat in categories.split(",")]
+            else:
+                print(
+                    "Bad categories format; should be a python list of floats (`[a, b, c]`)"
+                )
+                return
+        except ValueError:
+            print(
+                "Bad categories format; should be a python list of ints (`[a, b, c]`)"
+            )
+            return
 
+    for cat in categories:
+        assert 0 < cat < 21, f"category needs to be between 1 ~ 19, but got {cat}"
+
+    # string evaluation for thresholds
     thresholds = thresholds.strip()
     try:
         n_thresholds = int(thresholds)
@@ -143,9 +99,7 @@ def evaluate_sbd(
         try:
             if thresholds.startswith("[") and thresholds.endswith("]"):
                 thresholds = thresholds[1:-1]
-                thresholds = np.array(
-                    [float(t.strip()) for t in thresholds.split(",")]
-                )
+                thresholds = [float(t.strip()) for t in thresholds.split(",")]
             else:
                 print(
                     "Bad threshold format; should be a python list of floats (`[a, b, c]`)"
@@ -157,73 +111,47 @@ def evaluate_sbd(
             )
             return
 
-    sample_names = parse_sbd_sample_names(data_root=sbd_path, split='val')
-
-    _load_gt_boundaries = partial(
-        load_gt_boundaries,
-        data_root=sbd_path,
-        instance_sensitive=instance_sensitive,
+    # initialize evaluator
+    evaluator = SBDEvaluator(
+        dataset_root=sbd_path,
+        pred_root=pred_path,
     )
-    _load_pred = partial(
-        load_pred,
-        category=category,
-        data_root=pred_path,
-        suffix=suffix,
-    )
+    if evaluator.sample_names is None:
+        # load custom sample names
+        # SAMPLE_NAMES = ["2008_000051", "2008_000195"]
+        evaluator.set_sample_names()
 
-    (sample_results, threshold_results, overall_result,) = per_category_pr_evaluation(
-        thresholds=thresholds,
-        category=category,
-        sample_names=sample_names,
-        load_gt=_load_gt_boundaries,
-        load_pred=_load_pred,
+    # set parameters
+    eval_mode = "pre-seal"  # FIXME: hard-coded for now
+    evaluator.set_eval_params(
+        eval_mode=eval_mode,
+        scale=1.0,
         apply_thinning=apply_thinning,
-        kill_internal=kill_internal,
+        apply_nms=apply_nms,
+        instance_sensitive=False,
+    )
+
+    # evaluate
+    evaluator.evaluate(
+        categories=categories,
+        thresholds=thresholds,
         nproc=nproc,
-    )
-
-    print("")
-    print("Summary:")
-    print(
-        "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
-            overall_result.threshold,
-            overall_result.recall,
-            overall_result.precision,
-            overall_result.f1,
-            overall_result.best_recall,
-            overall_result.best_precision,
-            overall_result.best_f1,
-            overall_result.area_pr,
-        )
-    )
-
-    # save the results
-    save_results(
-        path=output_path,
-        category=category,
-        sample_results=sample_results,
-        threshold_results=threshold_results,
-        overall_result=overall_result,
+        save_dir=output_path,
     )
 
 
 def main():
     args = parse_args()
 
-    suffix = ".bmp"
-
-    inst_sensitive = not args.insensitive
     apply_thinning = not args.raw
 
     evaluate_sbd(
         sbd_path=args.sbd_path,
         pred_path=args.pred_path,
         output_path=args.output_path,
-        category=args.category,
-        suffix=suffix,
-        instance_sensitive=inst_sensitive,
+        categories=args.categories,
         apply_thinning=apply_thinning,
-        kill_internal=args.kill_internal,
+        apply_nms=args.apply_nms,
         thresholds=args.thresholds,
         nproc=args.nproc,
     )

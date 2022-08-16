@@ -60,12 +60,12 @@ How I perfromed the test:
 - [x] BSDS evaluation script
 - [x] BSDS evaluation test codes
 - [x] Plot PR curves
-- [ ] NMS preprocess script
+- [x] NMS preprocess script
 - [x] SBD evaluation script
 - [x] Cityscapes evaluation script
 - [x] Multiprocessing for evaluation
 - [ ] Set random seed for `correspond_pixels`
-- [ ] Move the scripts into the source code (currently moved to `scripts` for testing)
+- [x] Move the scripts into the source code (currently moved to `scripts` for testing)
 - [ ] Make a CLI interface
 
 ## Bugs and Problems

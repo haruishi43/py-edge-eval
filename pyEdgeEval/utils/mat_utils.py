@@ -4,6 +4,7 @@ import os
 
 # libraries used for .mat io
 from scipy.io import loadmat as scipy_loadmat
+from scipy.sparse import csc_matrix
 
 try:
     # prefer `pymatreader`
@@ -30,3 +31,11 @@ def loadmat(
         mat = scipy_loadmat(path)
 
     return mat
+
+
+def sparse2numpy(data: csc_matrix):
+    """helper function to convert compressed sparse column matrix to numpy array"""
+    assert isinstance(
+        data, csc_matrix
+    ), f"ERR: input is not csc_matrix, but got {type(data)}"
+    return data.toarray()

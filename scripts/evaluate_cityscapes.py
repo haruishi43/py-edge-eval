@@ -1,17 +1,8 @@
 #!/usr/bin/env python3
 
 import argparse
-import os
-from functools import partial
 
-import numpy as np
-
-from pyEdgeEval.datasets.cityscapes.evaluate import per_category_pr_evaluation
-from pyEdgeEval.datasets.cityscapes.utils import (
-    load_gt,
-    load_pred,
-    save_results,
-)
+from pyEdgeEval.evaluators.cityscapes import CityscapesEvaluator
 
 
 def parse_args():
@@ -28,9 +19,10 @@ def parse_args():
         help="the root path of where the results are populated",
     )
     parser.add_argument(
-        "--category",
-        type=int,
-        help="the category number to evaluate",
+        "--categories",
+        type=str,
+        default="[1, 14]",
+        help="the category number to evaluate; can be multiple values'[1, 14]'",
     )
     parser.add_argument(
         "--pre-seal",
@@ -49,6 +41,11 @@ def parse_args():
         help="option to remove the thinning process (i.e. uses raw predition)",
     )
     parser.add_argument(
+        "--apply-nms",
+        action="store_true",
+        help="applies NMS before evaluation",
+    )
+    parser.add_argument(
         "--thresholds",
         type=str,
         default="99",
@@ -64,55 +61,44 @@ def parse_args():
     return parser.parse_args()
 
 
-def parse_cityscapes_sample_names(data_root: str, split: str):
-
-    file_path = os.path.join(data_root, 'splits', f'{split}.txt')
-    with open(file_path, 'r') as f:
-        sample_names = f.read().splitlines()
-
-    return sample_names
-
-
-def load_gt_boundaries(
-    sample_name: str,
-    data_root: str,
-    scale: float,
-    split: str = 'val',
-    instance_sensitive: bool = True,
-    gt_dir: str = 'gtEval',
-):
-    if instance_sensitive:
-        edge_path = os.path.join(data_root, gt_dir, split, f"{sample_name}_gtProc_isedge.png")
-        seg_path = os.path.join(data_root, gt_dir, split, f"{sample_name}_gtFine_labelTrainIds.png")
-        assert os.path.exists(edge_path), f"ERR: {edge_path} is not valid"
-        assert os.path.exists(seg_path), f"ERR: {seg_path} is not valid"
-        return load_gt(edge_path=edge_path, seg_path=seg_path, num_trainIds=19, scale=scale)
-    else:
-        edge_path = os.path.join(data_root, gt_dir, split, f"{sample_name}_gtProc_edge.png")
-        seg_path = os.path.join(data_root, gt_dir, split, f"{sample_name}_gtFine_labelTrainIds.png")
-        assert os.path.exists(edge_path), f"ERR: {edge_path} is not valid"
-        assert os.path.exists(seg_path), f"ERR: {seg_path} is not valid"
-        return load_gt(edge_path=edge_path, seg_path=seg_path, num_trainIds=19, scale=scale)
-
-
 def evaluate_cityscapes(
     cityscapes_path: str,
     pred_path: str,
     output_path: str,
-    category: int,
-    suffix: str,
+    categories: str,
     pre_seal: bool,
     scale: float,
     apply_thinning: bool,
+    apply_nms: bool,
     thresholds: str,
     nproc: int,
 ):
     """Evaluate Cityscapes"""
-    assert os.path.exists(cityscapes_path), f"{cityscapes_path} doesn't exist"
-    assert os.path.exists(pred_path), f"{pred_path} doesn't exist"
 
-    assert 0 < category < 20, f"category needs to be between 1 ~ 19, but got {category}"
+    # string evaluation for categories
+    categories = categories.strip()
+    try:
+        categories = [int(categories)]
+    except ValueError:
+        try:
+            if categories.startswith("[") and categories.endswith("]"):
+                categories = categories[1:-1]
+                categories = [int(cat.strip()) for cat in categories.split(",")]
+            else:
+                print(
+                    "Bad categories format; should be a python list of floats (`[a, b, c]`)"
+                )
+                return
+        except ValueError:
+            print(
+                "Bad categories format; should be a python list of ints (`[a, b, c]`)"
+            )
+            return
 
+    for cat in categories:
+        assert 0 < cat < 20, f"category needs to be between 1 ~ 19, but got {cat}"
+
+    # string evaluation for thresholds
     thresholds = thresholds.strip()
     try:
         n_thresholds = int(thresholds)
@@ -121,9 +107,7 @@ def evaluate_cityscapes(
         try:
             if thresholds.startswith("[") and thresholds.endswith("]"):
                 thresholds = thresholds[1:-1]
-                thresholds = np.array(
-                    [float(t.strip()) for t in thresholds.split(",")]
-                )
+                thresholds = [float(t.strip()) for t in thresholds.split(",")]
             else:
                 print(
                     "Bad threshold format; should be a python list of floats (`[a, b, c]`)"
@@ -135,81 +119,36 @@ def evaluate_cityscapes(
             )
             return
 
-    assert isinstance(scale, (float, int))
-    assert 0 <= scale <= 1
-
-    if pre_seal:
-        max_dist = 0.02
-        kill_internal = True
-        instance_sensitive = False
-    else:
-        max_dist = 0.0035
-        kill_internal = False
-        instance_sensitive = True
-
-    sample_names = parse_cityscapes_sample_names(
-        data_root=cityscapes_path,
-        split='val',
+    # initialize evaluator
+    evaluator = CityscapesEvaluator(
+        dataset_root=cityscapes_path,
+        pred_root=pred_path,
     )
+    if evaluator.sample_names is None:
+        # load custom sample names
+        evaluator.set_sample_names()
 
-    _load_gt_boundaries = partial(
-        load_gt_boundaries,
-        data_root=cityscapes_path,
-        split='val',
-        instance_sensitive=instance_sensitive,
+    # set parameters
+    # evaluator.set_pred_suffix("_leftImg8bit.png")  # potato save them using .png
+    eval_mode = "pre-seal" if pre_seal else "post-seal"
+    evaluator.set_eval_params(
+        eval_mode=eval_mode,
         scale=scale,
-    )
-    _load_pred = partial(
-        load_pred,
-        category=category,
-        scale=scale,
-        data_root=pred_path,
-        suffix=suffix,
-    )
-
-    (sample_results, threshold_results, overall_result,) = per_category_pr_evaluation(
-        category=category,
-        sample_names=sample_names,
-        thresholds=thresholds,
-        load_gt=_load_gt_boundaries,
-        load_pred=_load_pred,
-        max_dist=max_dist,
         apply_thinning=apply_thinning,
-        kill_internal=kill_internal,
+        apply_nms=apply_nms,
+    )
+
+    # evaluate
+    evaluator.evaluate(
+        categories=categories,
+        thresholds=thresholds,
         nproc=nproc,
-    )
-
-    print("")
-    print("Summary:")
-    print(
-        "{:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f} {:<10.6f}".format(
-            overall_result.threshold,
-            overall_result.recall,
-            overall_result.precision,
-            overall_result.f1,
-            overall_result.best_recall,
-            overall_result.best_precision,
-            overall_result.best_f1,
-            overall_result.area_pr,
-            overall_result.ap,
-        )
-    )
-
-    # save the results
-    save_results(
-        path=output_path,
-        category=category,
-        sample_results=sample_results,
-        threshold_results=threshold_results,
-        overall_result=overall_result,
+        save_dir=output_path,
     )
 
 
 def main():
     args = parse_args()
-
-    # might need to specify suffix
-    suffix = "_leftImg8bit.png"
 
     apply_thinning = not args.raw
 
@@ -217,11 +156,11 @@ def main():
         cityscapes_path=args.cityscapes_path,
         pred_path=args.pred_path,
         output_path=args.output_path,
-        category=args.category,
-        suffix=suffix,
+        categories=args.categories,
         pre_seal=args.pre_seal,
         scale=args.scale,
         apply_thinning=apply_thinning,
+        apply_nms=args.apply_nms,
         thresholds=args.thresholds,
         nproc=args.nproc,
     )
