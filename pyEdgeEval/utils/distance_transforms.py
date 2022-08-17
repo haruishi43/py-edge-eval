@@ -5,11 +5,11 @@ import numpy as np
 from scipy.ndimage.morphology import distance_transform_edt
 
 __all__ = [
-    "seg2bdry",
+    "mask2bdry",
 ]
 
 
-def cv2_seg2bdry(m, ignore_mask, radius, quality):
+def cv2_mask2bdry(m, ignore_mask, radius, quality):
     inner = cv2.distanceTransform(
         ((m + ignore_mask) > 0).astype(np.uint8), cv2.DIST_L2, quality
     )
@@ -23,7 +23,7 @@ def cv2_seg2bdry(m, ignore_mask, radius, quality):
     return dist
 
 
-def scipy_seg2bdry(m, ignore_mask, radius):
+def scipy_mask2bdry(m, ignore_mask, radius):
     inner = distance_transform_edt((m + ignore_mask) > 0)
     outer = distance_transform_edt(1.0 - m)
     dist = outer + inner
@@ -33,7 +33,7 @@ def scipy_seg2bdry(m, ignore_mask, radius):
     return dist
 
 
-def seg2bdry(
+def mask2bdry(
     mask: np.ndarray,
     ignore_mask: np.ndarray,
     radius: int,
@@ -41,14 +41,14 @@ def seg2bdry(
     quality: int = 0,
 ) -> np.ndarray:
     if use_cv2:
-        return cv2_seg2bdry(
+        return cv2_mask2bdry(
             m=mask,
             ignore_mask=ignore_mask,
             radius=radius,
             quality=quality,
         )
     else:
-        return scipy_seg2bdry(
+        return scipy_mask2bdry(
             m=mask,
             ignore_mask=ignore_mask,
             radius=radius,

@@ -2,9 +2,12 @@
 
 from .convert_formats import (
     mask_to_onehot,
-    multilabel_to_binary_edges,
-    onehot_edges_to_multilabel_edges,
+    edge_multilabel2binary,
+    edge_onehot2multilabel,
+    mask_label2trainId,
+    edge_label2trainId,
 )
+from .distance_transforms import mask2bdry
 from .logger import (
     get_logger,
     print_log,
@@ -26,17 +29,20 @@ from .progressbar import (
 )
 
 __all__ = [
-    "check_file_exist",
-    "get_logger",
     "mask_to_onehot",
-    "multilabel_to_binary_edges",
-    "onehot_edges_to_multilabel_edges",
-    "mkdir_or_exist",
+    "edge_multilabel2binary",
+    "edge_onehot2multilabel",
+    "mask_label2trainId",
+    "edge_label2trainId",
+    "mask2bdry",
+    "get_logger",
     "print_log",
-    "scandir",
-    "symlink",
     "loadmat",
     "sparse2numpy",
+    "check_file_exist",
+    "mkdir_or_exist",
+    "scandir",
+    "symlink",
     "track_iter_progress",
     "track_parallel_progress",
     "track_progress",

@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+"""Modified from mmcv.utils
+"""
+
 import sys
 from collections.abc import Iterable
 from multiprocessing import Pool

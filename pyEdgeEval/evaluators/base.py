@@ -154,7 +154,7 @@ class BaseMultilabelEvaluator(BaseEvaluator):
         # for logger
         class_table_data = PrettyTable()
         for key, val in ret_metrics_class.items():
-            if key in print_metrics:
+            if key in print_metrics or key == "Class":
                 class_table_data.add_column(key, val)
 
         summary_table_data = PrettyTable()

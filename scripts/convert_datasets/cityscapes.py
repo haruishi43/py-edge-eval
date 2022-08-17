@@ -8,12 +8,25 @@ from cityscapesscripts.preparation.json2labelImg import json2labelImg
 import numpy as np
 from PIL import Image
 
-from pyEdgeEval.datasets.cityscapes.convert_dataset import label2edge
+from pyEdgeEval.common.multi_label.edge_encoding import (
+    default_multilabel_encoding,
+    rgb_multilabel_encoding,
+)
+from pyEdgeEval.evaluators.cityscapes import (
+    label2trainId,
+    inst_labelIds,
+)
+from pyEdgeEval.edge_tools.mask2edge_loop import (
+    loop_instance_mask2edge,
+    loop_mask2edge,
+)
 from pyEdgeEval.utils import (
     scandir,
     mkdir_or_exist,
     track_parallel_progress,
     track_progress,
+    mask_to_onehot,
+    edge_label2trainId,
 )
 
 
@@ -93,23 +106,63 @@ def convert_label_to_semantic_edges(
     proc_dir = label_dir.replace("gtFine", proc_dir)
     proc_fn = label_fn.replace(label_suffix, edge_suffix)
 
-    # try to find instance file
-    if inst_sensitive:
-        inst_file = os.path.join(label_dir, label_fn.replace(label_suffix, inst_suffix))
-    else:
-        inst_file = None
-
     mkdir_or_exist(proc_dir)
     proc_file = os.path.join(proc_dir, proc_fn)
-    label2edge(
-        label_path=label_file,
-        save_path=proc_file,
-        radius=radius,
-        inst_sensitive=inst_sensitive,
-        inst_path=inst_file,
-        faster=True,
-        nproc=1,
-    )
+
+    # convert function -->
+    assert os.path.exists(label_file)
+    _, save_format = os.path.splitext(proc_file)
+    assert save_format in (".png", ".tif", ".bin")
+
+    label_img = Image.open(label_file)
+    mask = np.array(label_img)
+
+    # NOTE: hard-coded
+    num_ids = 34  # total number of classes including ones to ignore
+    ignore_classes = [2, 3]
+
+    # create label mask
+    m = mask_to_onehot(mask, num_ids)
+
+    if inst_sensitive:
+        inst_file = os.path.join(label_dir, label_fn.replace(label_suffix, inst_suffix))
+        assert os.path.exists(inst_file)
+        inst_img = Image.open(inst_file)
+        inst_mask = np.array(inst_img)  # int32
+        edge_ids = loop_instance_mask2edge(
+            mask=m,
+            inst_mask=inst_mask,
+            inst_labelIds=inst_labelIds,
+            ignore_labelIds=ignore_classes,
+            radius=radius,
+        )
+    else:
+        edge_ids = loop_mask2edge(
+            mask=m,
+            ignore_labelIds=ignore_classes,
+            radius=radius,
+        )
+
+    edge_trainIds = edge_label2trainId(edge=edge_ids, label2trainId=label2trainId)
+
+    # encode and save -->
+    if save_format == ".png":
+        edges = rgb_multilabel_encoding(edge_trainIds)
+        edges_img = Image.fromarray(edges)
+        edges_img.save(proc_file)
+    elif save_format == ".tif":
+        edges = default_multilabel_encoding(edge_trainIds)
+        edges = edges.view(np.int32)
+        edges_img = Image.fromarray(edges)
+        edges_img.save(proc_file)
+    elif save_format == ".bin":
+        edges = default_multilabel_encoding(edge_trainIds)
+        edges.tofile(
+            proc_file,
+            dtype=np.uint32,
+        )
+    else:
+        raise ValueError()
 
 
 def test_edges(
@@ -232,7 +285,7 @@ def main():
             # The radius differs for each splits
             # For "raw" evaluation, I think the radius should match
             if split == "val":
-                radius = 1
+                radius = 2
             else:
                 radius = 2
 
@@ -267,6 +320,10 @@ def main():
     else:
         print("testing!")
 
+        assert not inst_sensitive, "can only test for instance insensitive edges"
+
+        print("warning: if validation radius is not 2, there might be a lot of misses")
+
         orig_name = "gtProc"  # NOTE: hard-coded
         test_name = proc_dir
 
@@ -298,7 +355,7 @@ def main():
             if not equal:
                 misses += 1
             if diff > acceptable_miss:
-                print(fn)
+                print(fn, diff)
 
         print("total missed: ", misses)
 

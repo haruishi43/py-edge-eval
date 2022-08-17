@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+"""Modified from mmcv.utils
+"""
+
 import os
 import os.path as osp
 from pathlib import Path

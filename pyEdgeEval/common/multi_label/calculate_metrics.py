@@ -34,6 +34,10 @@ def calculate_metrics(
 
     if dataset_type == "cityscapes":
         from .datasets.cityscapes import cityscapes_eval_single as eval_single
+    elif dataset_type == "otf_cityscapes":
+        from .datasets.otf_cityscapes import (
+            otf_cityscapes_eval_single as eval_single,
+        )
     elif dataset_type == "sbd":
         from .datasets.sbd import sbd_eval_single as eval_single
     else:
