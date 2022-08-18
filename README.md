@@ -2,7 +2,7 @@
 
 Edge detection tasks heavily relies on the original codes used in BSDS300/500 written in [MATLAB and C++](https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/resources.html).
 In the field of computer vision, various edge detection algorithms are now resorting to Python and the various machine learning libraries.
-However, due to the fact that not everyone has access to MATLAB and that the original benchmark codes are outdated, evaluating these algorithms have been difficult.
+However, due to the fact that not everyone has access to MATLAB and that the original benchmark codes are outdated, evaluating these algorithms, especially on remote servers (docker containers), has been difficult.
 This library aims to remove these limitations and make it easy for models to be evaluated and benchmarked without the need of MATLAB.
 The original C++ codes used in the MATLAB benchmarks are ported with Cython and the evaluation scripts are rewritten in Python.
 The codebase is created to be extensible and supports various tasks and datasets as well as different evaluation protocols.
@@ -16,6 +16,7 @@ To test the validity of the evaluation code, `pyEdgeEval`'s results are compared
 - implements common preprocessing algorithms
 - supports various tasks and datasets
 - supports various evaluation protocols
+- edge generation tools
 - etc...
 
 Supported tasks:
@@ -43,7 +44,9 @@ Disclaimers:
 ```Bash
 # Install dependencies
 pip install -r requirements.txt
-pip install opencv-python  # cv2
+
+# install cv2 (e.g. use pip)
+pip install opencv-python
 
 # Option 1. install without cloning the project (only tested on ubuntu with python 3.8)
 pip install pyEdgeEval
@@ -72,10 +75,8 @@ However, due to the randomness in the original MATLAB (C++) codebase, the result
 Script:
 
 ```Bash
-python scripts/evaluate_sbd.py <path/to/sbd> <path/to/pred> <path/to/output> --category=15 --thresholds=5 --nproc=8
+python scripts/evaluate_sbd.py <path/to/sbd> <path/to/pred> <path/to/output> --categories=15 --thresholds=5 --nproc=8
 ```
-
-Per-category evaluation is currently supported.
 
 
 ## CityScapes
@@ -90,11 +91,12 @@ python scripts/convert_dataset/cityscapes.py --insensitive --nproc 8
 
 Evaluation script:
 ```Bash
-python scripts/evaluate_cityscapes.py <path/to/cityscapes> <path/to/predictions> <path/to/output> --category 14 --thresholds 99 --nproc 8
+python scripts/evaluate_cityscapes.py <path/to/cityscapes> <path/to/predictions> <path/to/output> --categories='[1, 14]' --thresholds 99 --nproc 8
 ```
 
 `--thin` will enable thinning on predictions and use thinned GTs.
 For instance-insensitive edges, you would need to supply `--pre-seal` argument.
+
 
 # Acknowledgements
 

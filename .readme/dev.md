@@ -23,10 +23,15 @@ rm dist/<old package>.whl
 
 ## Testing validity
 
-BSDS500 provides a benchmark to test if the code is running as expected (on MATLAB). I used the same benchmark and created a test script to check if the results are the same. SBD also provides a similar benchmark which I converted to Python.
+BSDS500 provides a benchmark to test if the code is running as expected (on MATLAB).
+I used the same benchmark and created a test script to check if the results are the same.
+SBD also provides a similar benchmark which I converted to Python.
 
 Theoratically the results should match exactly, but due to the results coming from two complete languages as well as the dependencies being diffferent, it is understandable to have some minor diferences.
 
+For BSDS500 and SBD, I have provided a test script inside `tests`.
+The results are very close and near identical, which means that the general functions are working.
+Making more detailed test code is WIP.
 
 ### BSDS500
 
@@ -66,6 +71,7 @@ How I perfromed the test:
 - [x] Multiprocessing for evaluation
 - [ ] Set random seed for `correspond_pixels`
 - [x] Move the scripts into the source code (currently moved to `scripts` for testing)
+- [ ] test coverage for important functions (would like to make tests for all functions)
 - [ ] Make a CLI interface
 
 ## Bugs and Problems

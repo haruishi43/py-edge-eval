@@ -32,6 +32,8 @@ class OTFCityscapesEvaluator(CityscapesEvaluator):
 
     @property
     def eval_params(self):
+
+        # Hard-coded radius
         if self.thin:
             radius = 1
         else:

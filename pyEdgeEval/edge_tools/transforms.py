@@ -109,6 +109,9 @@ class Mask2Edge(object):
 
 
 class InstanceMask2Edge(Mask2Edge):
+
+    """Transform function (instance sensitive)"""
+
     def __init__(
         self,
         inst_labelIds,
