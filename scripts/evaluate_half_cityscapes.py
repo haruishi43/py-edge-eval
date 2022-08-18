@@ -2,7 +2,7 @@
 
 import argparse
 
-from pyEdgeEval.evaluators.otf_cityscapes import OTFCityscapesEvaluator
+from pyEdgeEval.evaluators.half_cityscapes import HalfCityscapesEvaluator
 
 
 def parse_args():
@@ -30,21 +30,9 @@ def parse_args():
         help="prior to SEAL, the evaluations were not as strict",
     )
     parser.add_argument(
-        "--scale",
-        type=float,
-        default=0.5,
-        help="scale of the data for evaluations",
-    )
-    parser.add_argument(
         "--thin",
         action="store_true",
         help="use thinned GTs (this will apply thinning to the predictions, as in Pre-SEAL evaluations)",
-    )
-    parser.add_argument(
-        "--radius",
-        type=int,
-        default=1,
-        help="radius of the gt edge",
     )
     parser.add_argument(
         "--apply-nms",
@@ -74,10 +62,8 @@ def evaluate_cityscapes(
     categories: str,
     thin: bool,
     pre_seal: bool,
-    scale: float,
     apply_nms: bool,
     thresholds: str,
-    radius: int,
     nproc: int,
 ):
     """Evaluate Cityscapes"""
@@ -127,12 +113,11 @@ def evaluate_cityscapes(
             return
 
     # initialize evaluator
-    evaluator = OTFCityscapesEvaluator(
+    evaluator = HalfCityscapesEvaluator(
         dataset_root=cityscapes_path,
         pred_root=pred_path,
         thin=thin,
         gt_dir=None,  # NOTE: we can change the directory where the preprocessed GTs are
-        radius=radius,
     )
     if evaluator.sample_names is None:
         # load custom sample names
@@ -143,7 +128,6 @@ def evaluate_cityscapes(
     eval_mode = "pre-seal" if pre_seal else "post-seal"
     evaluator.set_eval_params(
         eval_mode=eval_mode,
-        scale=scale,
         apply_nms=apply_nms,
     )
 
@@ -166,10 +150,8 @@ def main():
         categories=args.categories,
         thin=args.thin,
         pre_seal=args.pre_seal,
-        scale=args.scale,
         apply_nms=args.apply_nms,
         thresholds=args.thresholds,
-        radius=args.radius,
         nproc=args.nproc,
     )
 

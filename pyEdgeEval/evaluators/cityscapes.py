@@ -2,8 +2,7 @@
 
 """Cityscapes Evaluator
 
-References:
-- https://github.com/mcordts/cityscapesScripts/blob/master/cityscapesscripts/helpers/labels.py
+The original evaluator where GTs are downsampled (interpolated) from full scale.
 """
 
 import os.path as osp
@@ -100,8 +99,14 @@ class CityscapesEvaluator(BaseMultilabelEvaluator):
     )
     GT_DIR = "gtEval"
     ORIG_GT_DIR = "gtFine"
-    EDGE_SUFFIX = "_gtProc_edge.png"
-    ISEDGE_SUFFIX = "_gtProc_isedge.png"
+
+    EDGE_SUFFIX = None
+    ISEDGE_SUFFIX = None
+    RAW_EDGE_SUFFIX = "_gtProc_raw_edge.png"
+    THIN_EDGE_SUFFIX = "_gtProc_thin_edge.png"
+    RAW_ISEDGE_SUFFIX = "_gtProc_raw_isedge.png"
+    THIN_ISEDGE_SUFFIX = "_gtProc_thin_isedge.png"
+
     SEG_SUFFIX = "_gtFine_labelTrainIds.png"
     PRED_SUFFIX = "_leftImg8bit.png"
 
@@ -110,6 +115,9 @@ class CityscapesEvaluator(BaseMultilabelEvaluator):
         dataset_root: str,
         pred_root: str,
         split: str = "val",
+        thin: bool = False,
+        gt_dir=None,
+        pred_suffix=None,
         **kwargs,
     ):
         self.dataset_root = dataset_root
@@ -117,6 +125,31 @@ class CityscapesEvaluator(BaseMultilabelEvaluator):
 
         assert split in ("val", "test")
         self.split = split
+        self.thin = thin
+        if self.thin:
+            print_log(
+                "Using `thin` mode; setting the suffix respectively",
+                logger=self._logger,
+            )
+            self.EDGE_SUFFIX = self.THIN_EDGE_SUFFIX
+            self.ISEDGE_SUFFIX = self.THIN_ISEDGE_SUFFIX
+        else:
+            print_log(
+                "Using `raw` mode; setting the suffix respectively",
+                logger=self._logger,
+            )
+            self.EDGE_SUFFIX = self.RAW_EDGE_SUFFIX
+            self.ISEDGE_SUFFIX = self.RAW_ISEDGE_SUFFIX
+
+        # change dataset directory and suffix
+        if gt_dir:
+            print_log(f"changing GT_DIR to {gt_dir}", logger=self._logger)
+            self.GT_DIR = gt_dir
+        if pred_suffix:
+            print_log(
+                f"changing PRED_SUFFIX to {pred_suffix}", logger=self._logger
+            )
+            self.PRED_SUFFIX = pred_suffix
 
         # set parameters
         self.gtEval_root = osp.join(self.dataset_root, self.GT_DIR, self.split)
@@ -165,7 +198,6 @@ class CityscapesEvaluator(BaseMultilabelEvaluator):
         self,
         eval_mode=None,
         scale: float = 0.5,
-        apply_thinning: bool = False,
         apply_nms: bool = False,
         instance_sensitive: bool = True,
         max_dist: float = 0.0035,
@@ -176,7 +208,7 @@ class CityscapesEvaluator(BaseMultilabelEvaluator):
 
         assert 0 < scale <= 1, f"ERR: scale ({scale}) is not valid"
         self.scale = scale
-        self.apply_thinning = apply_thinning
+        self.apply_thinning = self.thin
         self.apply_nms = apply_nms
 
         if eval_mode == "pre-seal":

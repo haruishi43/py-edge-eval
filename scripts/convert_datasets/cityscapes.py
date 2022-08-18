@@ -60,6 +60,11 @@ def parse_args():
         help="default to instance-sensitive, but this argument makes it insensitive",
     )
     parser.add_argument(
+        "--only-full-scale",
+        action="store_true",
+        help="half scales are saved by default; this option disables this",
+    )
+    parser.add_argument(
         "--nproc",
         default=4,
         type=int,
@@ -67,10 +72,6 @@ def parse_args():
     )
     parser.add_argument(
         "--test_mode",
-        action="store_true",
-    )
-    parser.add_argument(
-        "--debug_mode",
         action="store_true",
     )
     args = parser.parse_args()
@@ -100,6 +101,7 @@ def convert_label_to_semantic_edges(
     inst_suffix: str = "_gtFine_instanceIds.png",
     edge_suffix: str = "_gtProc_edge.png",
     radius: int = 2,
+    scale: float = 1.0,
 ) -> None:
     label_dir = os.path.dirname(label_file)
     label_fn = os.path.basename(label_file)
@@ -115,6 +117,13 @@ def convert_label_to_semantic_edges(
     assert save_format in (".png", ".tif", ".bin")
 
     label_img = Image.open(label_file)
+    # scale if needed
+    if scale < 1:
+        _img = np.array(label_img)
+        h, w = _img.shape
+        height, width = int(h * scale + 0.5), int(w * scale + 0.5)
+        label_img = label_img.resize((width, height), Image.NEAREST)
+
     mask = np.array(label_img)
 
     # NOTE: hard-coded
@@ -128,6 +137,8 @@ def convert_label_to_semantic_edges(
         inst_file = os.path.join(label_dir, label_fn.replace(label_suffix, inst_suffix))
         assert os.path.exists(inst_file)
         inst_img = Image.open(inst_file)
+        if scale < 1:
+            inst_img = inst_img.resize((width, height), Image.NEAREST)
         inst_mask = np.array(inst_img)  # int32
         edge_ids = loop_instance_mask2edge(
             mask=m,
@@ -165,15 +176,46 @@ def convert_label_to_semantic_edges(
         raise ValueError()
 
 
+def convert_split(
+    label_files,
+    nproc,
+    inst_sensitive,
+    proc_dir,
+    labelIds_suffix,
+    instIds_suffix,
+    edge_suffix,
+    radius,
+    scale=1,
+):
+    """Wrapper function"""
+    convert_to_edges = partial(
+        convert_label_to_semantic_edges,
+        inst_sensitive=inst_sensitive,
+        proc_dir=proc_dir,
+        label_suffix=labelIds_suffix,
+        inst_suffix=instIds_suffix,
+        edge_suffix=edge_suffix,
+        radius=radius,
+        scale=scale,
+    )
+    if nproc > 1:
+        track_parallel_progress(convert_to_edges, label_files, nproc)
+    else:
+        track_progress(convert_to_edges, label_files)
+
+
 def test_edges(
     edge_file: str,
     orig_dir: str = "gtProc",  # made with MATLAB script
     test_dir: str = "gtEval",
+    orig_suffix: str = "_gtProc_edge.png",
+    test_suffix: str = "_gtProc_raw_edge.png",
 ) -> None:
     edge_dir = os.path.dirname(edge_file)
     edge_fn = os.path.basename(edge_file)
     test_dir = edge_dir.replace(orig_dir, test_dir)
     test_file = os.path.join(test_dir, edge_fn)
+    test_file = test_file.replace(orig_suffix, test_suffix)
     _, ext = os.path.splitext(edge_file)
     if ext == ".png":
         edge = Image.open(edge_file)
@@ -217,8 +259,6 @@ def main():
     inst_sensitive = not args.insensitive
 
     split_names = ["train", "val", "test"]
-    if args.debug_mode:
-        split_names = ["val"]
 
     # img_suffix = "_leftImg8bit.png"
     # color_suffix = "_gtFine_color.png"
@@ -227,26 +267,43 @@ def main():
     labelTrainIds_suffix = "_gtFine_labelTrainIds.png"
     polygons_suffix = "_gtFine_polygons.json"
 
+    ext = args.ext
+    assert ext in ("png", "bin", "tif"), f"extention {ext} is not supported"
+
     if inst_sensitive:
-        if args.ext == "png":
-            edge_suffix = "_gtProc_isedge.png"
-        elif args.ext == "bin":
-            edge_suffix = "_gtProc_isedge.bin"
-        elif args.ext == "tif":
-            edge_suffix = "_gtProc_isedge.tif"
-        else:
-            raise ValueError()
+        print("Instance sensitive")
+        raw_edge_name = "raw_isedge"
+        thin_edge_name = "thin_isedge"
+
+        train_edge_suffix = f"_gtProc_isedge.{ext}"
+        raw_edge_suffix = f"_gtProc_{raw_edge_name}.{ext}"
+        thin_edge_suffix = f"_gtProc_{thin_edge_name}.{ext}"
+        half_raw_edge_suffix = f"_gtProc_half_{raw_edge_name}.{ext}"
+        half_thin_edge_suffix = f"_gtProc_half_{thin_edge_name}.{ext}"
     else:
-        if args.ext == "png":
-            edge_suffix = "_gtProc_edge.png"
-        elif args.ext == "bin":
-            edge_suffix = "_gtProc_edge.bin"
-        elif args.ext == "tif":
-            edge_suffix = "_gtProc_edge.tif"
-        else:
-            raise ValueError()
+        print("Instance insensitive")
+        raw_edge_name = "raw_edge"
+        thin_edge_name = "thin_edge"
+
+        train_edge_suffix = f"_gtProc_edge.{ext}"
+        raw_edge_suffix = f"_gtProc_{raw_edge_name}.{ext}"
+        thin_edge_suffix = f"_gtProc_{thin_edge_name}.{ext}"
+        half_raw_edge_suffix = f"_gtProc_half_{raw_edge_name}.{ext}"
+        half_thin_edge_suffix = f"_gtProc_half_{thin_edge_name}.{ext}"
+
+    # hard-coded raw and thin radius
+    # NOTE: THIS PART IS IMPORTANT!!!
+    # The radius differs for each splits
+    # For "raw" evaluation, I think the radius should match
+    train_radius = 2
+    raw_val_radius = 2
+    thin_val_radius = 1
 
     if not args.test_mode:
+
+        save_half_val = not args.only_full_scale
+        if save_half_val:
+            print("saving half scale for valuation")
 
         # 1. convert labelIds to labelTrainIds
         poly_files = []
@@ -274,6 +331,7 @@ def main():
         for split in split_names:
             if split == "test":
                 continue
+
             print(f"processsing {split}")
             label_files = []
             gt_split_dir = os.path.join(gt_dir, split)
@@ -281,28 +339,44 @@ def main():
                 label_file = os.path.join(gt_split_dir, label)
                 label_files.append(label_file)
 
-            # NOTE: THIS PART IS IMPORTANT!!!
-            # The radius differs for each splits
-            # For "raw" evaluation, I think the radius should match
-            if split == "val":
-                radius = 2
-            else:
-                radius = 2
-
-            convert_to_edges = partial(
-                convert_label_to_semantic_edges,
+            convert_full = partial(
+                convert_split,
+                label_files=label_files,
+                nproc=args.nproc,
                 inst_sensitive=inst_sensitive,
                 proc_dir=proc_dir,
-                label_suffix=labelIds_suffix,
-                inst_suffix=instIds_suffix,
-                edge_suffix=edge_suffix,
-                radius=radius,
+                labelIds_suffix=labelIds_suffix,
+                instIds_suffix=instIds_suffix,
             )
 
-            if args.nproc > 1:
-                track_parallel_progress(convert_to_edges, label_files, args.nproc)
-            else:
-                track_progress(convert_to_edges, label_files)
+            if split == "train":
+                # save only full scale
+                convert_full(edge_suffix=train_edge_suffix, radius=train_radius)
+            elif split == "val":
+                # raw
+                print("generating raw")
+                convert_full(edge_suffix=raw_edge_suffix, radius=raw_val_radius)
+
+                # thin
+                print("generating thin")
+                convert_full(edge_suffix=thin_edge_suffix, radius=thin_val_radius)
+
+                if save_half_val:
+                    convert_half = partial(
+                        convert_split,
+                        label_files=label_files,
+                        nproc=args.nproc,
+                        inst_sensitive=inst_sensitive,
+                        proc_dir=proc_dir,
+                        labelIds_suffix=labelIds_suffix,
+                        instIds_suffix=instIds_suffix,
+                        scale=0.5,
+                    )
+                    print("generating half scale raw")
+                    convert_half(edge_suffix=half_raw_edge_suffix, radius=raw_val_radius)
+
+                    print("generating half scale thin")
+                    convert_half(edge_suffix=half_thin_edge_suffix, radius=thin_val_radius)
 
         # 3. save split information
         split_save_root = os.path.join(cityscapes_root, "splits")
@@ -321,29 +395,29 @@ def main():
         print("testing!")
 
         assert not inst_sensitive, "can only test for instance insensitive edges"
-
         print("warning: if validation radius is not 2, there might be a lot of misses")
 
         orig_name = "gtProc"  # NOTE: hard-coded
         test_name = proc_dir
+        orig_edge_suffix = "_gtProc_edge.png"
+        val_edge_suffix = "_gtProc_raw_edge.png"
 
         orig_dir = os.path.join(cityscapes_root, orig_name)
 
+        # train
+        split = "train"
         orig_files = []
-        for split in split_names:
-            if split == "test":
-                continue
-            orig_split_dir = os.path.join(orig_dir, split)
-            for edge in scandir(orig_split_dir, edge_suffix, recursive=True):
-                edge_file = os.path.join(orig_split_dir, edge)
-                orig_files.append(edge_file)
+        orig_split_dir = os.path.join(orig_dir, split)
+        for edge in scandir(orig_split_dir, orig_edge_suffix, recursive=True):
+            edge_file = os.path.join(orig_split_dir, edge)
+            orig_files.append(edge_file)
 
         test_func = partial(
             test_edges,
             orig_dir=orig_name,
             test_dir=test_name,
+            test_suffix=train_edge_suffix,
         )
-
         if args.nproc > 1:
             results = track_parallel_progress(test_func, orig_files, args.nproc)
         else:
@@ -357,7 +431,36 @@ def main():
             if diff > acceptable_miss:
                 print(fn, diff)
 
-        print("total missed: ", misses)
+        print("[train] total missed: ", misses)
+
+        # val
+        split = "val"
+        orig_files = []
+        orig_split_dir = os.path.join(orig_dir, split)
+        for edge in scandir(orig_split_dir, orig_edge_suffix, recursive=True):
+            edge_file = os.path.join(orig_split_dir, edge)
+            orig_files.append(edge_file)
+
+        test_func = partial(
+            test_edges,
+            orig_dir=orig_name,
+            test_dir=test_name,
+            test_suffix=val_edge_suffix,
+        )
+        if args.nproc > 1:
+            results = track_parallel_progress(test_func, orig_files, args.nproc)
+        else:
+            results = track_progress(test_func, orig_files)
+
+        acceptable_miss = 3
+        misses = 0
+        for fn, diff, equal in results:
+            if not equal:
+                misses += 1
+            if diff > acceptable_miss:
+                print(fn, diff)
+
+        print("[val] total missed: ", misses)
 
 
 if __name__ == "__main__":

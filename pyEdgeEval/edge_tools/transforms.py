@@ -121,6 +121,8 @@ class InstanceMask2Edge(Mask2Edge):
 
     def __call__(self, mask, inst_mask):
         assert mask.ndim == 2
+        assert mask.shape == inst_mask.shape
+        # mask is uint8, inst_mask is int32
         onehot_mask = mask_to_onehot(mask, num_classes=len(self.LABEL_IDS))
         edge = mask2edge(
             run_type="loop",

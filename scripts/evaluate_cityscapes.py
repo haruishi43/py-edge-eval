@@ -36,9 +36,9 @@ def parse_args():
         help="scale of the data for evaluations",
     )
     parser.add_argument(
-        "--raw",
+        "--thin",
         action="store_true",
-        help="option to remove the thinning process (i.e. uses raw predition)",
+        help="use thinned GTs (this will apply thinning to the predictions, as in Pre-SEAL evaluations)",
     )
     parser.add_argument(
         "--apply-nms",
@@ -66,9 +66,9 @@ def evaluate_cityscapes(
     pred_path: str,
     output_path: str,
     categories: str,
+    thin: bool,
     pre_seal: bool,
     scale: float,
-    apply_thinning: bool,
     apply_nms: bool,
     thresholds: str,
     nproc: int,
@@ -123,6 +123,8 @@ def evaluate_cityscapes(
     evaluator = CityscapesEvaluator(
         dataset_root=cityscapes_path,
         pred_root=pred_path,
+        thin=thin,
+        gt_dir=None,  # NOTE: we can change the directory where the preprocessed GTs are
     )
     if evaluator.sample_names is None:
         # load custom sample names
@@ -134,7 +136,6 @@ def evaluate_cityscapes(
     evaluator.set_eval_params(
         eval_mode=eval_mode,
         scale=scale,
-        apply_thinning=apply_thinning,
         apply_nms=apply_nms,
     )
 
@@ -150,16 +151,14 @@ def evaluate_cityscapes(
 def main():
     args = parse_args()
 
-    apply_thinning = not args.raw
-
     evaluate_cityscapes(
         cityscapes_path=args.cityscapes_path,
         pred_path=args.pred_path,
         output_path=args.output_path,
         categories=args.categories,
+        thin=args.thin,
         pre_seal=args.pre_seal,
         scale=args.scale,
-        apply_thinning=apply_thinning,
         apply_nms=args.apply_nms,
         thresholds=args.thresholds,
         nproc=args.nproc,

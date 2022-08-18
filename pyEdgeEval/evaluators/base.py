@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import json
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 from copy import deepcopy
@@ -45,6 +46,11 @@ class BaseEvaluator(object, metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def eval_params(self):
+        """Placeholder for getting evaluation parameters"""
+        pass
+
+    @abstractmethod
     def evaluate(self, **kwargs):
         """Placeholder for the main evaluation function"""
         pass
@@ -82,6 +88,12 @@ class BaseMultilabelEvaluator(BaseEvaluator):
         ),
     ):
         self._before_evaluation()
+
+        # print evaluation params
+        pretty_eval_params = json.dumps(
+            self.eval_params, sort_keys=False, indent=4
+        )
+        print_log(pretty_eval_params, logger=self._logger)
 
         # check number of categories (indexed from 1)
         if isinstance(categories, int):
