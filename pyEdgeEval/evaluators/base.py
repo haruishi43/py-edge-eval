@@ -23,7 +23,7 @@ class BaseEvaluator(object, metaclass=ABCMeta):
     split = None
 
     # Hidden variables
-    _sample_names = None
+    _sample_names = None  # don't make this mutable (e.g. [])
     _logger = "pyEdgeEval"
 
     @property
