@@ -7,6 +7,8 @@ def mask_to_onehot(mask, num_classes):
     """
     Converts a segmentation mask (H,W) to (K,H,W) where the last dim is a one
     hot encoding vector
+
+    FIXME: we assume that mask labels are in order from 0 to num_classes-1.
     """
     _mask = [mask == i for i in range(num_classes)]
     return np.array(_mask).astype(np.uint8)

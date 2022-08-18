@@ -185,7 +185,9 @@ class CityscapesEvaluator(BaseMultilabelEvaluator):
             sample_names, list
         ), f"ERR: sample_names should be a list but got {type(sample_names)}"
         assert len(sample_names) > 0, "ERR: sample_names is empty"
-        self._sample_names = sample_names  # setting new object to potentially mutable attribute
+        self._sample_names = (
+            sample_names  # setting new object to potentially mutable attribute
+        )
 
     def set_pred_suffix(self, suffix: str):
         print_log(
