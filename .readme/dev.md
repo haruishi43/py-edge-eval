@@ -33,6 +33,8 @@ For BSDS500 and SBD, I have provided a test script inside `tests`.
 The results are very close and near identical, which means that the general functions are working.
 Making more detailed test code is WIP.
 
+I also test cityscapes' edge generation code (`convert_dataset/cityscapes.py`) and compared it with the outputs using MATLAB code.
+
 ### BSDS500
 
 - Test code: `tests/test_bsds500.py`
