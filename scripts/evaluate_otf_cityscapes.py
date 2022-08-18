@@ -41,12 +41,6 @@ def parse_args():
         help="use thinned GTs (this will apply thinning to the predictions, as in Pre-SEAL evaluations)",
     )
     parser.add_argument(
-        "--radius",
-        type=int,
-        default=1,
-        help="radius of the gt edge",
-    )
-    parser.add_argument(
         "--apply-nms",
         action="store_true",
         help="applies NMS before evaluation",
@@ -77,7 +71,6 @@ def evaluate_cityscapes(
     scale: float,
     apply_nms: bool,
     thresholds: str,
-    radius: int,
     nproc: int,
 ):
     """Evaluate Cityscapes"""
@@ -132,7 +125,6 @@ def evaluate_cityscapes(
         pred_root=pred_path,
         thin=thin,
         gt_dir=None,  # NOTE: we can change the directory where the preprocessed GTs are
-        radius=radius,
     )
     if evaluator.sample_names is None:
         # load custom sample names
@@ -169,7 +161,6 @@ def main():
         scale=args.scale,
         apply_nms=args.apply_nms,
         thresholds=args.thresholds,
-        radius=args.radius,
         nproc=args.nproc,
     )
 

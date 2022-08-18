@@ -83,9 +83,9 @@ Per-category evaluation is currently supported.
 First, create GT data using this script:
 ```Bash
 # if you plan on evaluating with instance-sensitive edges (IS edges)
-python scripts/convert_dataset/cityscapes.py
+python scripts/convert_dataset/cityscapes.py --nproc 8
 # if you plan on evaluating with instance-insensitive edges
-python scripts/convert_dataset/cityscapes.py --insensitive
+python scripts/convert_dataset/cityscapes.py --insensitive --nproc 8
 ```
 
 Evaluation script:
@@ -93,8 +93,8 @@ Evaluation script:
 python scripts/evaluate_cityscapes.py <path/to/cityscapes> <path/to/predictions> <path/to/output> --category 14 --thresholds 99 --nproc 8
 ```
 
+`--thin` will enable thinning on predictions and use thinned GTs.
 For instance-insensitive edges, you would need to supply `--pre-seal` argument.
-
 
 # Acknowledgements
 

@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 
+"""On-The-Fly Evaluator
+
+- lazy generation of GTs
+- if the scale is half (0.5), the output is generally the same as `HalfCityscapesEvaluator`
+"""
+
 import os.path as osp
 
 from pyEdgeEval.common.multi_label import (
@@ -24,18 +30,13 @@ class OTFCityscapesEvaluator(CityscapesEvaluator):
     SEG_SUFFIX = "_gtFine_labelIds.png"
     INST_SUFFIX = "_gtFine_instanceIds.png"
 
-    radius = 2
-
-    def __init__(
-        self,
-        radius: int = 1,
-        **kwargs,
-    ):
-        self.radius = radius
-        super().__init__(**kwargs)
-
     @property
     def eval_params(self):
+        if self.thin:
+            radius = 1
+        else:
+            radius = 2
+
         return dict(
             scale=self.scale,
             apply_thinning=self.apply_thinning,
@@ -43,7 +44,7 @@ class OTFCityscapesEvaluator(CityscapesEvaluator):
             max_dist=self.max_dist,
             kill_internal=self.kill_internal,
             skip_if_nonexistent=self.skip_if_nonexistent,
-            radius=self.radius,
+            radius=radius,
             num_labels=34,
             ignore_labels=[2, 3],
             num_classes=len(self.CLASSES),  # not used
