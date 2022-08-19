@@ -28,6 +28,7 @@ def symlink(src, dst, overwrite=True, **kwargs):
 
 def scandir(dir_path, suffix=None, recursive=False, case_sensitive=True):
     """Scan a directory to find the interested files.
+
     Args:
         dir_path (str | :obj:`Path`): Path of the directory.
         suffix (str | tuple(str), optional): File suffix that we are
@@ -36,6 +37,7 @@ def scandir(dir_path, suffix=None, recursive=False, case_sensitive=True):
             directory. Default: False.
         case_sensitive (bool, optional) : If set to False, ignore the case of
             suffix. Default: True.
+
     Returns:
         A generator for all the interested files with relative paths.
     """

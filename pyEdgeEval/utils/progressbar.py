@@ -76,12 +76,15 @@ def track_progress(
     func, tasks, bar_width=50, file=sys.stdout, no_bar=False, **kwargs
 ):
     """Track the progress of tasks execution with a progress bar.
+
     Tasks are done with a simple for-loop.
+
     Args:
         func (callable): The function to be applied to each task.
         tasks (list or tuple[Iterable, int]): A list of tasks or
             (tasks, total num).
         bar_width (int): Width of progress bar.
+
     Returns:
         list: The task results.
     """
@@ -134,8 +137,10 @@ def track_parallel_progress(
     no_bar=False,
 ):
     """Track the progress of parallel task execution with a progress bar.
+
     The built-in :mod:`multiprocessing` module is used for process pools and
     tasks are done with :func:`Pool.map` or :func:`Pool.imap_unordered`.
+
     Args:
         func (callable): The function to be applied to each task.
         tasks (list or tuple[Iterable, int]): A list of tasks or
@@ -152,6 +157,7 @@ def track_parallel_progress(
             longer.
         keep_order (bool): If True, :func:`Pool.imap` is used, otherwise
             :func:`Pool.imap_unordered` is used.
+
     Returns:
         list: The task results.
     """
@@ -198,11 +204,14 @@ def track_parallel_progress(
 def track_iter_progress(tasks, bar_width=50, file=sys.stdout):
     """Track the progress of tasks iteration or enumeration with a progress
     bar.
+
     Tasks are yielded with a simple for-loop.
+
     Args:
         tasks (list or tuple[Iterable, int]): A list of tasks or
             (tasks, total num).
         bar_width (int): Width of progress bar.
+
     Yields:
         list: The task results.
     """

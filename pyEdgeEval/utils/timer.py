@@ -11,6 +11,7 @@ class TimerError(Exception):
 
 class Timer:
     """A flexible Timer class.
+
     Examples:
         >>> import time
         >>> from .timer import Timer
@@ -61,6 +62,7 @@ class Timer:
 
     def since_start(self):
         """Total time since the timer is started.
+
         Returns:
             float: Time in seconds.
         """
@@ -71,8 +73,10 @@ class Timer:
 
     def since_last_check(self):
         """Time since the last checking.
+
         Either :func:`since_start` or :func:`since_last_check` is a checking
         operation.
+
         Returns:
             float: Time in seconds.
         """
@@ -90,6 +94,7 @@ def check_time(timer_id):
     """Add check points in a single line.
     This method is suitable for running a task on a list of items. A timer will
     be registered when the method is called for the first time.
+
     Examples:
         >>> import time
         >>> from .timer import check_time
@@ -101,6 +106,7 @@ def check_time(timer_id):
         3.000
         4.000
         5.000
+
     Args:
         str: Timer identifier.
     """

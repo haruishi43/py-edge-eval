@@ -17,6 +17,9 @@ make update-gh-pages
 TODO:
 - [x] basic workflow
 - [ ] workflow for documenting APIs (automatic parsing of docstrings)
+- [ ] docstrings for cython
 
 NOTES:
 - use [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html) (`sphinx.ext.napoleon`)
+  - [Example Google Sytle Python Docstrings](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html)
+-

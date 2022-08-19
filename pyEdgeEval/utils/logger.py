@@ -11,11 +11,13 @@ logger_initialized: dict = {}
 
 def get_logger(name, log_file=None, log_level=logging.INFO, file_mode="w"):
     """Initialize and get a logger by name.
+
     If the logger has not been initialized, this method will initialize the
     logger by adding one or two handlers, otherwise the initialized logger will
     be directly returned. During initialization, a StreamHandler will always be
     added. If `log_file` is specified and the process rank is 0, a FileHandler
     will also be added.
+
     Args:
         name (str): Logger name.
         log_file (str | None): The log filename. If specified, a FileHandler
@@ -25,6 +27,7 @@ def get_logger(name, log_file=None, log_level=logging.INFO, file_mode="w"):
             "Error" thus be silent most of the time.
         file_mode (str): The file mode used in opening log file.
             Defaults to 'w'.
+
     Returns:
         logging.Logger: The expected logger.
     """
@@ -65,6 +68,7 @@ def get_logger(name, log_file=None, log_level=logging.INFO, file_mode="w"):
 
 def print_log(msg, logger=None, level=logging.INFO):
     """Print a log message.
+
     Args:
         msg (str): The message to be logged.
         logger (logging.Logger | str | None): The logger to be used.
@@ -93,16 +97,19 @@ def print_log(msg, logger=None, level=logging.INFO):
 
 def get_root_logger(log_file=None, log_level=logging.INFO):
     """Get the root logger.
+
     The logger will be initialized if it has not been initialized. By default a
     StreamHandler will be added. If `log_file` is specified, a FileHandler will
     also be added. The name of the root logger is the top-level package name,
     e.g., "potato".
+
     Args:
         log_file (str | None): The log filename. If specified, a FileHandler
             will be added to the root logger.
         log_level (int): The root logger level. Note that only the process of
             rank 0 is affected, while other processes will set the level to
             "Error" and be silent most of the time.
+
     Returns:
         logging.Logger: The root logger.
     """
