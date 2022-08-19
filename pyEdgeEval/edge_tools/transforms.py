@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
-"""Generic functions for converting masks to edges
-
-NOTE: no dataset specific functions (move then to subdirectories)
-"""
+"""Mask2Edge transform module."""
 
 from pyEdgeEval.utils import (
     mask_to_onehot,
@@ -26,9 +23,18 @@ def mask2edge(
     instance_sensitive: bool,
     **kwargs,
 ):
-    """Wrapper for all mask2edge
+    """mask2edge function
 
-    FIXME: might be unnecessary
+    Args:
+        run_type (str): can choose between ``loop`` or ``mp`` where ``loop`` loops
+            over the classes while ``mp`` uses ``multiprocessing``.
+        instance_sensitive (bool): set to ``True`` if generating instance-aware edges.
+
+    Returns:
+        edges (np.ndarray): generated edges.
+
+    Raises:
+        ValueError: if ``run_type`` is not set correctly.
     """
 
     if run_type == "loop":
@@ -47,7 +53,10 @@ def mask2edge(
 
 class Mask2Edge(object):
 
-    """Transform function"""
+    """Transform function
+
+    ...
+    """
 
     LABEL_IDS = None
     label2trainId = None

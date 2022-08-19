@@ -24,8 +24,8 @@ import pyEdgeEval  # noqa: E402
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'pyEdgeEval'
-copyright = '2022, haruishi43'
+project = "pyEdgeEval"
+copyright = "2022, haruishi43"
 author = pyEdgeEval.info.__author__
 version = pyEdgeEval.info.__version__
 release = version
