@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyEdgeEval.utils.distance_transforms &mdash; pyEdgeEval 0.0.5 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> pyEdgeEval
+          </a>
+              <div class="version">
+                0.0.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pyEdgeEval</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pyEdgeEval.utils.distance_transforms</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyEdgeEval.utils.distance_transforms</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.ndimage.morphology</span> <span class="kn">import</span> <span class="n">distance_transform_edt</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;mask2bdry&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">cv2_mask2bdry</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">ignore_mask</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">quality</span><span class="p">):</span>
+    <span class="n">inner</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">distanceTransform</span><span class="p">(</span>
+        <span class="p">((</span><span class="n">m</span> <span class="o">+</span> <span class="n">ignore_mask</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">DIST_L2</span><span class="p">,</span> <span class="n">quality</span>
+    <span class="p">)</span>
+    <span class="n">outer</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">distanceTransform</span><span class="p">(</span>
+        <span class="p">((</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">m</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">DIST_L2</span><span class="p">,</span> <span class="n">quality</span>
+    <span class="p">)</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">outer</span> <span class="o">+</span> <span class="n">inner</span>
+
+    <span class="n">dist</span><span class="p">[</span><span class="n">dist</span> <span class="o">&gt;</span> <span class="n">radius</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dist</span>
+
+
+<span class="k">def</span> <span class="nf">scipy_mask2bdry</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">ignore_mask</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+    <span class="n">inner</span> <span class="o">=</span> <span class="n">distance_transform_edt</span><span class="p">((</span><span class="n">m</span> <span class="o">+</span> <span class="n">ignore_mask</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">outer</span> <span class="o">=</span> <span class="n">distance_transform_edt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">m</span><span class="p">)</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">outer</span> <span class="o">+</span> <span class="n">inner</span>
+
+    <span class="n">dist</span><span class="p">[</span><span class="n">dist</span> <span class="o">&gt;</span> <span class="n">radius</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dist</span>
+
+
+<div class="viewcode-block" id="mask2bdry"><a class="viewcode-back" href="../../../pyEdgeEval.utils.html#pyEdgeEval.utils.distance_transforms.mask2bdry">[docs]</a><span class="k">def</span> <span class="nf">mask2bdry</span><span class="p">(</span>
+    <span class="n">mask</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">ignore_mask</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">radius</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">use_cv2</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">quality</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">use_cv2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cv2_mask2bdry</span><span class="p">(</span>
+            <span class="n">m</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span>
+            <span class="n">ignore_mask</span><span class="o">=</span><span class="n">ignore_mask</span><span class="p">,</span>
+            <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span>
+            <span class="n">quality</span><span class="o">=</span><span class="n">quality</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">scipy_mask2bdry</span><span class="p">(</span>
+            <span class="n">m</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span>
+            <span class="n">ignore_mask</span><span class="o">=</span><span class="n">ignore_mask</span><span class="p">,</span>
+            <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, haruishi43.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

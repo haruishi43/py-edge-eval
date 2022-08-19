@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyEdgeEval.preprocess.thin package &mdash; pyEdgeEval 0.0.5 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> pyEdgeEval
+          </a>
+              <div class="version">
+                0.0.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">pyEdgeEval.preprocess.thin package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pyEdgeEval.preprocess.thin.bwmorph_thin">pyEdgeEval.preprocess.thin.bwmorph_thin module</a></li>
+<li><a class="reference internal" href="#module-pyEdgeEval.preprocess.thin.thin">pyEdgeEval.preprocess.thin.thin module</a></li>
+<li><a class="reference internal" href="#module-pyEdgeEval.preprocess.thin">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyEdgeEval</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>pyEdgeEval.preprocess.thin package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pyEdgeEval.preprocess.thin.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pyedgeeval-preprocess-thin-package">
+<h1>pyEdgeEval.preprocess.thin package<a class="headerlink" href="#pyedgeeval-preprocess-thin-package" title="Permalink to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="module-pyEdgeEval.preprocess.thin.bwmorph_thin">
+<span id="pyedgeeval-preprocess-thin-bwmorph-thin-module"></span><h2>pyEdgeEval.preprocess.thin.bwmorph_thin module<a class="headerlink" href="#module-pyEdgeEval.preprocess.thin.bwmorph_thin" title="Permalink to this heading">¶</a></h2>
+<p>See <a class="reference external" href="https://gist.github.com/joefutrelle/562f25bbcf20691217b8">https://gist.github.com/joefutrelle/562f25bbcf20691217b8</a></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.bwmorph_thin.bwmorph_thin">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.bwmorph_thin.</span></span><span class="sig-name descname"><span class="pre">bwmorph_thin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/bwmorph_thin.html#bwmorph_thin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.bwmorph_thin.bwmorph_thin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform morphological thinning of a binary image</p>
+<dl class="simple">
+<dt>image<span class="classifier">binary (M, N) ndarray</span></dt><dd><p>The image to be thinned.</p>
+</dd>
+<dt>n_iter<span class="classifier">int, number of iterations, optional</span></dt><dd><p>Regardless of the value of this parameter, the thinned image
+is returned immediately if an iteration produces no change.
+If this parameter is specified it thus sets an upper bound on
+the number of iterations performed.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out<span class="classifier">ndarray of bools</span></dt><dd><p>Thinned image.</p>
+</dd>
+</dl>
+<p>skeletonize</p>
+<p>This algorithm <a href="#id9"><span class="problematic" id="id1">[1]_</span></a> works by making multiple passes over the image,
+removing pixels matching a set of criteria designed to thin
+connected regions while preserving eight-connected components and
+2 x 2 squares <a href="#id10"><span class="problematic" id="id2">[2]_</span></a>. In each of the two sub-iterations the algorithm
+correlates the intermediate skeleton image with a neighborhood mask,
+then looks up each neighborhood in a lookup table indicating whether
+the central pixel should be deleted in that sub-iteration.</p>
+<dl class="footnote brackets">
+<dt class="label" id="id3"><span class="brackets">1</span></dt>
+<dd><p>Z. Guo and R. W. Hall, “Parallel thinning with
+two-subiteration algorithms,” Comm. ACM, vol. 32, no. 3,
+pp. 359-373, 1989.</p>
+</dd>
+<dt class="label" id="id4"><span class="brackets">2</span></dt>
+<dd><p>Lam, L., Seong-Whan Lee, and Ching Y. Suen, “Thinning
+Methodologies-A Comprehensive Survey,” IEEE Transactions on
+Pattern Analysis and Machine Intelligence, Vol 14, No. 9,
+September 1992, p. 879</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">square</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">square</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">square</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">square</span>
+<span class="go">array([[0, 1, 0, 0, 0, 0, 0],</span>
+<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">       [0, 0, 0, 0, 0, 0, 0]], dtype=uint8)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">skel</span> <span class="o">=</span> <span class="n">bwmorph_thin</span><span class="p">(</span><span class="n">square</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">skel</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+<span class="go">array([[0, 1, 0, 0, 0, 0, 0],</span>
+<span class="go">       [0, 0, 1, 0, 0, 0, 0],</span>
+<span class="go">       [0, 0, 0, 1, 0, 0, 0],</span>
+<span class="go">       [0, 0, 0, 1, 0, 0, 0],</span>
+<span class="go">       [0, 0, 0, 1, 0, 0, 0],</span>
+<span class="go">       [0, 0, 0, 0, 0, 0, 0],</span>
+<span class="go">       [0, 0, 0, 0, 0, 0, 0]], dtype=uint8)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="module-pyEdgeEval.preprocess.thin.thin">
+<span id="pyedgeeval-preprocess-thin-thin-module"></span><h2>pyEdgeEval.preprocess.thin.thin module<a class="headerlink" href="#module-pyEdgeEval.preprocess.thin.thin" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.thin.binary_image_to_lut_indices">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.thin.</span></span><span class="sig-name descname"><span class="pre">binary_image_to_lut_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/thin.html#binary_image_to_lut_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.thin.binary_image_to_lut_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a binary image to an index image that can be used with a lookup table
+to perform morphological operations. Non-zero elements in the image are interpreted
+as 1, zero elements as 0</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – a 2D NumPy array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a 2D NumPy array, same shape as x</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.thin.apply_lut">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.thin.</span></span><span class="sig-name descname"><span class="pre">apply_lut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lut</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/thin.html#apply_lut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.thin.apply_lut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a morphological operation on the binary image x using the supplied lookup table
+:param x:
+:param lut:
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.thin.identity_lut">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.thin.</span></span><span class="sig-name descname"><span class="pre">identity_lut</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/thin.html#identity_lut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.thin.identity_lut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create identity lookup tablef
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.thin.lut_masks_zero">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.thin.</span></span><span class="sig-name descname"><span class="pre">lut_masks_zero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">neigh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/thin.html#lut_masks_zero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.thin.lut_masks_zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a LUT index mask for which the specified neighbour is 0
+:param neigh: neighbour index; counter-clockwise from 1 staring at the eastern neighbour
+:return: a LUT index mask</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.thin.lut_masks_one">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.thin.</span></span><span class="sig-name descname"><span class="pre">lut_masks_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">neigh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/thin.html#lut_masks_one"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.thin.lut_masks_one" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a LUT index mask for which the specified neighbour is 1
+:param neigh: neighbour index; counter-clockwise from 1 staring at the eastern neighbour
+:return: a LUT index mask</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.thin.binary_thin">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.thin.</span></span><span class="sig-name descname"><span class="pre">binary_thin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/thin.html#binary_thin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.thin.binary_thin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Binary thinning morphological operation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – a binary image, or an image that is to be converted to a binary image</p></li>
+<li><p><strong>max_iter</strong> – maximum number of iterations; default is <cite>None</cite> that results in an infinite</p></li>
+</ul>
+</dd>
+</dl>
+<p>number of iterations (note that <cite>binary_thin</cite> will automatically terminate when no more changes occur)
+:return:</p>
+</dd></dl>
+
+</section>
+<section id="module-pyEdgeEval.preprocess.thin">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyEdgeEval.preprocess.thin" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.bwmorph_thin">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.</span></span><span class="sig-name descname"><span class="pre">bwmorph_thin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/bwmorph_thin.html#bwmorph_thin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.bwmorph_thin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform morphological thinning of a binary image</p>
+<dl class="simple">
+<dt>image<span class="classifier">binary (M, N) ndarray</span></dt><dd><p>The image to be thinned.</p>
+</dd>
+<dt>n_iter<span class="classifier">int, number of iterations, optional</span></dt><dd><p>Regardless of the value of this parameter, the thinned image
+is returned immediately if an iteration produces no change.
+If this parameter is specified it thus sets an upper bound on
+the number of iterations performed.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out<span class="classifier">ndarray of bools</span></dt><dd><p>Thinned image.</p>
+</dd>
+</dl>
+<p>skeletonize</p>
+<p>This algorithm <a href="#id11"><span class="problematic" id="id5">[1]_</span></a> works by making multiple passes over the image,
+removing pixels matching a set of criteria designed to thin
+connected regions while preserving eight-connected components and
+2 x 2 squares <a href="#id12"><span class="problematic" id="id6">[2]_</span></a>. In each of the two sub-iterations the algorithm
+correlates the intermediate skeleton image with a neighborhood mask,
+then looks up each neighborhood in a lookup table indicating whether
+the central pixel should be deleted in that sub-iteration.</p>
+<dl class="footnote brackets">
+<dt class="label" id="id7"><span class="brackets">1</span></dt>
+<dd><p>Z. Guo and R. W. Hall, “Parallel thinning with
+two-subiteration algorithms,” Comm. ACM, vol. 32, no. 3,
+pp. 359-373, 1989.</p>
+</dd>
+<dt class="label" id="id8"><span class="brackets">2</span></dt>
+<dd><p>Lam, L., Seong-Whan Lee, and Ching Y. Suen, “Thinning
+Methodologies-A Comprehensive Survey,” IEEE Transactions on
+Pattern Analysis and Machine Intelligence, Vol 14, No. 9,
+September 1992, p. 879</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">square</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">square</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">square</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">square</span>
+<span class="go">array([[0, 1, 0, 0, 0, 0, 0],</span>
+<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">       [0, 0, 0, 0, 0, 0, 0]], dtype=uint8)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">skel</span> <span class="o">=</span> <span class="n">bwmorph_thin</span><span class="p">(</span><span class="n">square</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">skel</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+<span class="go">array([[0, 1, 0, 0, 0, 0, 0],</span>
+<span class="go">       [0, 0, 1, 0, 0, 0, 0],</span>
+<span class="go">       [0, 0, 0, 1, 0, 0, 0],</span>
+<span class="go">       [0, 0, 0, 1, 0, 0, 0],</span>
+<span class="go">       [0, 0, 0, 1, 0, 0, 0],</span>
+<span class="go">       [0, 0, 0, 0, 0, 0, 0],</span>
+<span class="go">       [0, 0, 0, 0, 0, 0, 0]], dtype=uint8)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.binary_thin">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.</span></span><span class="sig-name descname"><span class="pre">binary_thin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/thin.html#binary_thin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.binary_thin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Binary thinning morphological operation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – a binary image, or an image that is to be converted to a binary image</p></li>
+<li><p><strong>max_iter</strong> – maximum number of iterations; default is <cite>None</cite> that results in an infinite</p></li>
+</ul>
+</dd>
+</dl>
+<p>number of iterations (note that <cite>binary_thin</cite> will automatically terminate when no more changes occur)
+:return:</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, haruishi43.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

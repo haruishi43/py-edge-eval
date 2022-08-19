@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyEdgeEval.edge_tools.mask2edge_mp &mdash; pyEdgeEval 0.0.5 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> pyEdgeEval
+          </a>
+              <div class="version">
+                0.0.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pyEdgeEval</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pyEdgeEval.edge_tools.mask2edge_mp</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyEdgeEval.edge_tools.mask2edge_mp</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">NOTE: not much speed ups probably because allocating memory is slower than</span>
+<span class="sd">the gain from multiprocessing</span>
+
+<span class="sd">Might be beneficial when each worker has more things to do...</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">RawArray</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">pyEdgeEval.utils</span> <span class="kn">import</span> <span class="n">mask2bdry</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;mp_mask2edge&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mp_instance_mask2edge&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="c1"># HACK: A global dictionary storing the variables passed from the initializer.</span>
+<span class="n">var_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<span class="k">def</span> <span class="nf">_init_worker</span><span class="p">(</span><span class="n">data_dict</span><span class="p">):</span>
+    <span class="c1"># Using a dictionary is not strictly necessary. You can also</span>
+    <span class="c1"># use global variables.</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">var_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+
+<span class="k">def</span> <span class="nf">_worker_func</span><span class="p">(</span><span class="n">label</span><span class="p">):</span>
+    <span class="n">mask_shape</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;mask_shape&quot;</span><span class="p">]</span>
+    <span class="n">mask_dtype</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;mask_dtype&quot;</span><span class="p">]</span>
+    <span class="n">edge_shape</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;edge_shape&quot;</span><span class="p">]</span>
+    <span class="n">edge_dtype</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;edge_dtype&quot;</span><span class="p">]</span>
+    <span class="n">ignore_mask_shape</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;ignore_mask_shape&quot;</span><span class="p">]</span>
+    <span class="n">ignore_mask_dtype</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;ignore_mask_dtype&quot;</span><span class="p">]</span>
+    <span class="n">ignore_labelIds</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;ignore_labelIds&quot;</span><span class="p">]</span>
+    <span class="n">mask2bdry_kwargs</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;mask2bdry_kwargs&quot;</span><span class="p">]</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;mask&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">mask_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mask_shape</span><span class="p">)</span>
+    <span class="n">ignore_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span>
+        <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;ignore_mask&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">ignore_mask_dtype</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ignore_mask_shape</span><span class="p">)</span>
+    <span class="n">edge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;edge&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">edge_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">edge_shape</span><span class="p">)</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">ignore_labelIds</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># if there are no class labels in the mask</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">edge</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask2bdry</span><span class="p">(</span>
+        <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span>
+        <span class="n">ignore_mask</span><span class="o">=</span><span class="n">ignore_mask</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">mask2bdry_kwargs</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="mp_mask2edge"><a class="viewcode-back" href="../../../pyEdgeEval.edge_tools.html#pyEdgeEval.edge_tools.mask2edge_mp.mp_mask2edge">[docs]</a><span class="k">def</span> <span class="nf">mp_mask2edge</span><span class="p">(</span>
+    <span class="n">mask</span><span class="p">,</span>
+    <span class="n">ignore_labelIds</span><span class="p">,</span>
+    <span class="n">nproc</span><span class="p">,</span>
+    <span class="n">radius</span><span class="p">,</span>
+    <span class="n">use_cv2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">quality</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;mask2edge multiprocessing&quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">var_dict</span>
+
+    <span class="k">assert</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span>
+    <span class="n">num_labels</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="c1"># make ignore mask</span>
+    <span class="n">ignore_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ignore_labelIds</span><span class="p">:</span>
+        <span class="n">ignore_mask</span> <span class="o">+=</span> <span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="n">mask2bdry_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span>
+        <span class="n">use_cv2</span><span class="o">=</span><span class="n">use_cv2</span><span class="p">,</span>
+        <span class="n">quality</span><span class="o">=</span><span class="n">quality</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">edge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+
+    <span class="c1"># create shared arrays</span>
+    <span class="n">mp_mask</span> <span class="o">=</span> <span class="n">RawArray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ctypeslib</span><span class="o">.</span><span class="n">as_ctypes_type</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span> <span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">mp_edge</span> <span class="o">=</span> <span class="n">RawArray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ctypeslib</span><span class="o">.</span><span class="n">as_ctypes_type</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span> <span class="n">edge</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">mp_ignore_mask</span> <span class="o">=</span> <span class="n">RawArray</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ctypeslib</span><span class="o">.</span><span class="n">as_ctypes_type</span><span class="p">(</span><span class="n">ignore_mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span> <span class="n">ignore_mask</span><span class="o">.</span><span class="n">size</span>
+    <span class="p">)</span>
+
+    <span class="c1"># wrap arrays as an numpy array so we can easily manipulate data</span>
+    <span class="n">np_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">mp_mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">np_edge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">mp_edge</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">edge</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">np_ignore_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span>
+        <span class="n">mp_ignore_mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">ignore_mask</span><span class="o">.</span><span class="n">dtype</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ignore_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="c1"># copy data to wrapped shared arrays</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">np_mask</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">np_edge</span><span class="p">,</span> <span class="n">edge</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">np_ignore_mask</span><span class="p">,</span> <span class="n">ignore_mask</span><span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">mask</span><span class="o">=</span><span class="n">mp_mask</span><span class="p">,</span>
+        <span class="n">mask_dtype</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+        <span class="n">mask_shape</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="n">edge</span><span class="o">=</span><span class="n">mp_edge</span><span class="p">,</span>
+        <span class="n">edge_dtype</span><span class="o">=</span><span class="n">edge</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+        <span class="n">edge_shape</span><span class="o">=</span><span class="n">edge</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="n">ignore_mask</span><span class="o">=</span><span class="n">mp_ignore_mask</span><span class="p">,</span>
+        <span class="n">ignore_mask_dtype</span><span class="o">=</span><span class="n">ignore_mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+        <span class="n">ignore_mask_shape</span><span class="o">=</span><span class="n">ignore_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="n">ignore_labelIds</span><span class="o">=</span><span class="n">ignore_labelIds</span><span class="p">,</span>
+        <span class="n">mask2bdry_kwargs</span><span class="o">=</span><span class="n">mask2bdry_kwargs</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">Pool</span><span class="p">(</span>
+        <span class="n">processes</span><span class="o">=</span><span class="n">nproc</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="n">_init_worker</span><span class="p">,</span> <span class="n">initargs</span><span class="o">=</span><span class="p">[</span><span class="n">args</span><span class="p">]</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+        <span class="c1"># order doesn&#39;t really matter since we specify which index to compute</span>
+        <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_worker_func</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_labels</span><span class="p">))</span>
+
+    <span class="n">edge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">mp_edge</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">edge</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="c1"># HACK: empty global dictionary</span>
+    <span class="n">var_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">return</span> <span class="n">edge</span></div>
+
+
+<span class="k">def</span> <span class="nf">_instance_worker_func</span><span class="p">(</span><span class="n">label</span><span class="p">):</span>
+    <span class="n">mask_shape</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;mask_shape&quot;</span><span class="p">]</span>
+    <span class="n">mask_dtype</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;mask_dtype&quot;</span><span class="p">]</span>
+    <span class="n">inst_mask_shape</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;inst_mask_shape&quot;</span><span class="p">]</span>
+    <span class="n">inst_mask_dtype</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;inst_mask_dtype&quot;</span><span class="p">]</span>
+    <span class="n">edge_shape</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;edge_shape&quot;</span><span class="p">]</span>
+    <span class="n">edge_dtype</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;edge_dtype&quot;</span><span class="p">]</span>
+    <span class="n">ignore_mask_shape</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;ignore_mask_shape&quot;</span><span class="p">]</span>
+    <span class="n">ignore_mask_dtype</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;ignore_mask_dtype&quot;</span><span class="p">]</span>
+    <span class="n">ignore_labelIds</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;ignore_labelIds&quot;</span><span class="p">]</span>
+    <span class="n">label_inst</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;label_inst&quot;</span><span class="p">]</span>
+    <span class="n">mask2bdry_kwargs</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;mask2bdry_kwargs&quot;</span><span class="p">]</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;mask&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">mask_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mask_shape</span><span class="p">)</span>
+    <span class="n">inst_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span>
+        <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;inst_mask&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">inst_mask_dtype</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">inst_mask_shape</span><span class="p">)</span>
+    <span class="n">ignore_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span>
+        <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;ignore_mask&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">ignore_mask_dtype</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ignore_mask_shape</span><span class="p">)</span>
+    <span class="n">edge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;edge&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">edge_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">edge_shape</span><span class="p">)</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">ignore_labelIds</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># if there are no class labels in the mask</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">mask2bdry</span><span class="p">(</span>
+        <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span>
+        <span class="n">ignore_mask</span><span class="o">=</span><span class="n">ignore_mask</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">mask2bdry_kwargs</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># per instance boundaries</span>
+    <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">label_inst</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">instances</span> <span class="o">=</span> <span class="n">label_inst</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>  <span class="c1"># list</span>
+        <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
+            <span class="n">iid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+            <span class="n">_mask</span> <span class="o">=</span> <span class="n">inst_mask</span> <span class="o">==</span> <span class="n">iid</span>
+            <span class="n">dist</span> <span class="o">=</span> <span class="n">dist</span> <span class="o">|</span> <span class="n">mask2bdry</span><span class="p">(</span>
+                <span class="n">mask</span><span class="o">=</span><span class="n">_mask</span><span class="p">,</span>
+                <span class="n">ignore_mask</span><span class="o">=</span><span class="n">ignore_mask</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">mask2bdry_kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="c1"># set edge</span>
+    <span class="n">edge</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">dist</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="mp_instance_mask2edge"><a class="viewcode-back" href="../../../pyEdgeEval.edge_tools.html#pyEdgeEval.edge_tools.mask2edge_mp.mp_instance_mask2edge">[docs]</a><span class="k">def</span> <span class="nf">mp_instance_mask2edge</span><span class="p">(</span>
+    <span class="n">mask</span><span class="p">,</span>
+    <span class="n">inst_mask</span><span class="p">,</span>
+    <span class="n">inst_labelIds</span><span class="p">,</span>
+    <span class="n">ignore_labelIds</span><span class="p">,</span>
+    <span class="n">nproc</span><span class="p">,</span>
+    <span class="n">radius</span><span class="p">,</span>
+    <span class="n">use_cv2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">quality</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;mask2edge multiprocessing&quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">var_dict</span>
+
+    <span class="k">assert</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span>
+    <span class="n">num_labels</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="c1"># make ignore mask</span>
+    <span class="n">ignore_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ignore_labelIds</span><span class="p">:</span>
+        <span class="n">ignore_mask</span> <span class="o">+=</span> <span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="c1"># make sure that instance labels are sorted</span>
+    <span class="n">inst_labels</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">inst_labelIds</span><span class="p">)</span>
+
+    <span class="c1"># create a lookup dictionary {label: [instances]}</span>
+    <span class="n">label_inst</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">_cand_insts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">inst_mask</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">inst_label</span> <span class="ow">in</span> <span class="n">_cand_insts</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">inst_label</span> <span class="o">&lt;</span> <span class="n">inst_labels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">:</span>  <span class="c1"># 24000</span>
+            <span class="k">continue</span>
+        <span class="n">_label</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">inst_label</span><span class="p">)[:</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">_inst</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">inst_label</span><span class="p">)[</span><span class="mi">2</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="n">_label</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">label_inst</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">label_inst</span><span class="p">[</span><span class="n">_label</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">_inst</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">label_inst</span><span class="p">[</span><span class="n">_label</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_inst</span><span class="p">)</span>
+
+    <span class="n">mask2bdry_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span>
+        <span class="n">use_cv2</span><span class="o">=</span><span class="n">use_cv2</span><span class="p">,</span>
+        <span class="n">quality</span><span class="o">=</span><span class="n">quality</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">edge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+
+    <span class="c1"># create shared arrays</span>
+    <span class="n">mp_mask</span> <span class="o">=</span> <span class="n">RawArray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ctypeslib</span><span class="o">.</span><span class="n">as_ctypes_type</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span> <span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">mp_inst_mask</span> <span class="o">=</span> <span class="n">RawArray</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ctypeslib</span><span class="o">.</span><span class="n">as_ctypes_type</span><span class="p">(</span><span class="n">inst_mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span> <span class="n">inst_mask</span><span class="o">.</span><span class="n">size</span>
+    <span class="p">)</span>
+    <span class="n">mp_edge</span> <span class="o">=</span> <span class="n">RawArray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ctypeslib</span><span class="o">.</span><span class="n">as_ctypes_type</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span> <span class="n">edge</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">mp_ignore_mask</span> <span class="o">=</span> <span class="n">RawArray</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ctypeslib</span><span class="o">.</span><span class="n">as_ctypes_type</span><span class="p">(</span><span class="n">ignore_mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span> <span class="n">ignore_mask</span><span class="o">.</span><span class="n">size</span>
+    <span class="p">)</span>
+
+    <span class="c1"># wrap arrays as an numpy array so we can easily manipulate data</span>
+    <span class="n">np_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">mp_mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">np_inst_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">mp_inst_mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">inst_mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+        <span class="n">inst_mask</span><span class="o">.</span><span class="n">shape</span>
+    <span class="p">)</span>
+    <span class="n">np_edge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">mp_edge</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">edge</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">np_ignore_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span>
+        <span class="n">mp_ignore_mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">ignore_mask</span><span class="o">.</span><span class="n">dtype</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ignore_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="c1"># copy data to wrapped shared arrays</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">np_mask</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">np_inst_mask</span><span class="p">,</span> <span class="n">inst_mask</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">np_edge</span><span class="p">,</span> <span class="n">edge</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">np_ignore_mask</span><span class="p">,</span> <span class="n">ignore_mask</span><span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">mask</span><span class="o">=</span><span class="n">mp_mask</span><span class="p">,</span>
+        <span class="n">mask_dtype</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+        <span class="n">mask_shape</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="n">inst_mask</span><span class="o">=</span><span class="n">mp_inst_mask</span><span class="p">,</span>
+        <span class="n">inst_mask_dtype</span><span class="o">=</span><span class="n">inst_mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+        <span class="n">inst_mask_shape</span><span class="o">=</span><span class="n">inst_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="n">edge</span><span class="o">=</span><span class="n">mp_edge</span><span class="p">,</span>
+        <span class="n">edge_dtype</span><span class="o">=</span><span class="n">edge</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+        <span class="n">edge_shape</span><span class="o">=</span><span class="n">edge</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="n">ignore_mask</span><span class="o">=</span><span class="n">mp_ignore_mask</span><span class="p">,</span>
+        <span class="n">ignore_mask_dtype</span><span class="o">=</span><span class="n">ignore_mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+        <span class="n">ignore_mask_shape</span><span class="o">=</span><span class="n">ignore_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="n">ignore_labelIds</span><span class="o">=</span><span class="n">ignore_labelIds</span><span class="p">,</span>
+        <span class="n">label_inst</span><span class="o">=</span><span class="n">label_inst</span><span class="p">,</span>
+        <span class="n">mask2bdry_kwargs</span><span class="o">=</span><span class="n">mask2bdry_kwargs</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">Pool</span><span class="p">(</span>
+        <span class="n">processes</span><span class="o">=</span><span class="n">nproc</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="n">_init_worker</span><span class="p">,</span> <span class="n">initargs</span><span class="o">=</span><span class="p">[</span><span class="n">args</span><span class="p">]</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+        <span class="c1"># order doesn&#39;t really matter since we specify which index to compute</span>
+        <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_instance_worker_func</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_labels</span><span class="p">))</span>
+
+    <span class="n">edge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">mp_edge</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">edge</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="c1"># HACK: empty global dictionary</span>
+    <span class="n">var_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">return</span> <span class="n">edge</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, haruishi43.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

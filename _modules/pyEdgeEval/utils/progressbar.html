@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyEdgeEval.utils.progressbar &mdash; pyEdgeEval 0.0.5 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> pyEdgeEval
+          </a>
+              <div class="version">
+                0.0.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pyEdgeEval</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pyEdgeEval.utils.progressbar</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyEdgeEval.utils.progressbar</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="sd">&quot;&quot;&quot;Modified from mmcv.utils</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">get_terminal_size</span>
+
+<span class="kn">from</span> <span class="nn">.timer</span> <span class="kn">import</span> <span class="n">Timer</span>
+
+
+<div class="viewcode-block" id="ProgressBar"><a class="viewcode-back" href="../../../pyEdgeEval.utils.html#pyEdgeEval.utils.progressbar.ProgressBar">[docs]</a><span class="k">class</span> <span class="nc">ProgressBar</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A progress bar which can print the progress.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_num</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bar_width</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_num</span> <span class="o">=</span> <span class="n">task_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bar_width</span> <span class="o">=</span> <span class="n">bar_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">completed</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="n">file</span>
+        <span class="k">if</span> <span class="n">start</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">terminal_width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_terminal_size</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">width</span>
+
+<div class="viewcode-block" id="ProgressBar.start"><a class="viewcode-back" href="../../../pyEdgeEval.utils.html#pyEdgeEval.utils.progressbar.ProgressBar.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_num</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar_width</span><span class="si">}</span><span class="s1">] 0/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_num</span><span class="si">}</span><span class="s1">, &#39;</span>
+                <span class="s2">&quot;elapsed: 0s, ETA:&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;completed: 0, elapsed: 0s&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timer</span> <span class="o">=</span> <span class="n">Timer</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ProgressBar.update"><a class="viewcode-back" href="../../../pyEdgeEval.utils.html#pyEdgeEval.utils.progressbar.ProgressBar.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_tasks</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">num_tasks</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">completed</span> <span class="o">+=</span> <span class="n">num_tasks</span>
+        <span class="n">elapsed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timer</span><span class="o">.</span><span class="n">since_start</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">completed</span> <span class="o">/</span> <span class="n">elapsed</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fps</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_num</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">percentage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">completed</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_num</span><span class="p">)</span>
+            <span class="n">eta</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">elapsed</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">percentage</span><span class="p">)</span> <span class="o">/</span> <span class="n">percentage</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">[</span><span class="se">{{}}</span><span class="s2">] </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">completed</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_num</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fps</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> task/s, elapsed: </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">elapsed</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span><span class="si">}</span><span class="s2">s, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;ETA: </span><span class="si">{</span><span class="n">eta</span><span class="si">:</span><span class="s2">5</span><span class="si">}</span><span class="s2">s&quot;</span>
+            <span class="p">)</span>
+
+            <span class="n">bar_width</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bar_width</span><span class="p">,</span>
+                <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminal_width</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminal_width</span> <span class="o">*</span> <span class="mf">0.6</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">bar_width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">)</span>
+            <span class="n">mark_width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bar_width</span> <span class="o">*</span> <span class="n">percentage</span><span class="p">)</span>
+            <span class="n">bar_chars</span> <span class="o">=</span> <span class="s2">&quot;&gt;&quot;</span> <span class="o">*</span> <span class="n">mark_width</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">bar_width</span> <span class="o">-</span> <span class="n">mark_width</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bar_chars</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;completed: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">completed</span><span class="si">}</span><span class="s2">, elapsed: </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">elapsed</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span><span class="si">}</span><span class="s2">s,&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">fps</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> tasks/s&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="track_progress"><a class="viewcode-back" href="../../../pyEdgeEval.utils.html#pyEdgeEval.utils.progressbar.track_progress">[docs]</a><span class="k">def</span> <span class="nf">track_progress</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">bar_width</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">no_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Track the progress of tasks execution with a progress bar.</span>
+
+<span class="sd">    Tasks are done with a simple for-loop.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        func (callable): The function to be applied to each task.</span>
+<span class="sd">        tasks (list or tuple[Iterable, int]): A list of tasks or</span>
+<span class="sd">            (tasks, total num).</span>
+<span class="sd">        bar_width (int): Width of progress bar.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: The task results.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tasks</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">int</span><span class="p">)</span>
+        <span class="n">task_num</span> <span class="o">=</span> <span class="n">tasks</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">tasks</span> <span class="o">=</span> <span class="n">tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+        <span class="n">task_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s1">&#39;&quot;tasks&quot; must be an iterable object or a (iterator, int) tuple&#39;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">no_bar</span><span class="p">:</span>
+        <span class="n">prog_bar</span> <span class="o">=</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">task_num</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">no_bar</span><span class="p">:</span>
+            <span class="n">prog_bar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">no_bar</span><span class="p">:</span>
+        <span class="n">prog_bar</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="init_pool"><a class="viewcode-back" href="../../../pyEdgeEval.utils.html#pyEdgeEval.utils.progressbar.init_pool">[docs]</a><span class="k">def</span> <span class="nf">init_pool</span><span class="p">(</span><span class="n">process_num</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">initargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">initializer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Pool</span><span class="p">(</span><span class="n">process_num</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">initargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Pool</span><span class="p">(</span><span class="n">process_num</span><span class="p">,</span> <span class="n">initializer</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">initargs</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;&quot;initargs&quot; must be a tuple&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Pool</span><span class="p">(</span><span class="n">process_num</span><span class="p">,</span> <span class="n">initializer</span><span class="p">,</span> <span class="n">initargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="track_parallel_progress"><a class="viewcode-back" href="../../../pyEdgeEval.utils.html#pyEdgeEval.utils.progressbar.track_parallel_progress">[docs]</a><span class="k">def</span> <span class="nf">track_parallel_progress</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">,</span>
+    <span class="n">tasks</span><span class="p">,</span>
+    <span class="n">nproc</span><span class="p">,</span>
+    <span class="n">initializer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">initargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">bar_width</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">skip_first</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">keep_order</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span>
+    <span class="n">no_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Track the progress of parallel task execution with a progress bar.</span>
+
+<span class="sd">    The built-in :mod:`multiprocessing` module is used for process pools and</span>
+<span class="sd">    tasks are done with :func:`Pool.map` or :func:`Pool.imap_unordered`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        func (callable): The function to be applied to each task.</span>
+<span class="sd">        tasks (list or tuple[Iterable, int]): A list of tasks or</span>
+<span class="sd">            (tasks, total num).</span>
+<span class="sd">        nproc (int): Process (worker) number.</span>
+<span class="sd">        initializer (None or callable): Refer to :class:`multiprocessing.Pool`</span>
+<span class="sd">            for details.</span>
+<span class="sd">        initargs (None or tuple): Refer to :class:`multiprocessing.Pool` for</span>
+<span class="sd">            details.</span>
+<span class="sd">        chunksize (int): Refer to :class:`multiprocessing.Pool` for details.</span>
+<span class="sd">        bar_width (int): Width of progress bar.</span>
+<span class="sd">        skip_first (bool): Whether to skip the first sample for each worker</span>
+<span class="sd">            when estimating fps, since the initialization step may takes</span>
+<span class="sd">            longer.</span>
+<span class="sd">        keep_order (bool): If True, :func:`Pool.imap` is used, otherwise</span>
+<span class="sd">            :func:`Pool.imap_unordered` is used.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: The task results.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tasks</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">int</span><span class="p">)</span>
+        <span class="n">task_num</span> <span class="o">=</span> <span class="n">tasks</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">tasks</span> <span class="o">=</span> <span class="n">tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+        <span class="n">task_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s1">&#39;&quot;tasks&quot; must be an iterable object or a (iterator, int) tuple&#39;</span>
+        <span class="p">)</span>
+    <span class="n">pool</span> <span class="o">=</span> <span class="n">init_pool</span><span class="p">(</span><span class="n">nproc</span><span class="p">,</span> <span class="n">initializer</span><span class="p">,</span> <span class="n">initargs</span><span class="p">)</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">skip_first</span>
+    <span class="n">task_num</span> <span class="o">-=</span> <span class="n">nproc</span> <span class="o">*</span> <span class="n">chunksize</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">skip_first</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">no_bar</span><span class="p">:</span>
+        <span class="n">prog_bar</span> <span class="o">=</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">task_num</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">keep_order</span><span class="p">:</span>
+        <span class="n">gen</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">chunksize</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">gen</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">chunksize</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">gen</span><span class="p">:</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">skip_first</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">nproc</span> <span class="o">*</span> <span class="n">chunksize</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">==</span> <span class="n">nproc</span> <span class="o">*</span> <span class="n">chunksize</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">no_bar</span><span class="p">:</span>
+                    <span class="n">prog_bar</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+                <span class="k">continue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">no_bar</span><span class="p">:</span>
+            <span class="n">prog_bar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">no_bar</span><span class="p">:</span>
+        <span class="n">prog_bar</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="track_iter_progress"><a class="viewcode-back" href="../../../pyEdgeEval.utils.html#pyEdgeEval.utils.progressbar.track_iter_progress">[docs]</a><span class="k">def</span> <span class="nf">track_iter_progress</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">bar_width</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Track the progress of tasks iteration or enumeration with a progress</span>
+<span class="sd">    bar.</span>
+
+<span class="sd">    Tasks are yielded with a simple for-loop.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tasks (list or tuple[Iterable, int]): A list of tasks or</span>
+<span class="sd">            (tasks, total num).</span>
+<span class="sd">        bar_width (int): Width of progress bar.</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        list: The task results.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tasks</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">int</span><span class="p">)</span>
+        <span class="n">task_num</span> <span class="o">=</span> <span class="n">tasks</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">tasks</span> <span class="o">=</span> <span class="n">tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+        <span class="n">task_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s1">&#39;&quot;tasks&quot; must be an iterable object or a (iterator, int) tuple&#39;</span>
+        <span class="p">)</span>
+    <span class="n">prog_bar</span> <span class="o">=</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">task_num</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">task</span>
+        <span class="n">prog_bar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+    <span class="n">prog_bar</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, haruishi43.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

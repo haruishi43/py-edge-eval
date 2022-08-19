@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyEdgeEval.preprocess.thin.thin &mdash; pyEdgeEval 0.0.5 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> pyEdgeEval
+          </a>
+              <div class="version">
+                0.0.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">pyEdgeEval</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>pyEdgeEval.preprocess.thin.thin</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyEdgeEval.preprocess.thin.thin</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="c1"># Thinning morphological operation applied using lookup tables.</span>
+<span class="c1"># We convert the 3x3 neighbourhood surrounding a pixel to an index</span>
+<span class="c1"># used to lookup the output in a lookup table.</span>
+
+<span class="c1"># Bit masks for each neighbour</span>
+<span class="c1">#   1   2   4</span>
+<span class="c1">#   8  16  32</span>
+<span class="c1">#  64 128 256</span>
+<span class="n">NEIGH_MASK_EAST</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">NEIGH_MASK_NORTH_EAST</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">NEIGH_MASK_NORTH</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">NEIGH_MASK_NORTH_WEST</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">NEIGH_MASK_WEST</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">NEIGH_MASK_SOUTH_WEST</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">NEIGH_MASK_SOUTH</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">NEIGH_MASK_SOUTH_EAST</span> <span class="o">=</span> <span class="mi">256</span>
+<span class="n">NEIGH_MASK_CENTRE</span> <span class="o">=</span> <span class="mi">16</span>
+
+<span class="c1"># Masks in a list</span>
+<span class="c1"># MASKS[0] = centre</span>
+<span class="c1"># MASKS[1..8] = start from east, counter-clockwise</span>
+<span class="n">MASKS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">NEIGH_MASK_CENTRE</span><span class="p">,</span>
+    <span class="n">NEIGH_MASK_EAST</span><span class="p">,</span>
+    <span class="n">NEIGH_MASK_NORTH_EAST</span><span class="p">,</span>
+    <span class="n">NEIGH_MASK_NORTH</span><span class="p">,</span>
+    <span class="n">NEIGH_MASK_NORTH_WEST</span><span class="p">,</span>
+    <span class="n">NEIGH_MASK_WEST</span><span class="p">,</span>
+    <span class="n">NEIGH_MASK_SOUTH_WEST</span><span class="p">,</span>
+    <span class="n">NEIGH_MASK_SOUTH</span><span class="p">,</span>
+    <span class="n">NEIGH_MASK_SOUTH_EAST</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="c1"># Constant listing all indices</span>
+<span class="n">_LUT_INDS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="binary_image_to_lut_indices"><a class="viewcode-back" href="../../../../pyEdgeEval.preprocess.thin.html#pyEdgeEval.preprocess.thin.thin.binary_image_to_lut_indices">[docs]</a><span class="k">def</span> <span class="nf">binary_image_to_lut_indices</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a binary image to an index image that can be used with a lookup table</span>
+<span class="sd">    to perform morphological operations. Non-zero elements in the image are interpreted</span>
+<span class="sd">    as 1, zero elements as 0</span>
+
+<span class="sd">    :param x: a 2D NumPy array.</span>
+<span class="sd">    :return: a 2D NumPy array, same shape as x</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;x should have 2 dimensions, not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">ndim</span><span class="p">))</span>
+
+    <span class="c1"># If the dtype of x is not bool, convert</span>
+    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">!=</span> <span class="mi">0</span>
+
+    <span class="c1"># Add</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;constant&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Convert to LUT indices</span>
+    <span class="n">lut_indices</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">NEIGH_MASK_NORTH_WEST</span>
+        <span class="o">+</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">NEIGH_MASK_NORTH</span>
+        <span class="o">+</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">*</span> <span class="n">NEIGH_MASK_NORTH_EAST</span>
+        <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">NEIGH_MASK_WEST</span>
+        <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">NEIGH_MASK_CENTRE</span>
+        <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">*</span> <span class="n">NEIGH_MASK_EAST</span>
+        <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">NEIGH_MASK_SOUTH_WEST</span>
+        <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">:,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">NEIGH_MASK_SOUTH</span>
+        <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">:,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">*</span> <span class="n">NEIGH_MASK_SOUTH_EAST</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">lut_indices</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="apply_lut"><a class="viewcode-back" href="../../../../pyEdgeEval.preprocess.thin.html#pyEdgeEval.preprocess.thin.thin.apply_lut">[docs]</a><span class="k">def</span> <span class="nf">apply_lut</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lut</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform a morphological operation on the binary image x using the supplied lookup table</span>
+<span class="sd">    :param x:</span>
+<span class="sd">    :param lut:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">lut</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;lut should have 1 dimension, not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lut</span><span class="o">.</span><span class="n">ndim</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">lut</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">512</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;lut should have 512 entries, not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lut</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="p">)</span>
+
+    <span class="n">lut_indices</span> <span class="o">=</span> <span class="n">binary_image_to_lut_indices</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">lut</span><span class="p">[</span><span class="n">lut_indices</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="identity_lut"><a class="viewcode-back" href="../../../../pyEdgeEval.preprocess.thin.html#pyEdgeEval.preprocess.thin.thin.identity_lut">[docs]</a><span class="k">def</span> <span class="nf">identity_lut</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create identity lookup tablef</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lut</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">512</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span>
+
+    <span class="n">lut</span><span class="p">[(</span><span class="n">inds</span> <span class="o">&amp;</span> <span class="n">NEIGH_MASK_CENTRE</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">lut</span></div>
+
+
+<span class="k">def</span> <span class="nf">_lut_mutate_mask</span><span class="p">(</span><span class="n">lut</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a mask that shows which neighbourhood shapes result in changes to the image</span>
+<span class="sd">    :param lut: lookup table</span>
+<span class="sd">    :return: mask indicating which lookup indices result in changes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">lut</span> <span class="o">!=</span> <span class="n">identity_lut</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="lut_masks_zero"><a class="viewcode-back" href="../../../../pyEdgeEval.preprocess.thin.html#pyEdgeEval.preprocess.thin.thin.lut_masks_zero">[docs]</a><span class="k">def</span> <span class="nf">lut_masks_zero</span><span class="p">(</span><span class="n">neigh</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a LUT index mask for which the specified neighbour is 0</span>
+<span class="sd">    :param neigh: neighbour index; counter-clockwise from 1 staring at the eastern neighbour</span>
+<span class="sd">    :return: a LUT index mask</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">neigh</span> <span class="o">&gt;</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="n">neigh</span> <span class="o">-=</span> <span class="mi">8</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">_LUT_INDS</span> <span class="o">&amp;</span> <span class="n">MASKS</span><span class="p">[</span><span class="n">neigh</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="lut_masks_one"><a class="viewcode-back" href="../../../../pyEdgeEval.preprocess.thin.html#pyEdgeEval.preprocess.thin.thin.lut_masks_one">[docs]</a><span class="k">def</span> <span class="nf">lut_masks_one</span><span class="p">(</span><span class="n">neigh</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a LUT index mask for which the specified neighbour is 1</span>
+<span class="sd">    :param neigh: neighbour index; counter-clockwise from 1 staring at the eastern neighbour</span>
+<span class="sd">    :return: a LUT index mask</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">neigh</span> <span class="o">&gt;</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="n">neigh</span> <span class="o">-=</span> <span class="mi">8</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">_LUT_INDS</span> <span class="o">&amp;</span> <span class="n">MASKS</span><span class="p">[</span><span class="n">neigh</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span></div>
+
+
+<span class="k">def</span> <span class="nf">_thin_cond_g1</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Thinning morphological operation; condition G1</span>
+<span class="sd">    :return: a LUT index mask</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+        <span class="n">b</span> <span class="o">+=</span> <span class="n">lut_masks_zero</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span>
+            <span class="n">lut_masks_one</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span><span class="p">)</span> <span class="o">|</span> <span class="n">lut_masks_one</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">1</span>
+
+
+<span class="k">def</span> <span class="nf">_thin_cond_g2</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Thinning morphological operation; condition G2</span>
+<span class="sd">    :return: a LUT index mask</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">n2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+        <span class="n">n1</span> <span class="o">+=</span> <span class="n">lut_masks_one</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="n">lut_masks_one</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="p">)</span>
+        <span class="n">n2</span> <span class="o">+=</span> <span class="n">lut_masks_one</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="p">)</span> <span class="o">|</span> <span class="n">lut_masks_one</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">m</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">m</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_thin_cond_g3</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Thinning morphological operation; condition G3</span>
+<span class="sd">    :return: a LUT index mask</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">lut_masks_one</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">|</span> <span class="n">lut_masks_one</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">|</span> <span class="n">lut_masks_zero</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+        <span class="o">&amp;</span> <span class="n">lut_masks_one</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+
+
+<span class="k">def</span> <span class="nf">_thin_cond_g3_prime</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Thinning morphological operation; condition G3&#39;</span>
+<span class="sd">    :return: a LUT index mask</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">lut_masks_one</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="o">|</span> <span class="n">lut_masks_one</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span> <span class="o">|</span> <span class="n">lut_masks_zero</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+        <span class="o">&amp;</span> <span class="n">lut_masks_one</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+
+
+<span class="k">def</span> <span class="nf">_thin_iter_1_lut</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Thinning morphological operation; lookup table for iteration 1</span>
+<span class="sd">    :return: lookup table</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lut</span> <span class="o">=</span> <span class="n">identity_lut</span><span class="p">()</span>
+    <span class="n">cond</span> <span class="o">=</span> <span class="n">_thin_cond_g1</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">_thin_cond_g2</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">_thin_cond_g3</span><span class="p">()</span>
+    <span class="n">lut</span><span class="p">[</span><span class="n">cond</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">lut</span>
+
+
+<span class="k">def</span> <span class="nf">_thin_iter_2_lut</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Thinning morphological operation; lookup table for iteration 2</span>
+<span class="sd">    :return: lookup table</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lut</span> <span class="o">=</span> <span class="n">identity_lut</span><span class="p">()</span>
+    <span class="n">cond</span> <span class="o">=</span> <span class="n">_thin_cond_g1</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">_thin_cond_g2</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">_thin_cond_g3_prime</span><span class="p">()</span>
+    <span class="n">lut</span><span class="p">[</span><span class="n">cond</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">lut</span>
+
+
+<div class="viewcode-block" id="binary_thin"><a class="viewcode-back" href="../../../../pyEdgeEval.preprocess.thin.html#pyEdgeEval.preprocess.thin.thin.binary_thin">[docs]</a><span class="k">def</span> <span class="nf">binary_thin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Binary thinning morphological operation</span>
+
+<span class="sd">    :param x: a binary image, or an image that is to be converted to a binary image</span>
+<span class="sd">    :param max_iter: maximum number of iterations; default is `None` that results in an infinite</span>
+<span class="sd">    number of iterations (note that `binary_thin` will automatically terminate when no more changes occur)</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">thin1</span> <span class="o">=</span> <span class="n">_thin_iter_1_lut</span><span class="p">()</span>
+    <span class="n">thin2</span> <span class="o">=</span> <span class="n">_thin_iter_2_lut</span><span class="p">()</span>
+    <span class="n">thin1_mut</span> <span class="o">=</span> <span class="n">_lut_mutate_mask</span><span class="p">(</span><span class="n">thin1</span><span class="p">)</span>
+    <span class="n">thin2_mut</span> <span class="o">=</span> <span class="n">_lut_mutate_mask</span><span class="p">(</span><span class="n">thin2</span><span class="p">)</span>
+
+    <span class="n">iter_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">max_iter</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">iter_count</span> <span class="o">&lt;</span> <span class="n">max_iter</span><span class="p">:</span>
+        <span class="c1"># Iter 1</span>
+        <span class="n">lut_indices</span> <span class="o">=</span> <span class="n">binary_image_to_lut_indices</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x_mut</span> <span class="o">=</span> <span class="n">thin1_mut</span><span class="p">[</span><span class="n">lut_indices</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">x_mut</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">thin1</span><span class="p">[</span><span class="n">lut_indices</span><span class="p">]</span>
+
+        <span class="c1"># Iter 2</span>
+        <span class="n">lut_indices</span> <span class="o">=</span> <span class="n">binary_image_to_lut_indices</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x_mut</span> <span class="o">=</span> <span class="n">thin2_mut</span><span class="p">[</span><span class="n">lut_indices</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">x_mut</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">thin2</span><span class="p">[</span><span class="n">lut_indices</span><span class="p">]</span>
+
+        <span class="n">iter_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">x</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, haruishi43.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

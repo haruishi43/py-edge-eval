@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyEdgeEval.utils.logger &mdash; pyEdgeEval 0.0.5 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> pyEdgeEval
+          </a>
+              <div class="version">
+                0.0.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pyEdgeEval</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pyEdgeEval.utils.logger</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyEdgeEval.utils.logger</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="sd">&quot;&quot;&quot;Modified from mmcv.utils</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+
+
+<span class="n">logger_initialized</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<div class="viewcode-block" id="get_logger"><a class="viewcode-back" href="../../../pyEdgeEval.utils.html#pyEdgeEval.utils.logger.get_logger">[docs]</a><span class="k">def</span> <span class="nf">get_logger</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">log_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">file_mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Initialize and get a logger by name.</span>
+
+<span class="sd">    If the logger has not been initialized, this method will initialize the</span>
+<span class="sd">    logger by adding one or two handlers, otherwise the initialized logger will</span>
+<span class="sd">    be directly returned. During initialization, a StreamHandler will always be</span>
+<span class="sd">    added. If `log_file` is specified and the process rank is 0, a FileHandler</span>
+<span class="sd">    will also be added.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): Logger name.</span>
+<span class="sd">        log_file (str | None): The log filename. If specified, a FileHandler</span>
+<span class="sd">            will be added to the logger.</span>
+<span class="sd">        log_level (int): The logger level. Note that only the process of</span>
+<span class="sd">            rank 0 is affected, and other processes will set the level to</span>
+<span class="sd">            &quot;Error&quot; thus be silent most of the time.</span>
+<span class="sd">        file_mode (str): The file mode used in opening log file.</span>
+<span class="sd">            Defaults to &#39;w&#39;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        logging.Logger: The expected logger.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">logger_initialized</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">logger</span>
+    <span class="c1"># handle hierarchical names</span>
+    <span class="c1"># e.g., logger &quot;a&quot; is initialized, then logger &quot;a.b&quot; will skip the</span>
+    <span class="c1"># initialization since it is a child of &quot;a&quot;.</span>
+    <span class="k">for</span> <span class="n">logger_name</span> <span class="ow">in</span> <span class="n">logger_initialized</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">logger_name</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">logger</span>
+
+    <span class="n">stream_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+    <span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span><span class="n">stream_handler</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">log_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Here, the default behaviour of the official logger is &#39;a&#39;. Thus, we</span>
+        <span class="c1"># provide an interface to change the file mode to the default</span>
+        <span class="c1"># behaviour.</span>
+        <span class="n">file_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="n">file_mode</span><span class="p">)</span>
+        <span class="n">handlers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file_handler</span><span class="p">)</span>
+
+    <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+        <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> - </span><span class="si">%(name)s</span><span class="s2"> - </span><span class="si">%(levelname)s</span><span class="s2"> - </span><span class="si">%(message)s</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">handlers</span><span class="p">:</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">log_level</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">log_level</span><span class="p">)</span>
+
+    <span class="n">logger_initialized</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">logger</span></div>
+
+
+<div class="viewcode-block" id="print_log"><a class="viewcode-back" href="../../../pyEdgeEval.utils.html#pyEdgeEval.utils.logger.print_log">[docs]</a><span class="k">def</span> <span class="nf">print_log</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Print a log message.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        msg (str): The message to be logged.</span>
+<span class="sd">        logger (logging.Logger | str | None): The logger to be used.</span>
+<span class="sd">            Some special loggers are:</span>
+<span class="sd">            - &quot;silent&quot;: no message will be printed.</span>
+<span class="sd">            - other str: the logger obtained with `get_root_logger(logger)`.</span>
+<span class="sd">            - None: The `print()` method will be used to print log messages.</span>
+<span class="sd">        level (int): Logging level. Only available when `logger` is a Logger</span>
+<span class="sd">            object or &quot;root&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">logger</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">logger</span> <span class="o">==</span> <span class="s2">&quot;silent&quot;</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">_logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">&quot;logger should be either a logging.Logger object, str, &quot;</span>
+            <span class="sa">f</span><span class="s1">&#39;&quot;silent&quot; or None, but got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_root_logger"><a class="viewcode-back" href="../../../pyEdgeEval.utils.html#pyEdgeEval.utils.logger.get_root_logger">[docs]</a><span class="k">def</span> <span class="nf">get_root_logger</span><span class="p">(</span><span class="n">log_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get the root logger.</span>
+
+<span class="sd">    The logger will be initialized if it has not been initialized. By default a</span>
+<span class="sd">    StreamHandler will be added. If `log_file` is specified, a FileHandler will</span>
+<span class="sd">    also be added. The name of the root logger is the top-level package name,</span>
+<span class="sd">    e.g., &quot;potato&quot;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        log_file (str | None): The log filename. If specified, a FileHandler</span>
+<span class="sd">            will be added to the root logger.</span>
+<span class="sd">        log_level (int): The root logger level. Note that only the process of</span>
+<span class="sd">            rank 0 is affected, while other processes will set the level to</span>
+<span class="sd">            &quot;Error&quot; and be silent most of the time.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        logging.Logger: The root logger.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pyEdgeEval&quot;</span><span class="p">,</span> <span class="n">log_file</span><span class="o">=</span><span class="n">log_file</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="n">log_level</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">logger</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, haruishi43.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

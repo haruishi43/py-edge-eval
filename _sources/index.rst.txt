@@ -12,6 +12,23 @@ Currently WIP
    :maxdepth: 2
    :caption: Contents:
 
+.. automodule:: pyEdgeEval.evaluators
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+.. automodule:: pyEdgeEval.common.binary_label
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+.. automodule:: pyEdgeEval.edge_tools.transforms
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 
 Indices and tables

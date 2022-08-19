@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyEdgeEval.evaluators.bsds &mdash; pyEdgeEval 0.0.5 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> pyEdgeEval
+          </a>
+              <div class="version">
+                0.0.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pyEdgeEval</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pyEdgeEval.evaluators.bsds</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyEdgeEval.evaluators.bsds</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">osp</span>
+
+<span class="kn">from</span> <span class="nn">pyEdgeEval.common.binary_label</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">calculate_metrics</span><span class="p">,</span>
+    <span class="n">save_results</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyEdgeEval.utils</span> <span class="kn">import</span> <span class="n">print_log</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseBinaryEvaluator</span>
+
+
+<div class="viewcode-block" id="BSDS500Evaluator"><a class="viewcode-back" href="../../../pyEdgeEval.evaluators.html#pyEdgeEval.evaluators.bsds.BSDS500Evaluator">[docs]</a><span class="k">class</span> <span class="nc">BSDS500Evaluator</span><span class="p">(</span><span class="n">BaseBinaryEvaluator</span><span class="p">):</span>
+
+    <span class="c1"># Dataset specific attributes</span>
+    <span class="n">GT_DIR</span> <span class="o">=</span> <span class="s2">&quot;groundTruth&quot;</span>
+    <span class="n">GT_SUFFIX</span> <span class="o">=</span> <span class="s2">&quot;.mat&quot;</span>
+    <span class="n">PRED_SUFFIX</span> <span class="o">=</span> <span class="s2">&quot;.png&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">pred_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">split</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;test&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span> <span class="o">=</span> <span class="n">dataset_root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pred_root</span> <span class="o">=</span> <span class="n">pred_root</span>
+
+        <span class="k">assert</span> <span class="n">split</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;val&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">split</span> <span class="o">=</span> <span class="n">split</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">GT_root</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GT_DIR</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="BSDS500Evaluator.set_sample_names"><a class="viewcode-back" href="../../../pyEdgeEval.evaluators.html#pyEdgeEval.evaluators.bsds.BSDS500Evaluator.set_sample_names">[docs]</a>    <span class="k">def</span> <span class="nf">set_sample_names</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">sample_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">sample_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># load sample_names by going into the split file</span>
+            <span class="n">sample_names</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="c1"># NOTE: for benchmark, there are not split</span>
+            <span class="n">bsds_dir</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GT_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">)</span>
+
+            <span class="n">print_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading samples from </span><span class="si">{</span><span class="n">bsds_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">)</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GT_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">))</span>
+
+            <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="nb">dir</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+                <span class="n">name</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;.mat&quot;</span><span class="p">:</span>
+                    <span class="c1"># split/12345.mat</span>
+                    <span class="n">sample_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">sample_names</span><span class="p">,</span> <span class="nb">list</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;ERR: sample_names should be a list but got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">sample_names</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample_names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;ERR: sample_names is empty&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sample_names</span> <span class="o">=</span> <span class="n">sample_names</span></div>
+
+<div class="viewcode-block" id="BSDS500Evaluator.set_eval_params"><a class="viewcode-back" href="../../../pyEdgeEval.evaluators.html#pyEdgeEval.evaluators.bsds.BSDS500Evaluator.set_eval_params">[docs]</a>    <span class="k">def</span> <span class="nf">set_eval_params</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">apply_thinning</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">apply_nms</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">max_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0075</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">scale</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ERR: scale (</span><span class="si">{</span><span class="n">scale</span><span class="si">}</span><span class="s2">) is not valid&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_thinning</span> <span class="o">=</span> <span class="n">apply_thinning</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_nms</span> <span class="o">=</span> <span class="n">apply_nms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_dist</span> <span class="o">=</span> <span class="n">max_dist</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">eval_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span>
+            <span class="n">apply_thinning</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">apply_thinning</span><span class="p">,</span>
+            <span class="n">apply_nms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">apply_nms</span><span class="p">,</span>
+            <span class="n">max_dist</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_dist</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_before_evaluation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">osp</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;ERR: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="si">}</span><span class="s2"> does not exist&quot;</span>
+        <span class="k">assert</span> <span class="n">osp</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GT_root</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;ERR: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">GT_root</span><span class="si">}</span><span class="s2"> does not exist&quot;</span>
+        <span class="k">assert</span> <span class="n">osp</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pred_root</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;ERR: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pred_root</span><span class="si">}</span><span class="s2"> does not exist&quot;</span>
+
+<div class="viewcode-block" id="BSDS500Evaluator.evaluate"><a class="viewcode-back" href="../../../pyEdgeEval.evaluators.html#pyEdgeEval.evaluators.bsds.BSDS500Evaluator.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">thresholds</span><span class="p">,</span>
+        <span class="n">nproc</span><span class="p">,</span>
+        <span class="n">save_dir</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_before_evaluation</span><span class="p">()</span>
+
+        <span class="c1"># populate data (samples)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">sample_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_names</span><span class="p">:</span>
+
+            <span class="n">gt_path</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GT_root</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sample_name</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">GT_SUFFIX</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">pred_path</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pred_root</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sample_name</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">PRED_SUFFIX</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+            <span class="k">assert</span> <span class="n">osp</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">gt_path</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;ERR: </span><span class="si">{</span><span class="n">gt_path</span><span class="si">}</span><span class="s2"> is not valid&quot;</span>
+            <span class="k">assert</span> <span class="n">osp</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pred_path</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;ERR: </span><span class="si">{</span><span class="n">pred_path</span><span class="si">}</span><span class="s2"> is not valid&quot;</span>
+
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">sample_name</span><span class="p">,</span>
+                    <span class="n">thresholds</span><span class="o">=</span><span class="n">thresholds</span><span class="p">,</span>
+                    <span class="n">gt_path</span><span class="o">=</span><span class="n">gt_path</span><span class="p">,</span>
+                    <span class="n">pred_path</span><span class="o">=</span><span class="n">pred_path</span><span class="p">,</span>
+                    <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_params</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;ERR: no evaluation data&quot;</span>
+
+        <span class="c1"># evaluate</span>
+        <span class="p">(</span><span class="n">sample_metrics</span><span class="p">,</span> <span class="n">threshold_metrics</span><span class="p">,</span> <span class="n">overall_metric</span><span class="p">)</span> <span class="o">=</span> <span class="n">calculate_metrics</span><span class="p">(</span>
+            <span class="n">thresholds</span><span class="o">=</span><span class="n">thresholds</span><span class="p">,</span>
+            <span class="n">samples</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">nproc</span><span class="o">=</span><span class="n">nproc</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># save metrics</span>
+        <span class="k">if</span> <span class="n">save_dir</span><span class="p">:</span>
+            <span class="n">print_log</span><span class="p">(</span><span class="s2">&quot;Saving category results&quot;</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">)</span>
+            <span class="n">save_results</span><span class="p">(</span>
+                <span class="n">root</span><span class="o">=</span><span class="n">save_dir</span><span class="p">,</span>
+                <span class="n">sample_metrics</span><span class="o">=</span><span class="n">sample_metrics</span><span class="p">,</span>
+                <span class="n">threshold_metrics</span><span class="o">=</span><span class="n">threshold_metrics</span><span class="p">,</span>
+                <span class="n">overall_metric</span><span class="o">=</span><span class="n">overall_metric</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">overall_metric</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, haruishi43.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyEdgeEval.preprocess.nms package &mdash; pyEdgeEval 0.0.5 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> pyEdgeEval
+          </a>
+              <div class="version">
+                0.0.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">pyEdgeEval.preprocess.nms package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pyEdgeEval.preprocess.nms.fast_nms">pyEdgeEval.preprocess.nms.fast_nms module</a></li>
+<li><a class="reference internal" href="#module-pyEdgeEval.preprocess.nms.toolbox">pyEdgeEval.preprocess.nms.toolbox module</a></li>
+<li><a class="reference internal" href="#module-pyEdgeEval.preprocess.nms">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyEdgeEval</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>pyEdgeEval.preprocess.nms package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pyEdgeEval.preprocess.nms.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pyedgeeval-preprocess-nms-package">
+<h1>pyEdgeEval.preprocess.nms package<a class="headerlink" href="#pyedgeeval-preprocess-nms-package" title="Permalink to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="module-pyEdgeEval.preprocess.nms.fast_nms">
+<span id="pyedgeeval-preprocess-nms-fast-nms-module"></span><h2>pyEdgeEval.preprocess.nms.fast_nms module<a class="headerlink" href="#module-pyEdgeEval.preprocess.nms.fast_nms" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.preprocess.nms.fast_nms.fast_nms">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.nms.fast_nms.</span></span><span class="sig-name descname"><span class="pre">fast_nms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">half_prec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_as_uint8</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/nms/fast_nms.html#fast_nms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.nms.fast_nms.fast_nms" title="Permalink to this definition">¶</a></dt>
+<dd><p>NMS for binary edges</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> – np array, edge (np.uint8 or float)</p></li>
+<li><p><strong>r</strong> – radius for nms supr</p></li>
+<li><p><strong>s</strong> – radius for supr boundaries</p></li>
+<li><p><strong>m</strong> – multiplier for conservative supr</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>supressed edge</p>
+</dd>
+</dl>
+<p>References:
+- <a class="reference external" href="https://github.com/pdollar/edges/blob/master/private/edgesNmsMex.cpp">https://github.com/pdollar/edges/blob/master/private/edgesNmsMex.cpp</a></p>
+<p>Current runtime is around 20ms</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.preprocess.nms.fast_nms.nms_process_one_image">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.nms.fast_nms.</span></span><span class="sig-name descname"><span class="pre">nms_process_one_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/nms/fast_nms.html#nms_process_one_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.nms.fast_nms.nms_process_one_image" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> – numpy array, edge, model output</p></li>
+<li><p><strong>save_path</strong> – str, save path</p></li>
+<li><p><strong>save</strong> – bool, if True, save .png</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>edge</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.preprocess.nms.fast_nms.nms_results">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.nms.fast_nms.</span></span><span class="sig-name descname"><span class="pre">nms_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/nms/fast_nms.html#nms_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.nms.fast_nms.nms_results" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.preprocess.nms.fast_nms.nms_all_results">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.nms.fast_nms.</span></span><span class="sig-name descname"><span class="pre">nms_all_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.mat'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/nms/fast_nms.html#nms_all_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.nms.fast_nms.nms_all_results" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pyEdgeEval.preprocess.nms.toolbox">
+<span id="pyedgeeval-preprocess-nms-toolbox-module"></span><h2>pyEdgeEval.preprocess.nms.toolbox module<a class="headerlink" href="#module-pyEdgeEval.preprocess.nms.toolbox" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.preprocess.nms.toolbox.conv_tri">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.nms.toolbox.</span></span><span class="sig-name descname"><span class="pre">conv_tri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/nms/toolbox.html#conv_tri"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.nms.toolbox.conv_tri" title="Permalink to this definition">¶</a></dt>
+<dd><p>2D image convolution with a triangle filter (no fast)
+See <a class="reference external" href="https://github.com/pdollar/toolbox/blob/master/channels/convTri.m">https://github.com/pdollar/toolbox/blob/master/channels/convTri.m</a>
+Note: signal.convolve2d does not support float16(‘single’ in MATLAB)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.preprocess.nms.toolbox.grad2">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.nms.toolbox.</span></span><span class="sig-name descname"><span class="pre">grad2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/nms/toolbox.html#grad2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.nms.toolbox.grad2" title="Permalink to this definition">¶</a></dt>
+<dd><p>numerical gradients along x and y directions (no fast)
+See <a class="reference external" href="https://github.com/pdollar/toolbox/blob/master/channels/gradient2.m">https://github.com/pdollar/toolbox/blob/master/channels/gradient2.m</a>
+Note: np.gradient return [oy, ox], MATLAB version return [ox, oy]</p>
+</dd></dl>
+
+</section>
+<section id="module-pyEdgeEval.preprocess.nms">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyEdgeEval.preprocess.nms" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.preprocess.nms.fast_nms">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.nms.</span></span><span class="sig-name descname"><span class="pre">fast_nms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">half_prec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_as_uint8</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/nms/fast_nms.html#fast_nms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.nms.fast_nms" title="Permalink to this definition">¶</a></dt>
+<dd><p>NMS for binary edges</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> – np array, edge (np.uint8 or float)</p></li>
+<li><p><strong>r</strong> – radius for nms supr</p></li>
+<li><p><strong>s</strong> – radius for supr boundaries</p></li>
+<li><p><strong>m</strong> – multiplier for conservative supr</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>supressed edge</p>
+</dd>
+</dl>
+<p>References:
+- <a class="reference external" href="https://github.com/pdollar/edges/blob/master/private/edgesNmsMex.cpp">https://github.com/pdollar/edges/blob/master/private/edgesNmsMex.cpp</a></p>
+<p>Current runtime is around 20ms</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, haruishi43.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
