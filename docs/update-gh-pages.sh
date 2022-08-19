@@ -10,7 +10,7 @@ fi
 cd gh-pages
 rm -rf *
 touch .nojekyll
-cp -r ../html/* .
+cp -r ../build/html/* .
 git add -A
 git commit -m 'Update docs'
 git push origin gh-pages
