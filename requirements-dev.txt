@@ -1,6 +1,0 @@
-black
-hacking
-pre-commit
-auditwheel
-build
-twine
