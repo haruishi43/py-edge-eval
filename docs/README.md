@@ -3,14 +3,16 @@
 ## Update documentation to Github Pages
 
 ```Bash
+cd docs
+
 # auto generate api rst
-sphinx-apidoc -f -o docs/source -H pyEdgeEval ../pyEdgeEval/
+sphinx-apidoc -f -o source -H pyEdgeEval ../pyEdgeEval/
 
 # geneate html
 make html
 
 # check html
-python -m http.server --directory docs/build/html 8889
+python -m http.server --directory build/html 8889
 
 # update gh-pages
 make update-gh-pages
