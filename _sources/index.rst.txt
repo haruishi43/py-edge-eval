@@ -6,6 +6,8 @@
 Welcome to pyEdgeEval's documentation!
 ======================================
 
+Currently WIP
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
