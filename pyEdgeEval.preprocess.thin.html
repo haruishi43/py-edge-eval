@@ -19,7 +19,9 @@
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pyEdgeEval.utils package" href="pyEdgeEval.utils.html" />
+    <link rel="prev" title="pyEdgeEval.preprocess.nms package" href="pyEdgeEval.preprocess.nms.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,17 +42,29 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">pyEdgeEval.preprocess.thin package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-pyEdgeEval.preprocess.thin.bwmorph_thin">pyEdgeEval.preprocess.thin.bwmorph_thin module</a></li>
-<li><a class="reference internal" href="#module-pyEdgeEval.preprocess.thin.thin">pyEdgeEval.preprocess.thin.thin module</a></li>
-<li><a class="reference internal" href="#module-pyEdgeEval.preprocess.thin">Module contents</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="pyEdgeEval.html">pyEdgeEval package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pyEdgeEval.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.common.html">pyEdgeEval.common package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.edge_tools.html">pyEdgeEval.edge_tools package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.evaluators.html">pyEdgeEval.evaluators package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="pyEdgeEval.preprocess.html">pyEdgeEval.preprocess package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="pyEdgeEval.preprocess.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyEdgeEval.preprocess.html#module-pyEdgeEval.preprocess">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.utils.html">pyEdgeEval.utils package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.visualization.html">pyEdgeEval.visualization package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.html#module-pyEdgeEval.info">pyEdgeEval.info module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.html#module-pyEdgeEval">Module contents</a></li>
 </ul>
 </li>
 </ul>
-</div>
+
         </div>
       </div>
     </nav>
@@ -65,6 +79,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="pyEdgeEval.html">pyEdgeEval package</a> &raquo;</li>
+          <li><a href="pyEdgeEval.preprocess.html">pyEdgeEval.preprocess package</a> &raquo;</li>
       <li>pyEdgeEval.preprocess.thin package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/pyEdgeEval.preprocess.thin.rst.txt" rel="nofollow"> View page source</a>
@@ -87,60 +103,55 @@
 <dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.bwmorph_thin.bwmorph_thin">
 <span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.bwmorph_thin.</span></span><span class="sig-name descname"><span class="pre">bwmorph_thin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/bwmorph_thin.html#bwmorph_thin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.bwmorph_thin.bwmorph_thin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform morphological thinning of a binary image</p>
-<dl class="simple">
-<dt>image<span class="classifier">binary (M, N) ndarray</span></dt><dd><p>The image to be thinned.</p>
-</dd>
-<dt>n_iter<span class="classifier">int, number of iterations, optional</span></dt><dd><p>Regardless of the value of this parameter, the thinned image
-is returned immediately if an iteration produces no change.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>np.ndarray</em>) – The image to be thinned (binary (M, N) ndarray).</p></li>
+<li><p><strong>n_iter</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – Regardless of the value of this parameter,
+the thinned image is returned immediately if an iteration produces
+no change.
 If this parameter is specified it thus sets an upper bound on
-the number of iterations performed.</p>
+the number of iterations performed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>out (np.ndarray)</em> – Thinned image (ndarray of bools).</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>out<span class="classifier">ndarray of bools</span></dt><dd><p>Thinned image.</p>
-</dd>
-</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
 <p>skeletonize</p>
-<p>This algorithm <a href="#id9"><span class="problematic" id="id1">[1]_</span></a> works by making multiple passes over the image,
+</div>
+<p class="rubric">Notes</p>
+<p>This algorithm <a class="reference external" href="Z.GuoandR.W.Hall,&quot;Parallelthinningwithtwo-subiterationalgorithms,&quot;Comm.ACM,vol.32,no.3,pp.359-373,1989.">[1]</a> works by making multiple passes over the image,
 removing pixels matching a set of criteria designed to thin
 connected regions while preserving eight-connected components and
-2 x 2 squares <a href="#id10"><span class="problematic" id="id2">[2]_</span></a>. In each of the two sub-iterations the algorithm
+2 x 2 squares <a class="reference external" href="Lam,L.,Seong-WhanLee,andChingY.Suen,&quot;ThinningMethodologies-AComprehensiveSurvey,&quot;IEEETransactionsonPatternAnalysisandMachineIntelligence,Vol14,No.9,September1992,p.879">[2]</a>. In each of the two sub-iterations the algorithm
 correlates the intermediate skeleton image with a neighborhood mask,
 then looks up each neighborhood in a lookup table indicating whether
 the central pixel should be deleted in that sub-iteration.</p>
-<dl class="footnote brackets">
-<dt class="label" id="id3"><span class="brackets">1</span></dt>
-<dd><p>Z. Guo and R. W. Hall, “Parallel thinning with
-two-subiteration algorithms,” Comm. ACM, vol. 32, no. 3,
-pp. 359-373, 1989.</p>
-</dd>
-<dt class="label" id="id4"><span class="brackets">2</span></dt>
-<dd><p>Lam, L., Seong-Whan Lee, and Ching Y. Suen, “Thinning
-Methodologies-A Comprehensive Survey,” IEEE Transactions on
-Pattern Analysis and Machine Intelligence, Vol 14, No. 9,
-September 1992, p. 879</p>
-</dd>
-</dl>
+<p class="rubric">References</p>
+<p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">square</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">square</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">square</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mi">1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">square</span>
 <span class="go">array([[0, 1, 0, 0, 0, 0, 0],</span>
-<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
-<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
-<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
-<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
-<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
-<span class="go">       [0, 0, 0, 0, 0, 0, 0]], dtype=uint8)</span>
+<span class="go">    [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">    [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">    [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">    [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">    [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">    [0, 0, 0, 0, 0, 0, 0]], dtype=uint8)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">skel</span> <span class="o">=</span> <span class="n">bwmorph_thin</span><span class="p">(</span><span class="n">square</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">skel</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
 <span class="go">array([[0, 1, 0, 0, 0, 0, 0],</span>
-<span class="go">       [0, 0, 1, 0, 0, 0, 0],</span>
-<span class="go">       [0, 0, 0, 1, 0, 0, 0],</span>
-<span class="go">       [0, 0, 0, 1, 0, 0, 0],</span>
-<span class="go">       [0, 0, 0, 1, 0, 0, 0],</span>
-<span class="go">       [0, 0, 0, 0, 0, 0, 0],</span>
-<span class="go">       [0, 0, 0, 0, 0, 0, 0]], dtype=uint8)</span>
+<span class="go">    [0, 0, 1, 0, 0, 0, 0],</span>
+<span class="go">    [0, 0, 0, 1, 0, 0, 0],</span>
+<span class="go">    [0, 0, 0, 1, 0, 0, 0],</span>
+<span class="go">    [0, 0, 0, 1, 0, 0, 0],</span>
+<span class="go">    [0, 0, 0, 0, 0, 0, 0],</span>
+<span class="go">    [0, 0, 0, 0, 0, 0, 0]], dtype=uint8)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -156,10 +167,10 @@ to perform morphological operations. Non-zero elements in the image are interpre
 as 1, zero elements as 0</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – a 2D NumPy array.</p>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em>) – a 2D NumPy array</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a 2D NumPy array, same shape as x</p>
+<dd class="field-even"><p><em>np.ndarray</em> – a 2D NumPy array, same shape as x</p>
 </dd>
 </dl>
 </dd></dl>
@@ -167,33 +178,49 @@ as 1, zero elements as 0</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.thin.apply_lut">
 <span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.thin.</span></span><span class="sig-name descname"><span class="pre">apply_lut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lut</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/thin.html#apply_lut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.thin.apply_lut" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform a morphological operation on the binary image x using the supplied lookup table
-:param x:
-:param lut:
-:return:</p>
+<dd><p>Perform a morphological operation on the binary image x using the supplied lookup table</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – input array</p></li>
+<li><p><strong>lut</strong> – lookup table</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.thin.identity_lut">
 <span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.thin.</span></span><span class="sig-name descname"><span class="pre">identity_lut</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/thin.html#identity_lut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.thin.identity_lut" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create identity lookup tablef
-:return:</p>
+<dd><p>Create identity lookup tablef</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.thin.lut_masks_zero">
 <span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.thin.</span></span><span class="sig-name descname"><span class="pre">lut_masks_zero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">neigh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/thin.html#lut_masks_zero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.thin.lut_masks_zero" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a LUT index mask for which the specified neighbour is 0
-:param neigh: neighbour index; counter-clockwise from 1 staring at the eastern neighbour
-:return: a LUT index mask</p>
+<dd><p>Create a LUT index mask for which the specified neighbour is 0</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>neigh</strong> – neighbour index; counter-clockwise from 1 staring at the eastern neighbour</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a LUT index mask</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.thin.lut_masks_one">
 <span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.thin.</span></span><span class="sig-name descname"><span class="pre">lut_masks_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">neigh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/thin.html#lut_masks_one"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.thin.lut_masks_one" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a LUT index mask for which the specified neighbour is 1
-:param neigh: neighbour index; counter-clockwise from 1 staring at the eastern neighbour
-:return: a LUT index mask</p>
+<dd><p>Create a LUT index mask for which the specified neighbour is 1</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>neigh</strong> – neighbour index; counter-clockwise from 1 staring at the eastern neighbour</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a LUT index mask</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -204,12 +231,15 @@ as 1, zero elements as 0</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> – a binary image, or an image that is to be converted to a binary image</p></li>
-<li><p><strong>max_iter</strong> – maximum number of iterations; default is <cite>None</cite> that results in an infinite</p></li>
+<li><p><strong>max_iter</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – maximum number of iterations; default is <code class="docutils literal notranslate"><span class="pre">None</span></code>
+that results in an infinite number of iterations (note that <code class="docutils literal notranslate"><span class="pre">binary_thin</span></code>
+will automatically terminate when no more changes occur)</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>bool mask</p>
+</dd>
 </dl>
-<p>number of iterations (note that <cite>binary_thin</cite> will automatically terminate when no more changes occur)
-:return:</p>
 </dd></dl>
 
 </section>
@@ -219,60 +249,55 @@ as 1, zero elements as 0</p>
 <dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.bwmorph_thin">
 <span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.</span></span><span class="sig-name descname"><span class="pre">bwmorph_thin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/bwmorph_thin.html#bwmorph_thin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.bwmorph_thin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform morphological thinning of a binary image</p>
-<dl class="simple">
-<dt>image<span class="classifier">binary (M, N) ndarray</span></dt><dd><p>The image to be thinned.</p>
-</dd>
-<dt>n_iter<span class="classifier">int, number of iterations, optional</span></dt><dd><p>Regardless of the value of this parameter, the thinned image
-is returned immediately if an iteration produces no change.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>np.ndarray</em>) – The image to be thinned (binary (M, N) ndarray).</p></li>
+<li><p><strong>n_iter</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – Regardless of the value of this parameter,
+the thinned image is returned immediately if an iteration produces
+no change.
 If this parameter is specified it thus sets an upper bound on
-the number of iterations performed.</p>
+the number of iterations performed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>out (np.ndarray)</em> – Thinned image (ndarray of bools).</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>out<span class="classifier">ndarray of bools</span></dt><dd><p>Thinned image.</p>
-</dd>
-</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
 <p>skeletonize</p>
-<p>This algorithm <a href="#id11"><span class="problematic" id="id5">[1]_</span></a> works by making multiple passes over the image,
+</div>
+<p class="rubric">Notes</p>
+<p>This algorithm <a class="reference external" href="Z.GuoandR.W.Hall,&quot;Parallelthinningwithtwo-subiterationalgorithms,&quot;Comm.ACM,vol.32,no.3,pp.359-373,1989.">[1]</a> works by making multiple passes over the image,
 removing pixels matching a set of criteria designed to thin
 connected regions while preserving eight-connected components and
-2 x 2 squares <a href="#id12"><span class="problematic" id="id6">[2]_</span></a>. In each of the two sub-iterations the algorithm
+2 x 2 squares <a class="reference external" href="Lam,L.,Seong-WhanLee,andChingY.Suen,&quot;ThinningMethodologies-AComprehensiveSurvey,&quot;IEEETransactionsonPatternAnalysisandMachineIntelligence,Vol14,No.9,September1992,p.879">[2]</a>. In each of the two sub-iterations the algorithm
 correlates the intermediate skeleton image with a neighborhood mask,
 then looks up each neighborhood in a lookup table indicating whether
 the central pixel should be deleted in that sub-iteration.</p>
-<dl class="footnote brackets">
-<dt class="label" id="id7"><span class="brackets">1</span></dt>
-<dd><p>Z. Guo and R. W. Hall, “Parallel thinning with
-two-subiteration algorithms,” Comm. ACM, vol. 32, no. 3,
-pp. 359-373, 1989.</p>
-</dd>
-<dt class="label" id="id8"><span class="brackets">2</span></dt>
-<dd><p>Lam, L., Seong-Whan Lee, and Ching Y. Suen, “Thinning
-Methodologies-A Comprehensive Survey,” IEEE Transactions on
-Pattern Analysis and Machine Intelligence, Vol 14, No. 9,
-September 1992, p. 879</p>
-</dd>
-</dl>
+<p class="rubric">References</p>
+<p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">square</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">square</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">square</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mi">1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">square</span>
 <span class="go">array([[0, 1, 0, 0, 0, 0, 0],</span>
-<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
-<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
-<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
-<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
-<span class="go">       [0, 0, 1, 1, 1, 0, 0],</span>
-<span class="go">       [0, 0, 0, 0, 0, 0, 0]], dtype=uint8)</span>
+<span class="go">    [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">    [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">    [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">    [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">    [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="go">    [0, 0, 0, 0, 0, 0, 0]], dtype=uint8)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">skel</span> <span class="o">=</span> <span class="n">bwmorph_thin</span><span class="p">(</span><span class="n">square</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">skel</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
 <span class="go">array([[0, 1, 0, 0, 0, 0, 0],</span>
-<span class="go">       [0, 0, 1, 0, 0, 0, 0],</span>
-<span class="go">       [0, 0, 0, 1, 0, 0, 0],</span>
-<span class="go">       [0, 0, 0, 1, 0, 0, 0],</span>
-<span class="go">       [0, 0, 0, 1, 0, 0, 0],</span>
-<span class="go">       [0, 0, 0, 0, 0, 0, 0],</span>
-<span class="go">       [0, 0, 0, 0, 0, 0, 0]], dtype=uint8)</span>
+<span class="go">    [0, 0, 1, 0, 0, 0, 0],</span>
+<span class="go">    [0, 0, 0, 1, 0, 0, 0],</span>
+<span class="go">    [0, 0, 0, 1, 0, 0, 0],</span>
+<span class="go">    [0, 0, 0, 1, 0, 0, 0],</span>
+<span class="go">    [0, 0, 0, 0, 0, 0, 0],</span>
+<span class="go">    [0, 0, 0, 0, 0, 0, 0]], dtype=uint8)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -285,12 +310,15 @@ September 1992, p. 879</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> – a binary image, or an image that is to be converted to a binary image</p></li>
-<li><p><strong>max_iter</strong> – maximum number of iterations; default is <cite>None</cite> that results in an infinite</p></li>
+<li><p><strong>max_iter</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – maximum number of iterations; default is <code class="docutils literal notranslate"><span class="pre">None</span></code>
+that results in an infinite number of iterations (note that <code class="docutils literal notranslate"><span class="pre">binary_thin</span></code>
+will automatically terminate when no more changes occur)</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>bool mask</p>
+</dd>
 </dl>
-<p>number of iterations (note that <cite>binary_thin</cite> will automatically terminate when no more changes occur)
-:return:</p>
 </dd></dl>
 
 </section>
@@ -299,7 +327,10 @@ September 1992, p. 879</p>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pyEdgeEval.preprocess.nms.html" class="btn btn-neutral float-left" title="pyEdgeEval.preprocess.nms package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pyEdgeEval.utils.html" class="btn btn-neutral float-right" title="pyEdgeEval.utils package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

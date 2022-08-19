@@ -39,8 +39,11 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyEdgeEval.html">pyEdgeEval package</a></li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -111,68 +114,59 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform morphological thinning of a binary image</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    image : binary (M, N) ndarray</span>
-<span class="sd">        The image to be thinned.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        image (np.ndarray): The image to be thinned (binary (M, N) ndarray).</span>
+<span class="sd">        n_iter (Optional[int]): Regardless of the value of this parameter,</span>
+<span class="sd">            the thinned image is returned immediately if an iteration produces</span>
+<span class="sd">            no change.</span>
+<span class="sd">            If this parameter is specified it thus sets an upper bound on</span>
+<span class="sd">            the number of iterations performed.</span>
 
-<span class="sd">    n_iter : int, number of iterations, optional</span>
-<span class="sd">        Regardless of the value of this parameter, the thinned image</span>
-<span class="sd">        is returned immediately if an iteration produces no change.</span>
-<span class="sd">        If this parameter is specified it thus sets an upper bound on</span>
-<span class="sd">        the number of iterations performed.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        out (np.ndarray): Thinned image (ndarray of bools).</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    out : ndarray of bools</span>
-<span class="sd">        Thinned image.</span>
+<span class="sd">    See Also:</span>
+<span class="sd">        skeletonize</span>
 
-<span class="sd">    See also</span>
-<span class="sd">    --------</span>
-<span class="sd">    skeletonize</span>
+<span class="sd">    Notes:</span>
+<span class="sd">        This algorithm `[1]`_ works by making multiple passes over the image,</span>
+<span class="sd">        removing pixels matching a set of criteria designed to thin</span>
+<span class="sd">        connected regions while preserving eight-connected components and</span>
+<span class="sd">        2 x 2 squares `[2]`_. In each of the two sub-iterations the algorithm</span>
+<span class="sd">        correlates the intermediate skeleton image with a neighborhood mask,</span>
+<span class="sd">        then looks up each neighborhood in a lookup table indicating whether</span>
+<span class="sd">        the central pixel should be deleted in that sub-iteration.</span>
 
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    This algorithm [1]_ works by making multiple passes over the image,</span>
-<span class="sd">    removing pixels matching a set of criteria designed to thin</span>
-<span class="sd">    connected regions while preserving eight-connected components and</span>
-<span class="sd">    2 x 2 squares [2]_. In each of the two sub-iterations the algorithm</span>
-<span class="sd">    correlates the intermediate skeleton image with a neighborhood mask,</span>
-<span class="sd">    then looks up each neighborhood in a lookup table indicating whether</span>
-<span class="sd">    the central pixel should be deleted in that sub-iteration.</span>
-
-<span class="sd">    References</span>
-<span class="sd">    ----------</span>
-<span class="sd">    .. [1] Z. Guo and R. W. Hall, &quot;Parallel thinning with</span>
+<span class="sd">    References:</span>
+<span class="sd">        .. _[1]: Z. Guo and R. W. Hall, &quot;Parallel thinning with</span>
 <span class="sd">           two-subiteration algorithms,&quot; Comm. ACM, vol. 32, no. 3,</span>
 <span class="sd">           pp. 359-373, 1989.</span>
-<span class="sd">    .. [2] Lam, L., Seong-Whan Lee, and Ching Y. Suen, &quot;Thinning</span>
+<span class="sd">        .. _[2]: Lam, L., Seong-Whan Lee, and Ching Y. Suen, &quot;Thinning</span>
 <span class="sd">           Methodologies-A Comprehensive Survey,&quot; IEEE Transactions on</span>
 <span class="sd">           Pattern Analysis and Machine Intelligence, Vol 14, No. 9,</span>
 <span class="sd">           September 1992, p. 879</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; square = np.zeros((7, 7), dtype=np.uint8)</span>
-<span class="sd">    &gt;&gt;&gt; square[1:-1, 2:-2] = 1</span>
-<span class="sd">    &gt;&gt;&gt; square[0,1] =  1</span>
-<span class="sd">    &gt;&gt;&gt; square</span>
-<span class="sd">    array([[0, 1, 0, 0, 0, 0, 0],</span>
-<span class="sd">           [0, 0, 1, 1, 1, 0, 0],</span>
-<span class="sd">           [0, 0, 1, 1, 1, 0, 0],</span>
-<span class="sd">           [0, 0, 1, 1, 1, 0, 0],</span>
-<span class="sd">           [0, 0, 1, 1, 1, 0, 0],</span>
-<span class="sd">           [0, 0, 1, 1, 1, 0, 0],</span>
-<span class="sd">           [0, 0, 0, 0, 0, 0, 0]], dtype=uint8)</span>
-<span class="sd">    &gt;&gt;&gt; skel = bwmorph_thin(square)</span>
-<span class="sd">    &gt;&gt;&gt; skel.astype(np.uint8)</span>
-<span class="sd">    array([[0, 1, 0, 0, 0, 0, 0],</span>
-<span class="sd">           [0, 0, 1, 0, 0, 0, 0],</span>
-<span class="sd">           [0, 0, 0, 1, 0, 0, 0],</span>
-<span class="sd">           [0, 0, 0, 1, 0, 0, 0],</span>
-<span class="sd">           [0, 0, 0, 1, 0, 0, 0],</span>
-<span class="sd">           [0, 0, 0, 0, 0, 0, 0],</span>
-<span class="sd">           [0, 0, 0, 0, 0, 0, 0]], dtype=uint8)</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; square = np.zeros((7, 7), dtype=np.uint8)</span>
+<span class="sd">        &gt;&gt;&gt; square[1:-1, 2:-2] = 1</span>
+<span class="sd">        &gt;&gt;&gt; square[0,1] =  1</span>
+<span class="sd">        &gt;&gt;&gt; square</span>
+<span class="sd">        array([[0, 1, 0, 0, 0, 0, 0],</span>
+<span class="sd">            [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="sd">            [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="sd">            [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="sd">            [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="sd">            [0, 0, 1, 1, 1, 0, 0],</span>
+<span class="sd">            [0, 0, 0, 0, 0, 0, 0]], dtype=uint8)</span>
+<span class="sd">        &gt;&gt;&gt; skel = bwmorph_thin(square)</span>
+<span class="sd">        &gt;&gt;&gt; skel.astype(np.uint8)</span>
+<span class="sd">        array([[0, 1, 0, 0, 0, 0, 0],</span>
+<span class="sd">            [0, 0, 1, 0, 0, 0, 0],</span>
+<span class="sd">            [0, 0, 0, 1, 0, 0, 0],</span>
+<span class="sd">            [0, 0, 0, 1, 0, 0, 0],</span>
+<span class="sd">            [0, 0, 0, 1, 0, 0, 0],</span>
+<span class="sd">            [0, 0, 0, 0, 0, 0, 0],</span>
+<span class="sd">            [0, 0, 0, 0, 0, 0, 0]], dtype=uint8)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># check parameters</span>
     <span class="k">if</span> <span class="n">n_iter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

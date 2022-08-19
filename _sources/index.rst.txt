@@ -12,6 +12,8 @@ Currently WIP
    :maxdepth: 2
    :caption: Contents:
 
+   pyEdgeEval
+
 .. automodule:: pyEdgeEval.evaluators
    :members:
    :undoc-members:
