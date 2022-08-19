@@ -6,13 +6,14 @@
 Welcome to pyEdgeEval's documentation!
 ======================================
 
-Currently WIP
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   readme_link
    pyEdgeEval
+
 
 .. automodule:: pyEdgeEval.evaluators
    :members:
