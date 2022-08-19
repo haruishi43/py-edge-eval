@@ -15,25 +15,6 @@ Welcome to pyEdgeEval's documentation!
    pyEdgeEval
 
 
-.. automodule:: pyEdgeEval.evaluators
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: pyEdgeEval.common.binary_label
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-.. automodule:: pyEdgeEval.edge_tools.transforms
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Indices and tables
 ==================
 
