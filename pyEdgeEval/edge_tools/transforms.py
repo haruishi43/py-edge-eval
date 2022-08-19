@@ -29,9 +29,16 @@ def mask2edge(
         run_type (str): can choose between ``loop`` or ``mp`` where ``loop`` loops
             over the classes while ``mp`` uses ``multiprocessing``.
         instance_sensitive (bool): set to ``True`` if generating instance-aware edges.
+        mask (np.ndarray): input one-hot mask
+        inst_mask (np.ndarray): instance mask (required for instance sensitive)
+        inst_labelIds (List[int]): labels that have instances
+        ignore_labelIds (List[int]): ignore labelIds
+        radius (int): edge radius (thickness)
+        use_cv2 (bool): whether to use ``cv2`` distance transform (default ``True``)
+        quality (int): default 0
 
     Returns:
-        edges (np.ndarray): generated edges.
+        np.ndarray: generated edges.
 
     Raises:
         ValueError: if ``run_type`` is not set correctly.
