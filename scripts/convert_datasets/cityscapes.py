@@ -12,9 +12,10 @@ from pyEdgeEval.common.multi_label.edge_encoding import (
     default_multilabel_encoding,
     rgb_multilabel_encoding,
 )
-from pyEdgeEval.evaluators.cityscapes import (
-    label2trainId,
-    inst_labelIds,
+from pyEdgeEval.common.multi_label.dataset_attributes import (
+    CITYSCAPES_labelIds,
+    CITYSCAPES_label2trainId,
+    CITYSCAPES_inst_labelIds,
 )
 from pyEdgeEval.edge_tools.mask2edge_loop import (
     loop_instance_mask2edge,
@@ -127,11 +128,10 @@ def convert_label_to_semantic_edges(
     mask = np.array(label_img)
 
     # NOTE: hard-coded
-    num_ids = 34  # total number of classes including ones to ignore
     ignore_classes = [2, 3]
 
     # create label mask
-    m = mask_to_onehot(mask, num_ids)
+    m = mask_to_onehot(mask, labels=CITYSCAPES_labelIds)
 
     if inst_sensitive:
         inst_file = os.path.join(label_dir, label_fn.replace(label_suffix, inst_suffix))
@@ -143,7 +143,7 @@ def convert_label_to_semantic_edges(
         edge_ids = loop_instance_mask2edge(
             mask=m,
             inst_mask=inst_mask,
-            inst_labelIds=inst_labelIds,
+            inst_labelIds=CITYSCAPES_inst_labelIds,
             ignore_labelIds=ignore_classes,
             radius=radius,
         )
@@ -154,7 +154,7 @@ def convert_label_to_semantic_edges(
             radius=radius,
         )
 
-    edge_trainIds = edge_label2trainId(edge=edge_ids, label2trainId=label2trainId)
+    edge_trainIds = edge_label2trainId(edge=edge_ids, label2trainId=CITYSCAPES_label2trainId)
 
     # encode and save -->
     if save_format == ".png":

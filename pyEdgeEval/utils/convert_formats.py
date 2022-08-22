@@ -3,14 +3,19 @@
 import numpy as np
 
 
-def mask_to_onehot(mask, num_classes):
+def mask_to_onehot(mask, labels):
     """
     Converts a segmentation mask (H,W) to (K,H,W) where the last dim is a one
     hot encoding vector
-
-    FIXME: we assume that mask labels are in order from 0 to num_classes-1.
     """
-    _mask = [mask == i for i in range(num_classes)]
+    c = mask.shape[0]
+    assert (
+        len(labels) > 0
+    ), "`labels` should be a list with more than 1 elements"
+    assert c >= len(
+        labels
+    ), "tried to convert into onehot with more labels than the original mask"
+    _mask = [mask == i for i in labels]
     return np.array(_mask).astype(np.uint8)
 
 

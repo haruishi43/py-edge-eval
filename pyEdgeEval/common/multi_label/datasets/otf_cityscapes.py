@@ -3,10 +3,6 @@
 import numpy as np
 from PIL import Image
 
-from pyEdgeEval.evaluators.cityscapes import (
-    label2trainId,
-    inst_labelIds,
-)
 from pyEdgeEval.common.multi_label.evaluate_boundaries import (
     evaluate_boundaries_threshold,
 )
@@ -17,9 +13,14 @@ from pyEdgeEval.utils import (
     mask_label2trainId,
     # edge_label2trainId,
 )
+from ..dataset_attributes import (
+    CITYSCAPES_labelIds,
+    CITYSCAPES_label2trainId,
+    CITYSCAPES_inst_labelIds,
+)
 
 # flip key-value
-trainId2label = {v: k for k, v in label2trainId.items()}
+CITYSCAPES_trainId2label = {v: k for k, v in CITYSCAPES_label2trainId.items()}
 
 
 def one_label_mask2edge(
@@ -131,7 +132,7 @@ def _evaluate_single(
     kill_internal,
     skip_if_nonexistent,
     radius,
-    num_labels=34,
+    labels=CITYSCAPES_labelIds,
     ignore_labels=[2, 3],
     **kwargs,
 ):
@@ -145,7 +146,7 @@ def _evaluate_single(
     cat_idx = category - 1  # category is indexed from 1
 
     # get corresponding label
-    label = trainId2label[cat_idx]
+    label = CITYSCAPES_trainId2label[cat_idx]
 
     # load everything (not trainIds)
     seg_label = Image.open(seg_path)
@@ -163,7 +164,7 @@ def _evaluate_single(
     pred = (pred / 255).astype(float)
 
     # convert to onehot
-    onehot_mask = mask_to_onehot(seg_label, num_classes=num_labels)
+    onehot_mask = mask_to_onehot(seg_label, labels=labels)
 
     # generate edge
     if inst_path:
@@ -174,7 +175,7 @@ def _evaluate_single(
             label=label,
             mask=onehot_mask,
             inst_mask=inst_mask,
-            inst_labelIds=inst_labelIds,
+            inst_labelIds=CITYSCAPES_inst_labelIds,
             ignore_labelIds=ignore_labels,
             radius=radius,
         )
@@ -188,7 +189,9 @@ def _evaluate_single(
 
     # convert to trainIds (edge and segmentation)
     # edge = edge_label2trainId(edge=edge_label, label2trainId=label2trainId)
-    seg = mask_label2trainId(mask=seg_label, label2trainId=label2trainId)
+    seg = mask_label2trainId(
+        mask=seg_label, label2trainId=CITYSCAPES_label2trainId
+    )
 
     # cat_edge = edge[cat_idx, :, :]
     if kill_internal:

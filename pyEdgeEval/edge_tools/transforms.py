@@ -100,7 +100,7 @@ class Mask2Edge(object):
 
     def __call__(self, mask):
         assert mask.ndim == 2
-        onehot_mask = mask_to_onehot(mask, num_classes=len(self.LABEL_IDS))
+        onehot_mask = mask_to_onehot(mask, labels=self.LABEL_IDS)
         edge = mask2edge(
             run_type="loop",
             instance_sensitive=False,
@@ -142,7 +142,7 @@ class InstanceMask2Edge(Mask2Edge):
         assert mask.ndim == 2
         assert mask.shape == inst_mask.shape
         # mask is uint8, inst_mask is int32
-        onehot_mask = mask_to_onehot(mask, num_classes=len(self.LABEL_IDS))
+        onehot_mask = mask_to_onehot(mask, labels=self.LABEL_IDS)
         edge = mask2edge(
             run_type="loop",
             instance_sensitive=True,
