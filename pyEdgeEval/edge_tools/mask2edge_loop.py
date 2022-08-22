@@ -12,7 +12,7 @@ __all__ = [
 
 def loop_mask2edge(
     mask,
-    ignore_labelIds,
+    ignore_indices,
     radius,
     use_cv2=True,
     quality=0,
@@ -23,14 +23,14 @@ def loop_mask2edge(
 
     # make ignore mask
     ignore_mask = np.zeros((h, w), dtype=np.uint8)
-    for i in ignore_labelIds:
+    for i in ignore_indices:
         ignore_mask += mask[i]
 
     edges = np.zeros_like(mask)
     for label in range(num_labels):
         m = mask[label]
 
-        if label in ignore_labelIds:
+        if label in ignore_indices:
             continue
 
         # if there are no class labels in the mask
@@ -52,7 +52,7 @@ def loop_instance_mask2edge(
     mask,
     inst_mask,
     inst_labelIds,
-    ignore_labelIds,
+    ignore_indices,
     radius,
     use_cv2=True,
     quality=0,
@@ -63,7 +63,7 @@ def loop_instance_mask2edge(
 
     # make ignore mask
     ignore_mask = np.zeros((h, w), dtype=np.uint8)
-    for i in ignore_labelIds:
+    for i in ignore_indices:
         ignore_mask += mask[i]
 
     # make sure that instance labels are sorted
@@ -92,7 +92,7 @@ def loop_instance_mask2edge(
     for label in range(num_labels):
         m = mask[label]
 
-        if label in ignore_labelIds:
+        if label in ignore_indices:
             continue
 
         # if there are no class labels in the mask

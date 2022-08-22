@@ -9,7 +9,7 @@ from pyEdgeEval.common.multi_label.evaluate_boundaries import (
 from pyEdgeEval.common.utils import check_thresholds
 from pyEdgeEval.utils import (
     mask2bdry,
-    mask_to_onehot,
+    mask2onehot,
     mask_label2trainId,
     # edge_label2trainId,
 )
@@ -26,7 +26,7 @@ CITYSCAPES_trainId2label = {v: k for k, v in CITYSCAPES_label2trainId.items()}
 def one_label_mask2edge(
     label,
     mask,
-    ignore_labelIds,
+    ignore_indices,
     radius,
     use_cv2=True,
     quality=0,
@@ -34,12 +34,12 @@ def one_label_mask2edge(
     num_labels, h, w = mask.shape
     assert label < num_labels
     ignore_mask = np.zeros((h, w), dtype=np.uint8)
-    for i in ignore_labelIds:
+    for i in ignore_indices:
         ignore_mask += mask[i]
 
     m = mask[label]
 
-    if label in ignore_labelIds:
+    if label in ignore_indices:
         return np.zeros_like(m)
     if not np.count_nonzero(m):
         return np.zeros_like(m)
@@ -58,7 +58,7 @@ def one_label_instance_mask2edge(
     mask,
     inst_mask,
     inst_labelIds,
-    ignore_labelIds,
+    ignore_indices,
     radius,
     use_cv2=True,
     quality=0,
@@ -66,7 +66,7 @@ def one_label_instance_mask2edge(
     num_labels, h, w = mask.shape
     assert label < num_labels
     ignore_mask = np.zeros((h, w), dtype=np.uint8)
-    for i in ignore_labelIds:
+    for i in ignore_indices:
         ignore_mask += mask[i]
 
     # make sure that instance labels are sorted
@@ -93,7 +93,7 @@ def one_label_instance_mask2edge(
         quality=quality,
     )
 
-    if label in ignore_labelIds:
+    if label in ignore_indices:
         return np.zeros_like(m)
     if not np.count_nonzero(m):
         return np.zeros_like(m)
@@ -133,7 +133,7 @@ def _evaluate_single(
     skip_if_nonexistent,
     radius,
     labels=CITYSCAPES_labelIds,
-    ignore_labels=[2, 3],
+    ignore_indices=[2, 3],
     **kwargs,
 ):
     """Evaluate a single sample (sub-routine)
@@ -164,7 +164,7 @@ def _evaluate_single(
     pred = (pred / 255).astype(float)
 
     # convert to onehot
-    onehot_mask = mask_to_onehot(seg_label, labels=labels)
+    onehot_mask = mask2onehot(seg_label, labels=labels)
 
     # generate edge
     if inst_path:
@@ -176,14 +176,14 @@ def _evaluate_single(
             mask=onehot_mask,
             inst_mask=inst_mask,
             inst_labelIds=CITYSCAPES_inst_labelIds,
-            ignore_labelIds=ignore_labels,
+            ignore_indices=ignore_indices,
             radius=radius,
         )
     else:
         edge = one_label_mask2edge(
             label=label,
             mask=onehot_mask,
-            ignore_labelIds=ignore_labels,
+            ignore_indices=ignore_indices,
             radius=radius,
         )
 

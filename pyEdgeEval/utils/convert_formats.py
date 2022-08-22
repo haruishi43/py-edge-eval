@@ -3,7 +3,7 @@
 import numpy as np
 
 
-def mask_to_onehot(mask, labels):
+def mask2onehot(mask, labels):
     """
     Converts a segmentation mask (H,W) to (K,H,W) where the last dim is a one
     hot encoding vector

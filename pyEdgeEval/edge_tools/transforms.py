@@ -3,7 +3,7 @@
 """Mask2Edge transform module."""
 
 from pyEdgeEval.utils import (
-    mask_to_onehot,
+    mask2onehot,
     mask_label2trainId,
     edge_label2trainId,
 )
@@ -32,7 +32,7 @@ def mask2edge(
         mask (np.ndarray): input one-hot mask
         inst_mask (np.ndarray): instance mask (required for instance sensitive)
         inst_labelIds (List[int]): labels that have instances
-        ignore_labelIds (List[int]): ignore labelIds
+        ignore_indices (List[int]): ignore indices (corresponds to order of labelIds)
         radius (int): edge radius (thickness)
         use_cv2 (bool): whether to use ``cv2`` distance transform (default ``True``)
         quality (int): default 0
@@ -73,7 +73,7 @@ class Mask2Edge(object):
     def __init__(
         self,
         labelIds,
-        ignore_labelIds=[],
+        ignore_indices=[],
         label2trainId=None,
         radius: int = 2,
         use_cv2: bool = True,
@@ -82,9 +82,9 @@ class Mask2Edge(object):
         assert len(labelIds) > 0, "ERR: there should be more than 1 labels"
         self.LABEL_IDS = labelIds
         assert isinstance(
-            ignore_labelIds, list
+            ignore_indices, list
         ), "ERR: ignore labelIds should be a list"
-        self.ignore_labelIds = ignore_labelIds
+        self.ignore_indices = ignore_indices
         assert radius >= 1, "ERR: radius should be equal or greater than 1"
         self.radius = radius
 
@@ -100,12 +100,12 @@ class Mask2Edge(object):
 
     def __call__(self, mask):
         assert mask.ndim == 2
-        onehot_mask = mask_to_onehot(mask, labels=self.LABEL_IDS)
+        onehot_mask = mask2onehot(mask, labels=self.LABEL_IDS)
         edge = mask2edge(
             run_type="loop",
             instance_sensitive=False,
             mask=onehot_mask,
-            ignore_labelIds=self.ignore_labelIds,
+            ignore_indices=self.ignore_indices,
             **self._mask2bdry_kwargs,
         )
 
@@ -142,14 +142,14 @@ class InstanceMask2Edge(Mask2Edge):
         assert mask.ndim == 2
         assert mask.shape == inst_mask.shape
         # mask is uint8, inst_mask is int32
-        onehot_mask = mask_to_onehot(mask, labels=self.LABEL_IDS)
+        onehot_mask = mask2onehot(mask, labels=self.LABEL_IDS)
         edge = mask2edge(
             run_type="loop",
             instance_sensitive=True,
             mask=onehot_mask,
             inst_mask=inst_mask,
             inst_labelIds=self.inst_labelIds,
-            ignore_labelIds=self.ignore_labelIds,
+            ignore_indices=self.ignore_indices,
             **self._mask2bdry_kwargs,
         )
 

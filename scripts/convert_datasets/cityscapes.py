@@ -26,7 +26,7 @@ from pyEdgeEval.utils import (
     mkdir_or_exist,
     track_parallel_progress,
     track_progress,
-    mask_to_onehot,
+    mask2onehot,
     edge_label2trainId,
 )
 
@@ -128,10 +128,10 @@ def convert_label_to_semantic_edges(
     mask = np.array(label_img)
 
     # NOTE: hard-coded
-    ignore_classes = [2, 3]
+    ignore_indices = [2, 3]
 
     # create label mask
-    m = mask_to_onehot(mask, labels=CITYSCAPES_labelIds)
+    m = mask2onehot(mask, labels=CITYSCAPES_labelIds)
 
     if inst_sensitive:
         inst_file = os.path.join(label_dir, label_fn.replace(label_suffix, inst_suffix))
@@ -144,13 +144,13 @@ def convert_label_to_semantic_edges(
             mask=m,
             inst_mask=inst_mask,
             inst_labelIds=CITYSCAPES_inst_labelIds,
-            ignore_labelIds=ignore_classes,
+            ignore_indices=ignore_indices,
             radius=radius,
         )
     else:
         edge_ids = loop_mask2edge(
             mask=m,
-            ignore_labelIds=ignore_classes,
+            ignore_indices=ignore_indices,
             radius=radius,
         )
 

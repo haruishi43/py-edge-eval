@@ -37,7 +37,7 @@ def _worker_func(label):
     edge_dtype = var_dict["edge_dtype"]
     ignore_mask_shape = var_dict["ignore_mask_shape"]
     ignore_mask_dtype = var_dict["ignore_mask_dtype"]
-    ignore_labelIds = var_dict["ignore_labelIds"]
+    ignore_indices = var_dict["ignore_indices"]
     mask2bdry_kwargs = var_dict["mask2bdry_kwargs"]
 
     mask = np.frombuffer(var_dict["mask"], dtype=mask_dtype).reshape(mask_shape)
@@ -48,7 +48,7 @@ def _worker_func(label):
 
     mask = mask[label]
 
-    if label in ignore_labelIds:
+    if label in ignore_indices:
         return None
 
     # if there are no class labels in the mask
@@ -65,7 +65,7 @@ def _worker_func(label):
 
 def mp_mask2edge(
     mask,
-    ignore_labelIds,
+    ignore_indices,
     nproc,
     radius,
     use_cv2=True,
@@ -80,7 +80,7 @@ def mp_mask2edge(
 
     # make ignore mask
     ignore_mask = np.zeros((h, w), dtype=np.uint8)
-    for i in ignore_labelIds:
+    for i in ignore_indices:
         ignore_mask += mask[i]
 
     mask2bdry_kwargs = dict(
@@ -120,7 +120,7 @@ def mp_mask2edge(
         ignore_mask=mp_ignore_mask,
         ignore_mask_dtype=ignore_mask.dtype,
         ignore_mask_shape=ignore_mask.shape,
-        ignore_labelIds=ignore_labelIds,
+        ignore_indices=ignore_indices,
         mask2bdry_kwargs=mask2bdry_kwargs,
     )
 
@@ -147,7 +147,7 @@ def _instance_worker_func(label):
     edge_dtype = var_dict["edge_dtype"]
     ignore_mask_shape = var_dict["ignore_mask_shape"]
     ignore_mask_dtype = var_dict["ignore_mask_dtype"]
-    ignore_labelIds = var_dict["ignore_labelIds"]
+    ignore_indices = var_dict["ignore_indices"]
     label_inst = var_dict["label_inst"]
     mask2bdry_kwargs = var_dict["mask2bdry_kwargs"]
 
@@ -162,7 +162,7 @@ def _instance_worker_func(label):
 
     mask = mask[label]
 
-    if label in ignore_labelIds:
+    if label in ignore_indices:
         return None
 
     # if there are no class labels in the mask
@@ -196,7 +196,7 @@ def mp_instance_mask2edge(
     mask,
     inst_mask,
     inst_labelIds,
-    ignore_labelIds,
+    ignore_indices,
     nproc,
     radius,
     use_cv2=True,
@@ -211,7 +211,7 @@ def mp_instance_mask2edge(
 
     # make ignore mask
     ignore_mask = np.zeros((h, w), dtype=np.uint8)
-    for i in ignore_labelIds:
+    for i in ignore_indices:
         ignore_mask += mask[i]
 
     # make sure that instance labels are sorted
@@ -277,7 +277,7 @@ def mp_instance_mask2edge(
         ignore_mask=mp_ignore_mask,
         ignore_mask_dtype=ignore_mask.dtype,
         ignore_mask_shape=ignore_mask.shape,
-        ignore_labelIds=ignore_labelIds,
+        ignore_indices=ignore_indices,
         label_inst=label_inst,
         mask2bdry_kwargs=mask2bdry_kwargs,
     )

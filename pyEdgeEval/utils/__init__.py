@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from .convert_formats import (
-    mask_to_onehot,
+    mask2onehot,
     edge_multilabel2binary,
     edge_onehot2multilabel,
     mask_label2trainId,
@@ -29,7 +29,7 @@ from .progressbar import (
 )
 
 __all__ = [
-    "mask_to_onehot",
+    "mask2onehot",
     "edge_multilabel2binary",
     "edge_onehot2multilabel",
     "mask_label2trainId",
