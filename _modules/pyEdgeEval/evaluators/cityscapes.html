@@ -90,62 +90,6 @@
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseMultilabelEvaluator</span>
 
-<span class="c1"># removed unused labels (trainId that is 255 and -1)</span>
-<span class="n">label2trainId</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="mi">7</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="mi">8</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="mi">11</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-    <span class="mi">12</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="mi">13</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-    <span class="mi">17</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="mi">19</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
-    <span class="mi">20</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
-    <span class="mi">21</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
-    <span class="mi">22</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
-    <span class="mi">23</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-    <span class="mi">24</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
-    <span class="mi">25</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
-    <span class="mi">26</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span>
-    <span class="mi">27</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
-    <span class="mi">28</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
-    <span class="mi">31</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
-    <span class="mi">32</span><span class="p">:</span> <span class="mi">17</span><span class="p">,</span>
-    <span class="mi">33</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
-<span class="p">}</span>
-
-<span class="n">trainId2name</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;road&quot;</span><span class="p">,</span>
-    <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;sidewalk&quot;</span><span class="p">,</span>
-    <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;building&quot;</span><span class="p">,</span>
-    <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;wall&quot;</span><span class="p">,</span>
-    <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;fence&quot;</span><span class="p">,</span>
-    <span class="mi">5</span><span class="p">:</span> <span class="s2">&quot;pole&quot;</span><span class="p">,</span>
-    <span class="mi">6</span><span class="p">:</span> <span class="s2">&quot;traffic light&quot;</span><span class="p">,</span>
-    <span class="mi">7</span><span class="p">:</span> <span class="s2">&quot;traffic sign&quot;</span><span class="p">,</span>
-    <span class="mi">8</span><span class="p">:</span> <span class="s2">&quot;vegetation&quot;</span><span class="p">,</span>
-    <span class="mi">9</span><span class="p">:</span> <span class="s2">&quot;terrain&quot;</span><span class="p">,</span>
-    <span class="mi">10</span><span class="p">:</span> <span class="s2">&quot;sky&quot;</span><span class="p">,</span>
-    <span class="mi">11</span><span class="p">:</span> <span class="s2">&quot;person&quot;</span><span class="p">,</span>
-    <span class="mi">12</span><span class="p">:</span> <span class="s2">&quot;rider&quot;</span><span class="p">,</span>
-    <span class="mi">13</span><span class="p">:</span> <span class="s2">&quot;car&quot;</span><span class="p">,</span>
-    <span class="mi">14</span><span class="p">:</span> <span class="s2">&quot;truck&quot;</span><span class="p">,</span>
-    <span class="mi">15</span><span class="p">:</span> <span class="s2">&quot;bus&quot;</span><span class="p">,</span>
-    <span class="mi">16</span><span class="p">:</span> <span class="s2">&quot;train&quot;</span><span class="p">,</span>
-    <span class="mi">17</span><span class="p">:</span> <span class="s2">&quot;motorcycle&quot;</span><span class="p">,</span>
-    <span class="mi">18</span><span class="p">:</span> <span class="s2">&quot;bicycle&quot;</span><span class="p">,</span>
-<span class="p">}</span>
-
-<span class="n">inst_labelIds</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="mi">24</span><span class="p">,</span>  <span class="c1"># &quot;person&quot;</span>
-    <span class="mi">25</span><span class="p">,</span>  <span class="c1"># &quot;rider&quot;</span>
-    <span class="mi">26</span><span class="p">,</span>  <span class="c1"># &quot;car&quot;</span>
-    <span class="mi">27</span><span class="p">,</span>  <span class="c1"># &quot;truck&quot;</span>
-    <span class="mi">28</span><span class="p">,</span>  <span class="c1"># &quot;bus&quot;</span>
-    <span class="mi">31</span><span class="p">,</span>  <span class="c1"># &quot;train&quot;</span>
-    <span class="mi">32</span><span class="p">,</span>  <span class="c1"># &quot;motorcycle&quot;</span>
-    <span class="mi">33</span><span class="p">,</span>  <span class="c1"># &quot;bicycle&quot;</span>
-<span class="p">]</span>
-
 
 <div class="viewcode-block" id="CityscapesEvaluator"><a class="viewcode-back" href="../../../pyEdgeEval.evaluators.html#pyEdgeEval.evaluators.cityscapes.CityscapesEvaluator">[docs]</a><span class="k">class</span> <span class="nc">CityscapesEvaluator</span><span class="p">(</span><span class="n">BaseMultilabelEvaluator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Cityscapes dataset evaluator&quot;&quot;&quot;</span>
@@ -422,22 +366,6 @@
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">overall_metric</span></div></div>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">cityscapesscripts.helpers.labels</span> <span class="kn">import</span> <span class="n">labels</span>
-
-    <span class="n">cs_label2trainId</span> <span class="o">=</span> <span class="p">{</span><span class="n">label</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">label</span><span class="o">.</span><span class="n">trainId</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">}</span>
-    <span class="c1"># _trainId2name = {label.trainId: label.name for label in labels}</span>
-    <span class="c1"># _trainId2color = {label.trainId: label.color for label in labels}</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">cs_label2trainId</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cs_label2trainId</span><span class="p">))</span>
-
-    <span class="c1"># checks</span>
-    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">trainId</span> <span class="ow">in</span> <span class="n">label2trainId</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">assert</span> <span class="n">cs_label2trainId</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">==</span> <span class="n">trainId</span>
 </pre></div>
 
            </div>

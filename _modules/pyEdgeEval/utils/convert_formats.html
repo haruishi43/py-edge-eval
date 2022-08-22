@@ -78,14 +78,15 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="mask_to_onehot"><a class="viewcode-back" href="../../../pyEdgeEval.utils.html#pyEdgeEval.utils.convert_formats.mask_to_onehot">[docs]</a><span class="k">def</span> <span class="nf">mask_to_onehot</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">):</span>
+<div class="viewcode-block" id="mask_to_onehot"><a class="viewcode-back" href="../../../pyEdgeEval.utils.html#pyEdgeEval.utils.convert_formats.mask_to_onehot">[docs]</a><span class="k">def</span> <span class="nf">mask_to_onehot</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a segmentation mask (H,W) to (K,H,W) where the last dim is a one</span>
 <span class="sd">    hot encoding vector</span>
-
-<span class="sd">    FIXME: we assume that mask labels are in order from 0 to num_classes-1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">mask</span> <span class="o">==</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_classes</span><span class="p">)]</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;`labels` should be a list with more than 1 elements&quot;</span>
+    <span class="k">assert</span> <span class="n">c</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">),</span> <span class="s2">&quot;tried to convert into onehot with more labels than the original mask&quot;</span>
+    <span class="n">_mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">mask</span> <span class="o">==</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">_mask</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span></div>
 
 

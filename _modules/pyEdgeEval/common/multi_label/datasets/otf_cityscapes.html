@@ -78,10 +78,6 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 
-<span class="kn">from</span> <span class="nn">pyEdgeEval.evaluators.cityscapes</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">label2trainId</span><span class="p">,</span>
-    <span class="n">inst_labelIds</span><span class="p">,</span>
-<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyEdgeEval.common.multi_label.evaluate_boundaries</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">evaluate_boundaries_threshold</span><span class="p">,</span>
 <span class="p">)</span>
@@ -92,9 +88,14 @@
     <span class="n">mask_label2trainId</span><span class="p">,</span>
     <span class="c1"># edge_label2trainId,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">..dataset_attributes</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CITYSCAPES_labelIds</span><span class="p">,</span>
+    <span class="n">CITYSCAPES_label2trainId</span><span class="p">,</span>
+    <span class="n">CITYSCAPES_inst_labelIds</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="c1"># flip key-value</span>
-<span class="n">trainId2label</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">label2trainId</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+<span class="n">CITYSCAPES_trainId2label</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">CITYSCAPES_label2trainId</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
 
 <div class="viewcode-block" id="one_label_mask2edge"><a class="viewcode-back" href="../../../../../pyEdgeEval.common.multi_label.datasets.html#pyEdgeEval.common.multi_label.datasets.otf_cityscapes.one_label_mask2edge">[docs]</a><span class="k">def</span> <span class="nf">one_label_mask2edge</span><span class="p">(</span>
@@ -206,7 +207,7 @@
     <span class="n">kill_internal</span><span class="p">,</span>
     <span class="n">skip_if_nonexistent</span><span class="p">,</span>
     <span class="n">radius</span><span class="p">,</span>
-    <span class="n">num_labels</span><span class="o">=</span><span class="mi">34</span><span class="p">,</span>
+    <span class="n">labels</span><span class="o">=</span><span class="n">CITYSCAPES_labelIds</span><span class="p">,</span>
     <span class="n">ignore_labels</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
@@ -220,7 +221,7 @@
     <span class="n">cat_idx</span> <span class="o">=</span> <span class="n">category</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># category is indexed from 1</span>
 
     <span class="c1"># get corresponding label</span>
-    <span class="n">label</span> <span class="o">=</span> <span class="n">trainId2label</span><span class="p">[</span><span class="n">cat_idx</span><span class="p">]</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">CITYSCAPES_trainId2label</span><span class="p">[</span><span class="n">cat_idx</span><span class="p">]</span>
 
     <span class="c1"># load everything (not trainIds)</span>
     <span class="n">seg_label</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">seg_path</span><span class="p">)</span>
@@ -238,7 +239,7 @@
     <span class="n">pred</span> <span class="o">=</span> <span class="p">(</span><span class="n">pred</span> <span class="o">/</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
 
     <span class="c1"># convert to onehot</span>
-    <span class="n">onehot_mask</span> <span class="o">=</span> <span class="n">mask_to_onehot</span><span class="p">(</span><span class="n">seg_label</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">num_labels</span><span class="p">)</span>
+    <span class="n">onehot_mask</span> <span class="o">=</span> <span class="n">mask_to_onehot</span><span class="p">(</span><span class="n">seg_label</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
 
     <span class="c1"># generate edge</span>
     <span class="k">if</span> <span class="n">inst_path</span><span class="p">:</span>
@@ -249,7 +250,7 @@
             <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
             <span class="n">mask</span><span class="o">=</span><span class="n">onehot_mask</span><span class="p">,</span>
             <span class="n">inst_mask</span><span class="o">=</span><span class="n">inst_mask</span><span class="p">,</span>
-            <span class="n">inst_labelIds</span><span class="o">=</span><span class="n">inst_labelIds</span><span class="p">,</span>
+            <span class="n">inst_labelIds</span><span class="o">=</span><span class="n">CITYSCAPES_inst_labelIds</span><span class="p">,</span>
             <span class="n">ignore_labelIds</span><span class="o">=</span><span class="n">ignore_labels</span><span class="p">,</span>
             <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span>
         <span class="p">)</span>
@@ -263,7 +264,7 @@
 
     <span class="c1"># convert to trainIds (edge and segmentation)</span>
     <span class="c1"># edge = edge_label2trainId(edge=edge_label, label2trainId=label2trainId)</span>
-    <span class="n">seg</span> <span class="o">=</span> <span class="n">mask_label2trainId</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">seg_label</span><span class="p">,</span> <span class="n">label2trainId</span><span class="o">=</span><span class="n">label2trainId</span><span class="p">)</span>
+    <span class="n">seg</span> <span class="o">=</span> <span class="n">mask_label2trainId</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">seg_label</span><span class="p">,</span> <span class="n">label2trainId</span><span class="o">=</span><span class="n">CITYSCAPES_label2trainId</span><span class="p">)</span>
 
     <span class="c1"># cat_edge = edge[cat_idx, :, :]</span>
     <span class="k">if</span> <span class="n">kill_internal</span><span class="p">:</span>

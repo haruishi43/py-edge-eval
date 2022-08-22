@@ -175,7 +175,7 @@
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span>
-        <span class="n">onehot_mask</span> <span class="o">=</span> <span class="n">mask_to_onehot</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LABEL_IDS</span><span class="p">))</span>
+        <span class="n">onehot_mask</span> <span class="o">=</span> <span class="n">mask_to_onehot</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">LABEL_IDS</span><span class="p">)</span>
         <span class="n">edge</span> <span class="o">=</span> <span class="n">mask2edge</span><span class="p">(</span>
             <span class="n">run_type</span><span class="o">=</span><span class="s2">&quot;loop&quot;</span><span class="p">,</span>
             <span class="n">instance_sensitive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -217,7 +217,7 @@
         <span class="k">assert</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span>
         <span class="k">assert</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">inst_mask</span><span class="o">.</span><span class="n">shape</span>
         <span class="c1"># mask is uint8, inst_mask is int32</span>
-        <span class="n">onehot_mask</span> <span class="o">=</span> <span class="n">mask_to_onehot</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LABEL_IDS</span><span class="p">))</span>
+        <span class="n">onehot_mask</span> <span class="o">=</span> <span class="n">mask_to_onehot</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">LABEL_IDS</span><span class="p">)</span>
         <span class="n">edge</span> <span class="o">=</span> <span class="n">mask2edge</span><span class="p">(</span>
             <span class="n">run_type</span><span class="o">=</span><span class="s2">&quot;loop&quot;</span><span class="p">,</span>
             <span class="n">instance_sensitive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
