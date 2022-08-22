@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyEdgeEval.utils package &mdash; pyEdgeEval 0.0.5 documentation</title>
+  <title>pyEdgeEval.utils package &mdash; pyEdgeEval 0.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> pyEdgeEval
           </a>
               <div class="version">
-                0.0.5
+                0.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -109,8 +109,8 @@
 <section id="module-pyEdgeEval.utils.convert_formats">
 <span id="pyedgeeval-utils-convert-formats-module"></span><h2>pyEdgeEval.utils.convert_formats module<a class="headerlink" href="#module-pyEdgeEval.utils.convert_formats" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="pyEdgeEval.utils.convert_formats.mask_to_onehot">
-<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.convert_formats.</span></span><span class="sig-name descname"><span class="pre">mask_to_onehot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/utils/convert_formats.html#mask_to_onehot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.convert_formats.mask_to_onehot" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyEdgeEval.utils.convert_formats.mask2onehot">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.convert_formats.</span></span><span class="sig-name descname"><span class="pre">mask2onehot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/utils/convert_formats.html#mask2onehot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.convert_formats.mask2onehot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a segmentation mask (H,W) to (K,H,W) where the last dim is a one
 hot encoding vector</p>
 </dd></dl>
@@ -498,8 +498,8 @@ be registered when the method is called for the first time.</p>
 <section id="module-pyEdgeEval.utils">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyEdgeEval.utils" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="pyEdgeEval.utils.mask_to_onehot">
-<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.</span></span><span class="sig-name descname"><span class="pre">mask_to_onehot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/utils/convert_formats.html#mask_to_onehot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.mask_to_onehot" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyEdgeEval.utils.mask2onehot">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.</span></span><span class="sig-name descname"><span class="pre">mask2onehot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/utils/convert_formats.html#mask2onehot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.mask2onehot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a segmentation mask (H,W) to (K,H,W) where the last dim is a one
 hot encoding vector</p>
 </dd></dl>

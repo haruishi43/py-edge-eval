@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyEdgeEval.edge_tools.transforms &mdash; pyEdgeEval 0.0.5 documentation</title>
+  <title>pyEdgeEval.edge_tools.transforms &mdash; pyEdgeEval 0.1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -29,7 +29,7 @@
             <a href="../../../index.html" class="icon icon-home"> pyEdgeEval
           </a>
               <div class="version">
-                0.0.5
+                0.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -78,7 +78,7 @@
 <span class="sd">&quot;&quot;&quot;Mask2Edge transform module.&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">pyEdgeEval.utils</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">mask_to_onehot</span><span class="p">,</span>
+    <span class="n">mask2onehot</span><span class="p">,</span>
     <span class="n">mask_label2trainId</span><span class="p">,</span>
     <span class="n">edge_label2trainId</span><span class="p">,</span>
 <span class="p">)</span>
@@ -107,7 +107,7 @@
 <span class="sd">        mask (np.ndarray): input one-hot mask</span>
 <span class="sd">        inst_mask (np.ndarray): instance mask (required for instance sensitive)</span>
 <span class="sd">        inst_labelIds (List[int]): labels that have instances</span>
-<span class="sd">        ignore_labelIds (List[int]): ignore labelIds</span>
+<span class="sd">        ignore_indices (List[int]): ignore indices (corresponds to order of labelIds)</span>
 <span class="sd">        radius (int): edge radius (thickness)</span>
 <span class="sd">        use_cv2 (bool): whether to use ``cv2`` distance transform (default ``True``)</span>
 <span class="sd">        quality (int): default 0</span>
@@ -148,7 +148,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">labelIds</span><span class="p">,</span>
-        <span class="n">ignore_labelIds</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">ignore_indices</span><span class="o">=</span><span class="p">[],</span>
         <span class="n">label2trainId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
         <span class="n">use_cv2</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -157,9 +157,9 @@
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">labelIds</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;ERR: there should be more than 1 labels&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">LABEL_IDS</span> <span class="o">=</span> <span class="n">labelIds</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span>
-            <span class="n">ignore_labelIds</span><span class="p">,</span> <span class="nb">list</span>
+            <span class="n">ignore_indices</span><span class="p">,</span> <span class="nb">list</span>
         <span class="p">),</span> <span class="s2">&quot;ERR: ignore labelIds should be a list&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_labelIds</span> <span class="o">=</span> <span class="n">ignore_labelIds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_indices</span> <span class="o">=</span> <span class="n">ignore_indices</span>
         <span class="k">assert</span> <span class="n">radius</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;ERR: radius should be equal or greater than 1&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span>
 
@@ -175,12 +175,12 @@
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span>
-        <span class="n">onehot_mask</span> <span class="o">=</span> <span class="n">mask_to_onehot</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">LABEL_IDS</span><span class="p">)</span>
+        <span class="n">onehot_mask</span> <span class="o">=</span> <span class="n">mask2onehot</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">LABEL_IDS</span><span class="p">)</span>
         <span class="n">edge</span> <span class="o">=</span> <span class="n">mask2edge</span><span class="p">(</span>
             <span class="n">run_type</span><span class="o">=</span><span class="s2">&quot;loop&quot;</span><span class="p">,</span>
             <span class="n">instance_sensitive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">mask</span><span class="o">=</span><span class="n">onehot_mask</span><span class="p">,</span>
-            <span class="n">ignore_labelIds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_labelIds</span><span class="p">,</span>
+            <span class="n">ignore_indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_indices</span><span class="p">,</span>
             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_mask2bdry_kwargs</span><span class="p">,</span>
         <span class="p">)</span>
 
@@ -217,14 +217,14 @@
         <span class="k">assert</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span>
         <span class="k">assert</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">inst_mask</span><span class="o">.</span><span class="n">shape</span>
         <span class="c1"># mask is uint8, inst_mask is int32</span>
-        <span class="n">onehot_mask</span> <span class="o">=</span> <span class="n">mask_to_onehot</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">LABEL_IDS</span><span class="p">)</span>
+        <span class="n">onehot_mask</span> <span class="o">=</span> <span class="n">mask2onehot</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">LABEL_IDS</span><span class="p">)</span>
         <span class="n">edge</span> <span class="o">=</span> <span class="n">mask2edge</span><span class="p">(</span>
             <span class="n">run_type</span><span class="o">=</span><span class="s2">&quot;loop&quot;</span><span class="p">,</span>
             <span class="n">instance_sensitive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">mask</span><span class="o">=</span><span class="n">onehot_mask</span><span class="p">,</span>
             <span class="n">inst_mask</span><span class="o">=</span><span class="n">inst_mask</span><span class="p">,</span>
             <span class="n">inst_labelIds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inst_labelIds</span><span class="p">,</span>
-            <span class="n">ignore_labelIds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_labelIds</span><span class="p">,</span>
+            <span class="n">ignore_indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_indices</span><span class="p">,</span>
             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_mask2bdry_kwargs</span><span class="p">,</span>
         <span class="p">)</span>
 

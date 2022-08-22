@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyEdgeEval.edge_tools.mask2edge_mp &mdash; pyEdgeEval 0.0.5 documentation</title>
+  <title>pyEdgeEval.edge_tools.mask2edge_mp &mdash; pyEdgeEval 0.1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -29,7 +29,7 @@
             <a href="../../../index.html" class="icon icon-home"> pyEdgeEval
           </a>
               <div class="version">
-                0.0.5
+                0.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -112,7 +112,7 @@
     <span class="n">edge_dtype</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;edge_dtype&quot;</span><span class="p">]</span>
     <span class="n">ignore_mask_shape</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;ignore_mask_shape&quot;</span><span class="p">]</span>
     <span class="n">ignore_mask_dtype</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;ignore_mask_dtype&quot;</span><span class="p">]</span>
-    <span class="n">ignore_labelIds</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;ignore_labelIds&quot;</span><span class="p">]</span>
+    <span class="n">ignore_indices</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;ignore_indices&quot;</span><span class="p">]</span>
     <span class="n">mask2bdry_kwargs</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;mask2bdry_kwargs&quot;</span><span class="p">]</span>
 
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;mask&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">mask_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mask_shape</span><span class="p">)</span>
@@ -123,7 +123,7 @@
 
     <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">ignore_labelIds</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">ignore_indices</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># if there are no class labels in the mask</span>
@@ -140,7 +140,7 @@
 
 <div class="viewcode-block" id="mp_mask2edge"><a class="viewcode-back" href="../../../pyEdgeEval.edge_tools.html#pyEdgeEval.edge_tools.mask2edge_mp.mp_mask2edge">[docs]</a><span class="k">def</span> <span class="nf">mp_mask2edge</span><span class="p">(</span>
     <span class="n">mask</span><span class="p">,</span>
-    <span class="n">ignore_labelIds</span><span class="p">,</span>
+    <span class="n">ignore_indices</span><span class="p">,</span>
     <span class="n">nproc</span><span class="p">,</span>
     <span class="n">radius</span><span class="p">,</span>
     <span class="n">use_cv2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -155,7 +155,7 @@
 
     <span class="c1"># make ignore mask</span>
     <span class="n">ignore_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ignore_labelIds</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ignore_indices</span><span class="p">:</span>
         <span class="n">ignore_mask</span> <span class="o">+=</span> <span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
     <span class="n">mask2bdry_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
@@ -195,7 +195,7 @@
         <span class="n">ignore_mask</span><span class="o">=</span><span class="n">mp_ignore_mask</span><span class="p">,</span>
         <span class="n">ignore_mask_dtype</span><span class="o">=</span><span class="n">ignore_mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
         <span class="n">ignore_mask_shape</span><span class="o">=</span><span class="n">ignore_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
-        <span class="n">ignore_labelIds</span><span class="o">=</span><span class="n">ignore_labelIds</span><span class="p">,</span>
+        <span class="n">ignore_indices</span><span class="o">=</span><span class="n">ignore_indices</span><span class="p">,</span>
         <span class="n">mask2bdry_kwargs</span><span class="o">=</span><span class="n">mask2bdry_kwargs</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -222,7 +222,7 @@
     <span class="n">edge_dtype</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;edge_dtype&quot;</span><span class="p">]</span>
     <span class="n">ignore_mask_shape</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;ignore_mask_shape&quot;</span><span class="p">]</span>
     <span class="n">ignore_mask_dtype</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;ignore_mask_dtype&quot;</span><span class="p">]</span>
-    <span class="n">ignore_labelIds</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;ignore_labelIds&quot;</span><span class="p">]</span>
+    <span class="n">ignore_indices</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;ignore_indices&quot;</span><span class="p">]</span>
     <span class="n">label_inst</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;label_inst&quot;</span><span class="p">]</span>
     <span class="n">mask2bdry_kwargs</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;mask2bdry_kwargs&quot;</span><span class="p">]</span>
 
@@ -237,7 +237,7 @@
 
     <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">ignore_labelIds</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">ignore_indices</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># if there are no class labels in the mask</span>
@@ -271,7 +271,7 @@
     <span class="n">mask</span><span class="p">,</span>
     <span class="n">inst_mask</span><span class="p">,</span>
     <span class="n">inst_labelIds</span><span class="p">,</span>
-    <span class="n">ignore_labelIds</span><span class="p">,</span>
+    <span class="n">ignore_indices</span><span class="p">,</span>
     <span class="n">nproc</span><span class="p">,</span>
     <span class="n">radius</span><span class="p">,</span>
     <span class="n">use_cv2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -286,7 +286,7 @@
 
     <span class="c1"># make ignore mask</span>
     <span class="n">ignore_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ignore_labelIds</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ignore_indices</span><span class="p">:</span>
         <span class="n">ignore_mask</span> <span class="o">+=</span> <span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
     <span class="c1"># make sure that instance labels are sorted</span>
@@ -352,7 +352,7 @@
         <span class="n">ignore_mask</span><span class="o">=</span><span class="n">mp_ignore_mask</span><span class="p">,</span>
         <span class="n">ignore_mask_dtype</span><span class="o">=</span><span class="n">ignore_mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
         <span class="n">ignore_mask_shape</span><span class="o">=</span><span class="n">ignore_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
-        <span class="n">ignore_labelIds</span><span class="o">=</span><span class="n">ignore_labelIds</span><span class="p">,</span>
+        <span class="n">ignore_indices</span><span class="o">=</span><span class="n">ignore_indices</span><span class="p">,</span>
         <span class="n">label_inst</span><span class="o">=</span><span class="n">label_inst</span><span class="p">,</span>
         <span class="n">mask2bdry_kwargs</span><span class="o">=</span><span class="n">mask2bdry_kwargs</span><span class="p">,</span>
     <span class="p">)</span>
