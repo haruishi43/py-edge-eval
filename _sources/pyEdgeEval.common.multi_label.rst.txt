@@ -20,6 +20,14 @@ pyEdgeEval.common.multi\_label.calculate\_metrics module
    :undoc-members:
    :show-inheritance:
 
+pyEdgeEval.common.multi\_label.dataset\_attributes module
+---------------------------------------------------------
+
+.. automodule:: pyEdgeEval.common.multi_label.dataset_attributes
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pyEdgeEval.common.multi\_label.edge\_decoding module
 ----------------------------------------------------
 
