@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
 import argparse
+import os.path as osp
+import time
 
 from pyEdgeEval.evaluators.bsds import BSDS500Evaluator
+from pyEdgeEval.utils import get_root_logger
 
 
 def parse_args():
@@ -76,6 +79,15 @@ def evaluate_bsds500(
             return
 
     split = "val" if use_val else "test"
+
+    # setup logger
+    timestamp = time.strftime("%Y%m%d_%H%M%S", time.localtime())
+    log_file = osp.join(output_path, f"{timestamp}.log")
+    logger = get_root_logger(log_file=log_file, log_level="INFO")
+    logger.info("Running Cityscapes Evaluation")
+    logger.info(f"split: \t{split}")
+    logger.info(f"thresholds: \t{thresholds}")
+    logger.info(f"thin: \t{apply_thinning}")
 
     evaluator = BSDS500Evaluator(
         dataset_root=bsds_path,

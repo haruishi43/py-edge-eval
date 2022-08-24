@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
 import argparse
+import os.path as osp
+import time
 
 from pyEdgeEval.evaluators.cityscapes import CityscapesEvaluator
+from pyEdgeEval.utils import get_root_logger
 
 
 def parse_args():
@@ -21,7 +24,6 @@ def parse_args():
     parser.add_argument(
         "--categories",
         type=str,
-        default="[1, 14]",
         help="the category number to evaluate; can be multiple values'[1, 14]'",
     )
     parser.add_argument(
@@ -75,25 +77,29 @@ def evaluate_cityscapes(
 ):
     """Evaluate Cityscapes"""
 
-    # string evaluation for categories
-    categories = categories.strip()
-    try:
-        categories = [int(categories)]
-    except ValueError:
+    if categories is None:
+        print("use all categories")
+        categories = list(range(1, len(CityscapesEvaluator.CLASSES) + 1))
+    else:
+        # string evaluation for categories
+        categories = categories.strip()
         try:
-            if categories.startswith("[") and categories.endswith("]"):
-                categories = categories[1:-1]
-                categories = [int(cat.strip()) for cat in categories.split(",")]
-            else:
+            categories = [int(categories)]
+        except ValueError:
+            try:
+                if categories.startswith("[") and categories.endswith("]"):
+                    categories = categories[1:-1]
+                    categories = [int(cat.strip()) for cat in categories.split(",")]
+                else:
+                    print(
+                        "Bad categories format; should be a python list of floats (`[a, b, c]`)"
+                    )
+                    return
+            except ValueError:
                 print(
-                    "Bad categories format; should be a python list of floats (`[a, b, c]`)"
+                    "Bad categories format; should be a python list of ints (`[a, b, c]`)"
                 )
                 return
-        except ValueError:
-            print(
-                "Bad categories format; should be a python list of ints (`[a, b, c]`)"
-            )
-            return
 
     for cat in categories:
         assert 0 < cat < 20, f"category needs to be between 1 ~ 19, but got {cat}"
@@ -118,6 +124,18 @@ def evaluate_cityscapes(
                 "Bad threshold format; should be a python list of ints (`[a, b, c]`)"
             )
             return
+
+    # setup logger
+    timestamp = time.strftime("%Y%m%d_%H%M%S", time.localtime())
+    log_file = osp.join(output_path, f"{timestamp}.log")
+    logger = get_root_logger(log_file=log_file, log_level="INFO")
+    logger.info("Running Cityscapes Evaluation")
+    logger.info(f"categories: \t{categories}")
+    logger.info(f"thresholds: \t{thresholds}")
+    logger.info(f"scale: \t{scale}")
+    logger.info(f"pre-seal: \t{pre_seal}")
+    logger.info(f"thin: \t{thin}")
+    logger.info(f"nms: \t{apply_nms}")
 
     # initialize evaluator
     evaluator = CityscapesEvaluator(

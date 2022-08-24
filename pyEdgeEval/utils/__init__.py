@@ -10,6 +10,7 @@ from .convert_formats import (
 from .distance_transforms import mask2bdry
 from .logger import (
     get_logger,
+    get_root_logger,
     print_log,
 )
 from .mat_utils import (
@@ -36,6 +37,7 @@ __all__ = [
     "edge_label2trainId",
     "mask2bdry",
     "get_logger",
+    "get_root_logger",
     "print_log",
     "loadmat",
     "sparse2numpy",
