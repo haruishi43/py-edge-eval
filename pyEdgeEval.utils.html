@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyEdgeEval.utils package &mdash; pyEdgeEval 0.1.0 documentation</title>
+  <title>pyEdgeEval.utils package &mdash; pyEdgeEval 0.1.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> pyEdgeEval
           </a>
               <div class="version">
-                0.1.0
+                0.1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -565,6 +565,30 @@ Defaults to ‘w’.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>logging.Logger</em> – The expected logger.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.utils.get_root_logger">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.</span></span><span class="sig-name descname"><span class="pre">get_root_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/utils/logger.html#get_root_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.get_root_logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the root logger.</p>
+<p>The logger will be initialized if it has not been initialized. By default a
+StreamHandler will be added. If <cite>log_file</cite> is specified, a FileHandler will
+also be added. The name of the root logger is the top-level package name,
+e.g., “potato”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>log_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> | </em><em>None</em>) – The log filename. If specified, a FileHandler
+will be added to the root logger.</p></li>
+<li><p><strong>log_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The root logger level. Note that only the process of
+rank 0 is affected, while other processes will set the level to
+“Error” and be silent most of the time.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>logging.Logger</em> – The root logger.</p>
 </dd>
 </dl>
 </dd></dl>
