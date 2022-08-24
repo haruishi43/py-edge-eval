@@ -5,7 +5,7 @@ import os.path as osp
 import time
 
 from pyEdgeEval.evaluators.bsds import BSDS500Evaluator
-from pyEdgeEval.utils import get_root_logger
+from pyEdgeEval.utils import get_root_logger, mkdir_or_exist
 
 
 def parse_args():
@@ -77,6 +77,8 @@ def evaluate_bsds500(
                 "Bad threshold format; should be a python list of ints (`[a, b, c]`)"
             )
             return
+
+    mkdir_or_exist(output_path)
 
     split = "val" if use_val else "test"
 

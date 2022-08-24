@@ -12,6 +12,14 @@ pyEdgeEval.evaluators.base module
    :undoc-members:
    :show-inheritance:
 
+pyEdgeEval.evaluators.binary\_evaluator module
+----------------------------------------------
+
+.. automodule:: pyEdgeEval.evaluators.binary_evaluator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pyEdgeEval.evaluators.bsds module
 ---------------------------------
 
@@ -32,6 +40,14 @@ pyEdgeEval.evaluators.half\_cityscapes module
 ---------------------------------------------
 
 .. automodule:: pyEdgeEval.evaluators.half_cityscapes
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pyEdgeEval.evaluators.multilabel\_evaluator module
+--------------------------------------------------
+
+.. automodule:: pyEdgeEval.evaluators.multilabel_evaluator
    :members:
    :undoc-members:
    :show-inheritance:
