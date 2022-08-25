@@ -156,8 +156,8 @@ def _evaluate_single(
     pred = Image.open(pred_path)
 
     # rescale
-    seg_label = seg_label.resize((width, height), Image.NEAREST)
-    pred = pred.resize((width, height), Image.NEAREST)
+    seg_label = seg_label.resize((width, height), Image.Resampling.NEAREST)
+    pred = pred.resize((width, height), Image.Resampling.NEAREST)
 
     seg_label = np.array(seg_label)
     pred = np.array(pred)
@@ -169,7 +169,7 @@ def _evaluate_single(
     # generate edge
     if inst_path:
         inst_mask = Image.open(inst_path)
-        inst_mask = inst_mask.resize((width, height), Image.NEAREST)
+        inst_mask = inst_mask.resize((width, height), Image.Resampling.NEAREST)
         inst_mask = np.array(inst_mask)
         edge = one_label_instance_mask2edge(
             label=label,

@@ -43,14 +43,14 @@ def _evaluate_single(
 
     # load pred
     pred = Image.open(pred_path)
-    pred = pred.resize((width, height), Image.NEAREST)
+    pred = pred.resize((width, height), Image.Resampling.NEAREST)
     pred = np.array(pred)
     pred = (pred / 255).astype(float)
 
     if kill_internal:
         # load segmentation map
         seg = Image.open(seg_path)
-        seg = seg.resize((width, height), Image.NEAREST)
+        seg = seg.resize((width, height), Image.Resampling.NEAREST)
         seg = np.array(seg)
         assert edge.shape[1:] == seg.shape
         # obtain binary map

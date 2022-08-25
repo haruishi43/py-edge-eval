@@ -55,7 +55,7 @@ def load_scaled_edge(
     _edge = np.array(edge)
     (h, w, _) = _edge.shape
     height, width = int(h * scale + 0.5), int(w * scale + 0.5)
-    edge = edge.resize((width, height), Image.NEAREST)
+    edge = edge.resize((width, height), Image.Resampling.NEAREST)
     return edge, (height, width)
 
 

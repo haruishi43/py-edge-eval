@@ -123,7 +123,7 @@ def convert_label_to_semantic_edges(
         _img = np.array(label_img)
         h, w = _img.shape
         height, width = int(h * scale + 0.5), int(w * scale + 0.5)
-        label_img = label_img.resize((width, height), Image.NEAREST)
+        label_img = label_img.resize((width, height), Image.Resampling.NEAREST)
 
     mask = np.array(label_img)
 
@@ -138,7 +138,7 @@ def convert_label_to_semantic_edges(
         assert os.path.exists(inst_file)
         inst_img = Image.open(inst_file)
         if scale < 1:
-            inst_img = inst_img.resize((width, height), Image.NEAREST)
+            inst_img = inst_img.resize((width, height), Image.Resampling.NEAREST)
         inst_mask = np.array(inst_img)  # int32
         edge_ids = loop_instance_mask2edge(
             mask=m,

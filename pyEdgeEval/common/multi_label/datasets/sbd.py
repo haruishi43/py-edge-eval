@@ -159,7 +159,7 @@ def _evaluate_single(
 
     # load pred
     pred = Image.open(pred_path)
-    pred = pred.resize((width, height), Image.NEAREST)
+    pred = pred.resize((width, height), Image.Resampling.NEAREST)
     # pred = imread(pred_path)
     # pred = cv2.resize(pred, (width, height), cv2.INTER_NEAREST)
     pred = np.array(pred)
