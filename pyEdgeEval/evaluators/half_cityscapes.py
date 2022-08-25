@@ -49,7 +49,8 @@ class HalfCityscapesEvaluator(CityscapesEvaluator):
             self.instance_sensitive = False
         elif eval_mode == "post-seal":
             print_log("Using Post-SEAL params", logger=self._logger)
-            self.max_dist = 0.0035
+            print_log(f"Using max_dist: {max_dist}", logger=self._logger)
+            self.max_dist = max_dist
             self.kill_internal = False
             self.skip_if_nonexistent = False
             self.instance_sensitive = True
