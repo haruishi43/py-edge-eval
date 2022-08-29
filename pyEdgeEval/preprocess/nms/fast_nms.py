@@ -57,6 +57,12 @@ def fast_nms(
     ox, oy = grad2(conv_tri(edge, 4))
     oxx, _ = grad2(ox)
     oxy, oyy = grad2(oy)
+    # FIXME: oxx should not be negative
+
+    # TODO: avoid divide by zero and replace nan values afterwards?
+    # use np.divide
+    # https://stackoverflow.com/questions/25087769/runtimewarning-divide-by-zero-error-how-to-avoid-python-numpy
+
     val = oyy * np.sign(-oxy) / (oxx + 1e-5)  # divide by zero? but its fine
     ori = np.mod(np.arctan(val), np.pi)
     # r, s, m = 1, 5, float(1.01)
