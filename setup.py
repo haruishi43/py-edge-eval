@@ -157,7 +157,6 @@ setup(
             "data",
             ".readme",
             "build",
-            "notebooks",
         ]
     ),
     setup_requires=["numpy", "Cython"],
