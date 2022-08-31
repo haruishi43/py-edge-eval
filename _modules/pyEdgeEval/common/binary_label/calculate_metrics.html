@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyEdgeEval.common.binary_label.calculate_metrics &mdash; pyEdgeEval 0.1.1 documentation</title>
+  <title>pyEdgeEval.common.binary_label.calculate_metrics &mdash; pyEdgeEval 0.1.3 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
@@ -29,7 +29,7 @@
             <a href="../../../../index.html" class="icon icon-home"> pyEdgeEval
           </a>
               <div class="version">
-                0.1.1
+                0.1.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -76,125 +76,49 @@
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">skimage.util</span> <span class="kn">import</span> <span class="n">img_as_float</span>
-<span class="kn">from</span> <span class="nn">skimage.io</span> <span class="kn">import</span> <span class="n">imread</span>
 
 <span class="kn">from</span> <span class="nn">pyEdgeEval.common.metrics</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">compute_rec_prec_f1</span><span class="p">,</span>
     <span class="n">interpolated_max_scores</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pyEdgeEval.common.binary_label.evaluate_boundaries</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">evaluate_boundaries_threshold</span><span class="p">,</span>
-<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyEdgeEval.common.utils</span> <span class="kn">import</span> <span class="n">check_thresholds</span>
 <span class="kn">from</span> <span class="nn">pyEdgeEval.utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">track_parallel_progress</span><span class="p">,</span>
     <span class="n">track_progress</span><span class="p">,</span>
-    <span class="n">loadmat</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;calculate_metrics&quot;</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">load_bsds_gt_boundaries</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_loader</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;BSDS GT Boundaries</span>
-
-<span class="sd">    - there are multiple boundaries because there are multiple annotators</span>
-<span class="sd">    - uint8</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">new_loader</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">pymatreader</span> <span class="kn">import</span> <span class="n">read_mat</span>
-
-        <span class="n">gt</span> <span class="o">=</span> <span class="n">read_mat</span><span class="p">(</span><span class="n">path</span><span class="p">)[</span><span class="s2">&quot;groundTruth&quot;</span><span class="p">]</span>  <span class="c1"># list</span>
-        <span class="n">num_gts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gt</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">gt</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;Boundaries&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_gts</span><span class="p">)]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># FIXME: confusing data organization with scipy</span>
-        <span class="n">gt</span> <span class="o">=</span> <span class="n">loadmat</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="kc">False</span><span class="p">)[</span><span class="s2">&quot;groundTruth&quot;</span><span class="p">]</span>  <span class="c1"># np.ndarray</span>
-        <span class="n">num_gts</span> <span class="o">=</span> <span class="n">gt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">gt</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">][</span><span class="s2">&quot;Boundaries&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_gts</span><span class="p">)]</span>
-
-
-<span class="k">def</span> <span class="nf">load_predictions</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="n">img</span> <span class="o">=</span> <span class="n">imread</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="p">(</span>
-        <span class="n">img</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span>
-    <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;ERR: img needs to be uint8, but got</span><span class="si">{</span><span class="n">img</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">return</span> <span class="n">img_as_float</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_evaluate_single</span><span class="p">(</span>
-    <span class="n">gt_path</span><span class="p">,</span>
-    <span class="n">pred_path</span><span class="p">,</span>
-    <span class="n">scale</span><span class="p">,</span>
-    <span class="n">max_dist</span><span class="p">,</span>
-    <span class="n">thresholds</span><span class="p">,</span>
-    <span class="n">apply_thinning</span><span class="p">,</span>
-    <span class="n">apply_nms</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Evaluate a single sample (sub-routine)</span>
-
-<span class="sd">    NOTE: don&#39;t set defaults for easier debugging</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># checks and converts thresholds</span>
-    <span class="n">thresholds</span> <span class="o">=</span> <span class="n">check_thresholds</span><span class="p">(</span><span class="n">thresholds</span><span class="p">)</span>
-
-    <span class="n">pred</span> <span class="o">=</span> <span class="n">load_predictions</span><span class="p">(</span><span class="n">pred_path</span><span class="p">)</span>
-    <span class="n">gts</span> <span class="o">=</span> <span class="n">load_bsds_gt_boundaries</span><span class="p">(</span><span class="n">gt_path</span><span class="p">)</span>
-
-    <span class="c1"># TODO: scale inputs</span>
-
-    <span class="c1"># evaluate multi-label boundaries</span>
-    <span class="n">count_r</span><span class="p">,</span> <span class="n">sum_r</span><span class="p">,</span> <span class="n">count_p</span><span class="p">,</span> <span class="n">sum_p</span> <span class="o">=</span> <span class="n">evaluate_boundaries_threshold</span><span class="p">(</span>
-        <span class="n">thresholds</span><span class="o">=</span><span class="n">thresholds</span><span class="p">,</span>
-        <span class="n">pred</span><span class="o">=</span><span class="n">pred</span><span class="p">,</span>
-        <span class="n">gts</span><span class="o">=</span><span class="n">gts</span><span class="p">,</span>
-        <span class="n">max_dist</span><span class="o">=</span><span class="n">max_dist</span><span class="p">,</span>
-        <span class="n">apply_thinning</span><span class="o">=</span><span class="n">apply_thinning</span><span class="p">,</span>
-        <span class="n">apply_nms</span><span class="o">=</span><span class="n">apply_nms</span><span class="p">,</span>
-        <span class="n">nms_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
-            <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="n">s</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-            <span class="n">m</span><span class="o">=</span><span class="mf">1.01</span><span class="p">,</span>
-            <span class="n">half_prec</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="p">),</span>
-    <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">count_r</span><span class="p">,</span> <span class="n">sum_r</span><span class="p">,</span> <span class="n">count_p</span><span class="p">,</span> <span class="n">sum_p</span>
-
-
-<span class="k">def</span> <span class="nf">wrapper_eval_single</span><span class="p">(</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Wrapper function to unpack all the kwargs&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_evaluate_single</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-
 <div class="viewcode-block" id="calculate_metrics"><a class="viewcode-back" href="../../../../pyEdgeEval.common.binary_label.html#pyEdgeEval.common.binary_label.calculate_metrics.calculate_metrics">[docs]</a><span class="k">def</span> <span class="nf">calculate_metrics</span><span class="p">(</span>
+    <span class="n">eval_single</span><span class="p">,</span>
     <span class="n">thresholds</span><span class="p">,</span>
     <span class="n">samples</span><span class="p">,</span>
     <span class="n">nproc</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Main function to calculate boundary metrics</span>
 
-<span class="sd">    :param thresholds: thresholds used for evaluation which can be in the form of</span>
-<span class="sd">        (int, float, list, np.ndarray)</span>
-<span class="sd">    :param samples: list of dicts containing file paths and evaluation parameters</span>
-<span class="sd">    :param nproc: integer that specifies the number of processes to spawn</span>
+<span class="sd">    Args:</span>
+<span class="sd">        eval_single (Callable): function that takes samples (dict) as input</span>
+<span class="sd">        thresholds (int, float, list, np.ndarray): thresholds used for evaluation</span>
+<span class="sd">        samples (dict): list of dicts containing file paths and evaluation parameters</span>
+<span class="sd">        nproc: integer that specifies the number of processes to spawn</span>
 
-<span class="sd">    :return: tuple of results</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict of results</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># initial run (process heavy)</span>
     <span class="k">if</span> <span class="n">nproc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">sample_metrics</span> <span class="o">=</span> <span class="n">track_parallel_progress</span><span class="p">(</span>
-            <span class="n">wrapper_eval_single</span><span class="p">,</span>
+            <span class="n">eval_single</span><span class="p">,</span>
             <span class="n">samples</span><span class="p">,</span>
             <span class="n">nproc</span><span class="o">=</span><span class="n">nproc</span><span class="p">,</span>
             <span class="n">keep_order</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">sample_metrics</span> <span class="o">=</span> <span class="n">track_progress</span><span class="p">(</span>
-            <span class="n">wrapper_eval_single</span><span class="p">,</span>
+            <span class="n">eval_single</span><span class="p">,</span>
             <span class="n">samples</span><span class="p">,</span>
         <span class="p">)</span>
 

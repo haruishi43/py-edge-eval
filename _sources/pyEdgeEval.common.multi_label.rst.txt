@@ -1,14 +1,6 @@
 pyEdgeEval.common.multi\_label package
 ======================================
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   pyEdgeEval.common.multi_label.datasets
-
 Submodules
 ----------
 
@@ -16,14 +8,6 @@ pyEdgeEval.common.multi\_label.calculate\_metrics module
 --------------------------------------------------------
 
 .. automodule:: pyEdgeEval.common.multi_label.calculate_metrics
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pyEdgeEval.common.multi\_label.dataset\_attributes module
----------------------------------------------------------
-
-.. automodule:: pyEdgeEval.common.multi_label.dataset_attributes
    :members:
    :undoc-members:
    :show-inheritance:

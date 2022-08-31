@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyEdgeEval.evaluators.cityscapes &mdash; pyEdgeEval 0.1.1 documentation</title>
+  <title>pyEdgeEval.evaluators.cityscapes &mdash; pyEdgeEval 0.1.3 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -29,7 +29,7 @@
             <a href="../../../index.html" class="icon icon-home"> pyEdgeEval
           </a>
               <div class="version">
-                0.1.1
+                0.1.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -86,6 +86,7 @@
     <span class="n">calculate_metrics</span><span class="p">,</span>
     <span class="n">save_category_results</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyEdgeEval.datasets</span> <span class="kn">import</span> <span class="n">cityscapes_eval_single</span>
 <span class="kn">from</span> <span class="nn">pyEdgeEval.utils</span> <span class="kn">import</span> <span class="n">print_log</span>
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseMultilabelEvaluator</span>
@@ -240,7 +241,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">instance_sensitive</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">elif</span> <span class="n">eval_mode</span> <span class="o">==</span> <span class="s2">&quot;post-seal&quot;</span><span class="p">:</span>
             <span class="n">print_log</span><span class="p">(</span><span class="s2">&quot;Using Post-SEAL params&quot;</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">max_dist</span> <span class="o">=</span> <span class="mf">0.0035</span>
+            <span class="n">print_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using max_dist: </span><span class="si">{</span><span class="n">max_dist</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_dist</span> <span class="o">=</span> <span class="n">max_dist</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">kill_internal</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">skip_if_nonexistent</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">instance_sensitive</span> <span class="o">=</span> <span class="kc">True</span>
@@ -348,10 +350,10 @@
 
         <span class="c1"># evaluate</span>
         <span class="p">(</span><span class="n">sample_metrics</span><span class="p">,</span> <span class="n">threshold_metrics</span><span class="p">,</span> <span class="n">overall_metric</span><span class="p">)</span> <span class="o">=</span> <span class="n">calculate_metrics</span><span class="p">(</span>
+            <span class="n">eval_single</span><span class="o">=</span><span class="n">cityscapes_eval_single</span><span class="p">,</span>
             <span class="n">thresholds</span><span class="o">=</span><span class="n">thresholds</span><span class="p">,</span>
             <span class="n">samples</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
             <span class="n">nproc</span><span class="o">=</span><span class="n">nproc</span><span class="p">,</span>
-            <span class="n">dataset_type</span><span class="o">=</span><span class="s2">&quot;cityscapes&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="c1"># save metrics</span>

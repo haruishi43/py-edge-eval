@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyEdgeEval.common.multi_label.evaluate_boundaries &mdash; pyEdgeEval 0.1.1 documentation</title>
+  <title>pyEdgeEval.common.multi_label.evaluate_boundaries &mdash; pyEdgeEval 0.1.3 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
@@ -29,7 +29,7 @@
             <a href="../../../../index.html" class="icon icon-home"> pyEdgeEval
           </a>
               <div class="version">
-                0.1.1
+                0.1.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -105,32 +105,34 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Evaluate the accuracy of a predicted boundary and a range of thresholds</span>
 
-<span class="sd">    :param thresholds: a 1D array specifying the thresholds</span>
-<span class="sd">    :param pred: the predicted boundaries as a (H,W)</span>
-<span class="sd">        floating point array where each pixel represents the strength of the</span>
-<span class="sd">        predicted boundary</span>
-<span class="sd">    :param gt: ground truth boundary, as returned</span>
-<span class="sd">        by the `load_boundary` or `boundary` methods</span>
-<span class="sd">    :param gt_seg: ground truth segmentation data needed for `kill_internal`</span>
-<span class="sd">    :param max_dist: (default=0.02) maximum distance parameter</span>
-<span class="sd">        used for determining pixel matches. This value is multiplied by the</span>
-<span class="sd">        length of the diagonal of the image to get the threshold used</span>
-<span class="sd">        for matching pixels.</span>
-<span class="sd">    :param apply_thinning: (default=True) if True, apply morphologial</span>
-<span class="sd">        thinning to the predicted boundaries before evaluation</span>
-<span class="sd">    :param kill_internal: (default=True) remove countors inside the segmentation mask</span>
-<span class="sd">    :param skip_if_nonexistent: (default=True) this will skip the evaluation and</span>
-<span class="sd">        disregards all false positives if there are no boundaries in the GT</span>
-<span class="sd">    :param apply_nms: (default=False) apply a fast nms preprocess</span>
-<span class="sd">    :param nms_kwargs: arguments for nms process</span>
+<span class="sd">    Args:</span>
+<span class="sd">        thresholds: a 1D array specifying the thresholds</span>
+<span class="sd">        pred: the predicted boundaries as a (H,W) floating point array where</span>
+<span class="sd">            each pixel represents the strength of the predicted boundary</span>
+<span class="sd">        gt: ground truth boundary, as returned by the `load_boundary` or</span>
+<span class="sd">            `boundary` methods</span>
+<span class="sd">        gt_seg: ground truth segmentation data needed for `kill_internal`</span>
+<span class="sd">        max_dist: (default=0.02) maximum distance parameter used for</span>
+<span class="sd">            determining pixel matches. This value is multiplied by the</span>
+<span class="sd">            length of the diagonal of the image to get the threshold used</span>
+<span class="sd">            for matching pixels.</span>
+<span class="sd">        apply_thinning: (default=True) if True, apply morphologial</span>
+<span class="sd">            thinning to the predicted boundaries before evaluation</span>
+<span class="sd">        kill_internal: (default=True) remove countors inside the</span>
+<span class="sd">            segmentation mask</span>
+<span class="sd">        skip_if_nonexistent: (default=True) this will skip the evaluation and</span>
+<span class="sd">            disregards all false positives if there are no boundaries in the GT</span>
+<span class="sd">        apply_nms: (default=False) apply a fast nms preprocess</span>
+<span class="sd">        nms_kwargs: arguments for nms process</span>
 
-<span class="sd">    :return: tuple `(count_r, sum_r, count_p, sum_p, thresholds)` where each</span>
-<span class="sd">        of the first four entries are arrays that can be used to compute</span>
-<span class="sd">        recall and precision at each threshold with:</span>
-<span class="sd">        ```</span>
-<span class="sd">        recall = count_r / (sum_r + (sum_r == 0))</span>
-<span class="sd">        precision = count_p / (sum_p + (sum_p == 0))</span>
-<span class="sd">        ```</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple `(count_r, sum_r, count_p, sum_p, thresholds)` where each</span>
+<span class="sd">            of the first four entries are arrays that can be used to compute</span>
+<span class="sd">            recall and precision at each threshold with:</span>
+<span class="sd">            ```</span>
+<span class="sd">            recall = count_r / (sum_r + (sum_r == 0))</span>
+<span class="sd">            precision = count_p / (sum_p + (sum_p == 0))</span>
+<span class="sd">            ```</span>
 
 <span class="sd">    NOTE: compared to BSDS500, we don&#39;t have multiple GTs</span>
 <span class="sd">    &quot;&quot;&quot;</span>

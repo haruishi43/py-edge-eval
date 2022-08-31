@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyEdgeEval.datasets.bsds &mdash; pyEdgeEval 0.1.3 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> pyEdgeEval
+          </a>
+              <div class="version">
+                0.1.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme_link.html">Edge Evaluation Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme_link.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme_link.html#evaluation-for-each-datasets">Evaluation for each datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme_link.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyEdgeEval.html">pyEdgeEval package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pyEdgeEval</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pyEdgeEval.datasets.bsds</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyEdgeEval.datasets.bsds</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">skimage.util</span> <span class="kn">import</span> <span class="n">img_as_float</span>
+<span class="kn">from</span> <span class="nn">skimage.io</span> <span class="kn">import</span> <span class="n">imread</span>
+
+<span class="kn">from</span> <span class="nn">pyEdgeEval.common.binary_label.evaluate_boundaries</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">evaluate_boundaries_threshold_multiple_gts</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyEdgeEval.common.utils</span> <span class="kn">import</span> <span class="n">check_thresholds</span>
+<span class="kn">from</span> <span class="nn">pyEdgeEval.utils</span> <span class="kn">import</span> <span class="n">loadmat</span>
+
+
+<div class="viewcode-block" id="load_bsds_gt_boundaries"><a class="viewcode-back" href="../../../pyEdgeEval.datasets.html#pyEdgeEval.datasets.bsds.load_bsds_gt_boundaries">[docs]</a><span class="k">def</span> <span class="nf">load_bsds_gt_boundaries</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_loader</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;BSDS GT Boundaries</span>
+
+<span class="sd">    - there are multiple boundaries because there are multiple annotators</span>
+<span class="sd">    - uint8</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">new_loader</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">pymatreader</span> <span class="kn">import</span> <span class="n">read_mat</span>
+
+        <span class="n">gt</span> <span class="o">=</span> <span class="n">read_mat</span><span class="p">(</span><span class="n">path</span><span class="p">)[</span><span class="s2">&quot;groundTruth&quot;</span><span class="p">]</span>  <span class="c1"># list</span>
+        <span class="n">num_gts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gt</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">gt</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;Boundaries&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_gts</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># FIXME: confusing data organization with scipy</span>
+        <span class="n">gt</span> <span class="o">=</span> <span class="n">loadmat</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="kc">False</span><span class="p">)[</span><span class="s2">&quot;groundTruth&quot;</span><span class="p">]</span>  <span class="c1"># np.ndarray</span>
+        <span class="n">num_gts</span> <span class="o">=</span> <span class="n">gt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">gt</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">][</span><span class="s2">&quot;Boundaries&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_gts</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="load_predictions"><a class="viewcode-back" href="../../../pyEdgeEval.datasets.html#pyEdgeEval.datasets.bsds.load_predictions">[docs]</a><span class="k">def</span> <span class="nf">load_predictions</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">imread</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="n">img</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span>
+    <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;ERR: img needs to be uint8, but got</span><span class="si">{</span><span class="n">img</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">img_as_float</span><span class="p">(</span><span class="n">img</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_evaluate_single</span><span class="p">(</span>
+    <span class="n">gt_path</span><span class="p">,</span>
+    <span class="n">pred_path</span><span class="p">,</span>
+    <span class="n">scale</span><span class="p">,</span>
+    <span class="n">max_dist</span><span class="p">,</span>
+    <span class="n">thresholds</span><span class="p">,</span>
+    <span class="n">apply_thinning</span><span class="p">,</span>
+    <span class="n">apply_nms</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Evaluate a single sample (sub-routine)</span>
+
+<span class="sd">    NOTE: don&#39;t set defaults for easier debugging</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># checks and converts thresholds</span>
+    <span class="n">thresholds</span> <span class="o">=</span> <span class="n">check_thresholds</span><span class="p">(</span><span class="n">thresholds</span><span class="p">)</span>
+
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">load_predictions</span><span class="p">(</span><span class="n">pred_path</span><span class="p">)</span>
+    <span class="n">gts</span> <span class="o">=</span> <span class="n">load_bsds_gt_boundaries</span><span class="p">(</span><span class="n">gt_path</span><span class="p">)</span>
+
+    <span class="c1"># TODO: scale inputs</span>
+
+    <span class="c1"># evaluate multi-label boundaries</span>
+    <span class="n">count_r</span><span class="p">,</span> <span class="n">sum_r</span><span class="p">,</span> <span class="n">count_p</span><span class="p">,</span> <span class="n">sum_p</span> <span class="o">=</span> <span class="n">evaluate_boundaries_threshold_multiple_gts</span><span class="p">(</span>
+        <span class="n">thresholds</span><span class="o">=</span><span class="n">thresholds</span><span class="p">,</span>
+        <span class="n">pred</span><span class="o">=</span><span class="n">pred</span><span class="p">,</span>
+        <span class="n">gts</span><span class="o">=</span><span class="n">gts</span><span class="p">,</span>
+        <span class="n">max_dist</span><span class="o">=</span><span class="n">max_dist</span><span class="p">,</span>
+        <span class="n">apply_thinning</span><span class="o">=</span><span class="n">apply_thinning</span><span class="p">,</span>
+        <span class="n">apply_nms</span><span class="o">=</span><span class="n">apply_nms</span><span class="p">,</span>
+        <span class="n">nms_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">s</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+            <span class="n">m</span><span class="o">=</span><span class="mf">1.01</span><span class="p">,</span>
+            <span class="n">half_prec</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">count_r</span><span class="p">,</span> <span class="n">sum_r</span><span class="p">,</span> <span class="n">count_p</span><span class="p">,</span> <span class="n">sum_p</span>
+
+
+<div class="viewcode-block" id="bsds_eval_single"><a class="viewcode-back" href="../../../pyEdgeEval.datasets.html#pyEdgeEval.datasets.bsds.bsds_eval_single">[docs]</a><span class="k">def</span> <span class="nf">bsds_eval_single</span><span class="p">(</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper function to unpack all the kwargs&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_evaluate_single</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, haruishi43.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

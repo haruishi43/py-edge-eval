@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyEdgeEval.edge_tools package &mdash; pyEdgeEval 0.1.1 documentation</title>
+  <title>pyEdgeEval.edge_tools package &mdash; pyEdgeEval 0.1.3 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyEdgeEval.evaluators package" href="pyEdgeEval.evaluators.html" />
-    <link rel="prev" title="pyEdgeEval.common.multi_label.datasets package" href="pyEdgeEval.common.multi_label.datasets.html" /> 
+    <link rel="prev" title="pyEdgeEval.datasets package" href="pyEdgeEval.datasets.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -32,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> pyEdgeEval
           </a>
               <div class="version">
-                0.1.1
+                0.1.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -51,6 +51,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="pyEdgeEval.html">pyEdgeEval package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pyEdgeEval.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.common.html">pyEdgeEval.common package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.datasets.html">pyEdgeEval.datasets package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">pyEdgeEval.edge_tools package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-pyEdgeEval.edge_tools.mask2edge_loop">pyEdgeEval.edge_tools.mask2edge_loop module</a></li>
@@ -194,6 +195,83 @@ over the classes while <code class="docutils literal notranslate"><span class="p
 </section>
 <section id="module-pyEdgeEval.edge_tools">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyEdgeEval.edge_tools" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyEdgeEval.edge_tools.Mask2Edge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyEdgeEval.edge_tools.</span></span><span class="sig-name descname"><span class="pre">Mask2Edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labelIds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label2trainId</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cv2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/edge_tools/transforms.html#Mask2Edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.edge_tools.Mask2Edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Transform function</p>
+<p>…</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyEdgeEval.edge_tools.Mask2Edge.LABEL_IDS">
+<span class="sig-name descname"><span class="pre">LABEL_IDS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyEdgeEval.edge_tools.Mask2Edge.LABEL_IDS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyEdgeEval.edge_tools.Mask2Edge.label2trainId">
+<span class="sig-name descname"><span class="pre">label2trainId</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyEdgeEval.edge_tools.Mask2Edge.label2trainId" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyEdgeEval.edge_tools.InstanceMask2Edge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyEdgeEval.edge_tools.</span></span><span class="sig-name descname"><span class="pre">InstanceMask2Edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inst_labelIds</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/edge_tools/transforms.html#InstanceMask2Edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.edge_tools.InstanceMask2Edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyEdgeEval.edge_tools.transforms.Mask2Edge" title="pyEdgeEval.edge_tools.transforms.Mask2Edge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mask2Edge</span></code></a></p>
+<p>Transform function (instance sensitive)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.edge_tools.mask2edge">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.edge_tools.</span></span><span class="sig-name descname"><span class="pre">mask2edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_sensitive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/edge_tools/transforms.html#mask2edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.edge_tools.mask2edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>mask2edge function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>run_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – can choose between <code class="docutils literal notranslate"><span class="pre">loop</span></code> or <code class="docutils literal notranslate"><span class="pre">mp</span></code> where <code class="docutils literal notranslate"><span class="pre">loop</span></code> loops
+over the classes while <code class="docutils literal notranslate"><span class="pre">mp</span></code> uses <code class="docutils literal notranslate"><span class="pre">multiprocessing</span></code>.</p></li>
+<li><p><strong>instance_sensitive</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – set to <code class="docutils literal notranslate"><span class="pre">True</span></code> if generating instance-aware edges.</p></li>
+<li><p><strong>mask</strong> (<em>np.ndarray</em>) – input one-hot mask</p></li>
+<li><p><strong>inst_mask</strong> (<em>np.ndarray</em>) – instance mask (required for instance sensitive)</p></li>
+<li><p><strong>inst_labelIds</strong> (<em>List</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – labels that have instances</p></li>
+<li><p><strong>ignore_indices</strong> (<em>List</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – ignore indices (corresponds to order of labelIds)</p></li>
+<li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – edge radius (thickness)</p></li>
+<li><p><strong>use_cv2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – whether to use <code class="docutils literal notranslate"><span class="pre">cv2</span></code> distance transform (default <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
+<li><p><strong>quality</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – default 0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>np.ndarray</em> – generated edges.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if <code class="docutils literal notranslate"><span class="pre">run_type</span></code> is not set correctly.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.edge_tools.loop_mask2edge">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.edge_tools.</span></span><span class="sig-name descname"><span class="pre">loop_mask2edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cv2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/edge_tools/mask2edge_loop.html#loop_mask2edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.edge_tools.loop_mask2edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>mask2edge with looping</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.edge_tools.loop_instance_mask2edge">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.edge_tools.</span></span><span class="sig-name descname"><span class="pre">loop_instance_mask2edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_labelIds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cv2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/edge_tools/mask2edge_loop.html#loop_instance_mask2edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.edge_tools.loop_instance_mask2edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>mask2edge with looping (instance sensitive)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.edge_tools.mp_mask2edge">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.edge_tools.</span></span><span class="sig-name descname"><span class="pre">mp_mask2edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nproc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cv2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/edge_tools/mask2edge_mp.html#mp_mask2edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.edge_tools.mp_mask2edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>mask2edge multiprocessing</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.edge_tools.mp_instance_mask2edge">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.edge_tools.</span></span><span class="sig-name descname"><span class="pre">mp_instance_mask2edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_labelIds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nproc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cv2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/edge_tools/mask2edge_mp.html#mp_instance_mask2edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.edge_tools.mp_instance_mask2edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>mask2edge multiprocessing</p>
+</dd></dl>
+
 </section>
 </section>
 
@@ -201,7 +279,7 @@ over the classes while <code class="docutils literal notranslate"><span class="p
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pyEdgeEval.common.multi_label.datasets.html" class="btn btn-neutral float-left" title="pyEdgeEval.common.multi_label.datasets package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pyEdgeEval.datasets.html" class="btn btn-neutral float-left" title="pyEdgeEval.datasets package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pyEdgeEval.evaluators.html" class="btn btn-neutral float-right" title="pyEdgeEval.evaluators package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyEdgeEval.common.multi_label.calculate_metrics &mdash; pyEdgeEval 0.1.1 documentation</title>
+  <title>pyEdgeEval.common.multi_label.calculate_metrics &mdash; pyEdgeEval 0.1.3 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
@@ -29,7 +29,7 @@
             <a href="../../../../index.html" class="icon icon-home"> pyEdgeEval
           </a>
               <div class="version">
-                0.1.1
+                0.1.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -91,34 +91,22 @@
 
 
 <div class="viewcode-block" id="calculate_metrics"><a class="viewcode-back" href="../../../../pyEdgeEval.common.multi_label.html#pyEdgeEval.common.multi_label.calculate_metrics.calculate_metrics">[docs]</a><span class="k">def</span> <span class="nf">calculate_metrics</span><span class="p">(</span>
+    <span class="n">eval_single</span><span class="p">,</span>
     <span class="n">thresholds</span><span class="p">,</span>
     <span class="n">samples</span><span class="p">,</span>
     <span class="n">nproc</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
-    <span class="n">dataset_type</span><span class="o">=</span><span class="s2">&quot;cityscapes&quot;</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Main function to calculate boundary metrics</span>
 
-<span class="sd">    :param thresholds: thresholds used for evaluation which can be in the form of</span>
-<span class="sd">        (int, float, list, np.ndarray)</span>
-<span class="sd">    :param samples: list of dicts containing file paths and evaluation parameters</span>
-<span class="sd">    :param nproc: integer that specifies the number of processes to spawn</span>
-<span class="sd">    :param dataset_type: type of the dataset</span>
+<span class="sd">    Args:</span>
+<span class="sd">        eval_single (Callable): function that takes samples (dict) as input</span>
+<span class="sd">        threhsolds (int, float, list, np.ndarray): thresholds used for evaluation</span>
+<span class="sd">        samples (dict): list of dicts containing sample info</span>
+<span class="sd">        nproc (int): integer that specifies the number of processes to spawn</span>
 
-<span class="sd">    :return: tuple of results</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict of metrics</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="n">dataset_type</span> <span class="o">==</span> <span class="s2">&quot;cityscapes&quot;</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">.datasets.cityscapes</span> <span class="kn">import</span> <span class="n">cityscapes_eval_single</span> <span class="k">as</span> <span class="n">eval_single</span>
-    <span class="k">elif</span> <span class="n">dataset_type</span> <span class="o">==</span> <span class="s2">&quot;otf_cityscapes&quot;</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">.datasets.otf_cityscapes</span> <span class="kn">import</span> <span class="p">(</span>
-            <span class="n">otf_cityscapes_eval_single</span> <span class="k">as</span> <span class="n">eval_single</span><span class="p">,</span>
-        <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">dataset_type</span> <span class="o">==</span> <span class="s2">&quot;sbd&quot;</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">.datasets.sbd</span> <span class="kn">import</span> <span class="n">sbd_eval_single</span> <span class="k">as</span> <span class="n">eval_single</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;ERR: dataset_type is not supported, got </span><span class="si">{</span><span class="n">dataset_type</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
 
     <span class="c1"># initial run (process heavy)</span>
     <span class="k">if</span> <span class="n">nproc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>

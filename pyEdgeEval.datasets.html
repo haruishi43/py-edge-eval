@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyEdgeEval.datasets package &mdash; pyEdgeEval 0.1.3 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pyEdgeEval.edge_tools package" href="pyEdgeEval.edge_tools.html" />
+    <link rel="prev" title="pyEdgeEval.common.multi_label package" href="pyEdgeEval.common.multi_label.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> pyEdgeEval
+          </a>
+              <div class="version">
+                0.1.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html">Edge Evaluation Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#evaluation-for-each-datasets">Evaluation for each datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pyEdgeEval.html">pyEdgeEval package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pyEdgeEval.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.common.html">pyEdgeEval.common package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pyEdgeEval.datasets package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyEdgeEval.datasets.bsds">pyEdgeEval.datasets.bsds module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyEdgeEval.datasets.cityscapes">pyEdgeEval.datasets.cityscapes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyEdgeEval.datasets.cityscapes_attributes">pyEdgeEval.datasets.cityscapes_attributes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyEdgeEval.datasets.generic_binary">pyEdgeEval.datasets.generic_binary module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyEdgeEval.datasets.otf_cityscapes">pyEdgeEval.datasets.otf_cityscapes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyEdgeEval.datasets.sbd">pyEdgeEval.datasets.sbd module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyEdgeEval.datasets">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.edge_tools.html">pyEdgeEval.edge_tools package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.evaluators.html">pyEdgeEval.evaluators package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.preprocess.html">pyEdgeEval.preprocess package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.utils.html">pyEdgeEval.utils package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.visualization.html">pyEdgeEval.visualization package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.html#module-pyEdgeEval.info">pyEdgeEval.info module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.html#module-pyEdgeEval">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyEdgeEval</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="pyEdgeEval.html">pyEdgeEval package</a> &raquo;</li>
+      <li>pyEdgeEval.datasets package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pyEdgeEval.datasets.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pyedgeeval-datasets-package">
+<h1>pyEdgeEval.datasets package<a class="headerlink" href="#pyedgeeval-datasets-package" title="Permalink to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="module-pyEdgeEval.datasets.bsds">
+<span id="pyedgeeval-datasets-bsds-module"></span><h2>pyEdgeEval.datasets.bsds module<a class="headerlink" href="#module-pyEdgeEval.datasets.bsds" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.bsds.load_bsds_gt_boundaries">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.bsds.</span></span><span class="sig-name descname"><span class="pre">load_bsds_gt_boundaries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_loader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/bsds.html#load_bsds_gt_boundaries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.bsds.load_bsds_gt_boundaries" title="Permalink to this definition">¶</a></dt>
+<dd><p>BSDS GT Boundaries</p>
+<ul class="simple">
+<li><p>there are multiple boundaries because there are multiple annotators</p></li>
+<li><p>uint8</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.bsds.load_predictions">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.bsds.</span></span><span class="sig-name descname"><span class="pre">load_predictions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/bsds.html#load_predictions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.bsds.load_predictions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.bsds.bsds_eval_single">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.bsds.</span></span><span class="sig-name descname"><span class="pre">bsds_eval_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/bsds.html#bsds_eval_single"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.bsds.bsds_eval_single" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function to unpack all the kwargs</p>
+</dd></dl>
+
+</section>
+<section id="module-pyEdgeEval.datasets.cityscapes">
+<span id="pyedgeeval-datasets-cityscapes-module"></span><h2>pyEdgeEval.datasets.cityscapes module<a class="headerlink" href="#module-pyEdgeEval.datasets.cityscapes" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.cityscapes.cityscapes_eval_single">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.cityscapes.</span></span><span class="sig-name descname"><span class="pre">cityscapes_eval_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/cityscapes.html#cityscapes_eval_single"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.cityscapes.cityscapes_eval_single" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function to unpack all the kwargs</p>
+</dd></dl>
+
+</section>
+<section id="module-pyEdgeEval.datasets.cityscapes_attributes">
+<span id="pyedgeeval-datasets-cityscapes-attributes-module"></span><h2>pyEdgeEval.datasets.cityscapes_attributes module<a class="headerlink" href="#module-pyEdgeEval.datasets.cityscapes_attributes" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="module-pyEdgeEval.datasets.generic_binary">
+<span id="pyedgeeval-datasets-generic-binary-module"></span><h2>pyEdgeEval.datasets.generic_binary module<a class="headerlink" href="#module-pyEdgeEval.datasets.generic_binary" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.generic_binary.load_bsds_gt_boundaries">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.generic_binary.</span></span><span class="sig-name descname"><span class="pre">load_bsds_gt_boundaries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_loader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/generic_binary.html#load_bsds_gt_boundaries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.generic_binary.load_bsds_gt_boundaries" title="Permalink to this definition">¶</a></dt>
+<dd><p>BSDS GT Boundaries</p>
+<ul class="simple">
+<li><p>there are multiple boundaries because there are multiple annotators</p></li>
+<li><p>uint8</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.generic_binary.load_predictions">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.generic_binary.</span></span><span class="sig-name descname"><span class="pre">load_predictions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/generic_binary.html#load_predictions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.generic_binary.load_predictions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.generic_binary.bsds_eval_single">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.generic_binary.</span></span><span class="sig-name descname"><span class="pre">bsds_eval_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/generic_binary.html#bsds_eval_single"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.generic_binary.bsds_eval_single" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function to unpack all the kwargs</p>
+</dd></dl>
+
+</section>
+<section id="module-pyEdgeEval.datasets.otf_cityscapes">
+<span id="pyedgeeval-datasets-otf-cityscapes-module"></span><h2>pyEdgeEval.datasets.otf_cityscapes module<a class="headerlink" href="#module-pyEdgeEval.datasets.otf_cityscapes" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.otf_cityscapes.one_label_mask2edge">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.otf_cityscapes.</span></span><span class="sig-name descname"><span class="pre">one_label_mask2edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cv2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/otf_cityscapes.html#one_label_mask2edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.otf_cityscapes.one_label_mask2edge" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.otf_cityscapes.one_label_instance_mask2edge">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.otf_cityscapes.</span></span><span class="sig-name descname"><span class="pre">one_label_instance_mask2edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_labelIds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cv2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/otf_cityscapes.html#one_label_instance_mask2edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.otf_cityscapes.one_label_instance_mask2edge" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.otf_cityscapes.otf_cityscapes_eval_single">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.otf_cityscapes.</span></span><span class="sig-name descname"><span class="pre">otf_cityscapes_eval_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/otf_cityscapes.html#otf_cityscapes_eval_single"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.otf_cityscapes.otf_cityscapes_eval_single" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function to unpack all the kwargs</p>
+</dd></dl>
+
+</section>
+<section id="module-pyEdgeEval.datasets.sbd">
+<span id="pyedgeeval-datasets-sbd-module"></span><h2>pyEdgeEval.datasets.sbd module<a class="headerlink" href="#module-pyEdgeEval.datasets.sbd" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.sbd.load_sbd_gt_cls_mat">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.sbd.</span></span><span class="sig-name descname"><span class="pre">load_sbd_gt_cls_mat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_loader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/sbd.html#load_sbd_gt_cls_mat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.sbd.load_sbd_gt_cls_mat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Per Class Ground Truth Annoation</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.sbd.load_sbd_gt_inst_mat">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.sbd.</span></span><span class="sig-name descname"><span class="pre">load_sbd_gt_inst_mat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_loader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/sbd.html#load_sbd_gt_inst_mat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.sbd.load_sbd_gt_inst_mat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Per Instance Ground Truth Annotation</p>
+<p>NOTE: seg and bdry is indexed by instances (not category)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.sbd.load_instance_insensitive_gt">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.sbd.</span></span><span class="sig-name descname"><span class="pre">load_instance_insensitive_gt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_loader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/sbd.html#load_instance_insensitive_gt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.sbd.load_instance_insensitive_gt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.sbd.load_instance_sensitive_gt">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.sbd.</span></span><span class="sig-name descname"><span class="pre">load_instance_sensitive_gt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_loader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/sbd.html#load_instance_sensitive_gt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.sbd.load_instance_sensitive_gt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.sbd.sbd_eval_single">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.sbd.</span></span><span class="sig-name descname"><span class="pre">sbd_eval_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/sbd.html#sbd_eval_single"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.sbd.sbd_eval_single" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function to unpack all the kwargs</p>
+</dd></dl>
+
+</section>
+<section id="module-pyEdgeEval.datasets">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyEdgeEval.datasets" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.bsds_eval_single">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.</span></span><span class="sig-name descname"><span class="pre">bsds_eval_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/bsds.html#bsds_eval_single"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.bsds_eval_single" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function to unpack all the kwargs</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.cityscapes_eval_single">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.</span></span><span class="sig-name descname"><span class="pre">cityscapes_eval_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/cityscapes.html#cityscapes_eval_single"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.cityscapes_eval_single" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function to unpack all the kwargs</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.sbd_eval_single">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.</span></span><span class="sig-name descname"><span class="pre">sbd_eval_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/sbd.html#sbd_eval_single"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.sbd_eval_single" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function to unpack all the kwargs</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.datasets.otf_cityscapes_eval_single">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.datasets.</span></span><span class="sig-name descname"><span class="pre">otf_cityscapes_eval_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/datasets/otf_cityscapes.html#otf_cityscapes_eval_single"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.datasets.otf_cityscapes_eval_single" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function to unpack all the kwargs</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pyEdgeEval.common.multi_label.html" class="btn btn-neutral float-left" title="pyEdgeEval.common.multi_label package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pyEdgeEval.edge_tools.html" class="btn btn-neutral float-right" title="pyEdgeEval.edge_tools package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, haruishi43.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

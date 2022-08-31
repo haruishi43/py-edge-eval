@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyEdgeEval.utils.convert_formats &mdash; pyEdgeEval 0.1.1 documentation</title>
+  <title>pyEdgeEval.utils.convert_formats &mdash; pyEdgeEval 0.1.3 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -29,7 +29,7 @@
             <a href="../../../index.html" class="icon icon-home"> pyEdgeEval
           </a>
               <div class="version">
-                0.1.1
+                0.1.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -119,8 +119,11 @@
 <div class="viewcode-block" id="mask_label2trainId"><a class="viewcode-back" href="../../../pyEdgeEval.utils.html#pyEdgeEval.utils.convert_formats.mask_label2trainId">[docs]</a><span class="k">def</span> <span class="nf">mask_label2trainId</span><span class="p">(</span><span class="n">mask</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">label2trainId</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Python version of `labelid2trainid` function for segmentation data</span>
 
-<span class="sd">    :param mask: single channel image containing segmentation label</span>
-<span class="sd">    :return: np.ndarray</span>
+<span class="sd">    Args:</span>
+<span class="sd">        mask: single channel image containing segmentation label</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
