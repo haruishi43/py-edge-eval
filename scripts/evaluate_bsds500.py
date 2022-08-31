@@ -86,7 +86,7 @@ def evaluate_bsds500(
     timestamp = time.strftime("%Y%m%d_%H%M%S", time.localtime())
     log_file = osp.join(output_path, f"{timestamp}.log")
     logger = get_root_logger(log_file=log_file, log_level="INFO")
-    logger.info("Running Cityscapes Evaluation")
+    logger.info("Running BSDS5000 Evaluation")
     logger.info(f"split: \t{split}")
     logger.info(f"thresholds: \t{thresholds}")
     logger.info(f"thin: \t{apply_thinning}")

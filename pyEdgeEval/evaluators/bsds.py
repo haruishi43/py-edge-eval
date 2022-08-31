@@ -147,7 +147,7 @@ class BSDS500Evaluator(BaseBinaryEvaluator):
 
         # save metrics
         if save_dir:
-            print_log("Saving category results", logger=self._logger)
+            print_log("Saving results", logger=self._logger)
             save_results(
                 root=save_dir,
                 sample_metrics=sample_metrics,
