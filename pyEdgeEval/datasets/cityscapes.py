@@ -3,11 +3,9 @@
 import numpy as np
 from PIL import Image
 
-from pyEdgeEval.common.multi_label.edge_decoding import (
+from pyEdgeEval.common.multi_label import (
     decode_png,
     load_scaled_edge,
-)
-from pyEdgeEval.common.multi_label.evaluate_boundaries import (
     evaluate_boundaries_threshold,
 )
 from pyEdgeEval.common.utils import check_thresholds

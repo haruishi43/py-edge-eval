@@ -8,6 +8,7 @@ Subpackages
    :maxdepth: 4
 
    pyEdgeEval.common
+   pyEdgeEval.datasets
    pyEdgeEval.edge_tools
    pyEdgeEval.evaluators
    pyEdgeEval.preprocess

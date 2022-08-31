@@ -1,125 +1,49 @@
 #!/usr/bin/env python3
 
 import numpy as np
-from skimage.util import img_as_float
-from skimage.io import imread
 
 from pyEdgeEval.common.metrics import (
     compute_rec_prec_f1,
     interpolated_max_scores,
 )
-from pyEdgeEval.common.binary_label.evaluate_boundaries import (
-    evaluate_boundaries_threshold,
-)
 from pyEdgeEval.common.utils import check_thresholds
 from pyEdgeEval.utils import (
     track_parallel_progress,
     track_progress,
-    loadmat,
 )
 
 __all__ = ["calculate_metrics"]
 
 
-def load_bsds_gt_boundaries(path: str, new_loader: bool = False):
-    """BSDS GT Boundaries
-
-    - there are multiple boundaries because there are multiple annotators
-    - uint8
-    """
-    if new_loader:
-        from pymatreader import read_mat
-
-        gt = read_mat(path)["groundTruth"]  # list
-        num_gts = len(gt)
-        return [gt[i]["Boundaries"] for i in range(num_gts)]
-    else:
-        # FIXME: confusing data organization with scipy
-        gt = loadmat(path, False)["groundTruth"]  # np.ndarray
-        num_gts = gt.shape[1]
-        return [gt[0, i]["Boundaries"][0, 0] for i in range(num_gts)]
-
-
-def load_predictions(path: str):
-    img = imread(path)
-    assert (
-        img.dtype == np.uint8
-    ), f"ERR: img needs to be uint8, but got{img.dtype}"
-    return img_as_float(img)
-
-
-def _evaluate_single(
-    gt_path,
-    pred_path,
-    scale,
-    max_dist,
-    thresholds,
-    apply_thinning,
-    apply_nms,
-    **kwargs,
-):
-    """Evaluate a single sample (sub-routine)
-
-    NOTE: don't set defaults for easier debugging
-    """
-    # checks and converts thresholds
-    thresholds = check_thresholds(thresholds)
-
-    pred = load_predictions(pred_path)
-    gts = load_bsds_gt_boundaries(gt_path)
-
-    # TODO: scale inputs
-
-    # evaluate multi-label boundaries
-    count_r, sum_r, count_p, sum_p = evaluate_boundaries_threshold(
-        thresholds=thresholds,
-        pred=pred,
-        gts=gts,
-        max_dist=max_dist,
-        apply_thinning=apply_thinning,
-        apply_nms=apply_nms,
-        nms_kwargs=dict(
-            r=1,
-            s=5,
-            m=1.01,
-            half_prec=False,
-        ),
-    )
-
-    return count_r, sum_r, count_p, sum_p
-
-
-def wrapper_eval_single(kwargs):
-    """Wrapper function to unpack all the kwargs"""
-    return _evaluate_single(**kwargs)
-
-
 def calculate_metrics(
+    eval_single,
     thresholds,
     samples,
     nproc=8,
 ):
     """Main function to calculate boundary metrics
 
-    :param thresholds: thresholds used for evaluation which can be in the form of
-        (int, float, list, np.ndarray)
-    :param samples: list of dicts containing file paths and evaluation parameters
-    :param nproc: integer that specifies the number of processes to spawn
+    Args:
+        eval_single (Callable): function that takes samples (dict) as input
+        thresholds (int, float, list, np.ndarray): thresholds used for evaluation
+        samples (dict): list of dicts containing file paths and evaluation parameters
+        nproc: integer that specifies the number of processes to spawn
 
-    :return: tuple of results
+    Returns:
+        dict of results
     """
 
     # initial run (process heavy)
     if nproc > 1:
         sample_metrics = track_parallel_progress(
-            wrapper_eval_single,
+            eval_single,
             samples,
             nproc=nproc,
             keep_order=True,
         )
     else:
         sample_metrics = track_progress(
-            wrapper_eval_single,
+            eval_single,
             samples,
         )
 

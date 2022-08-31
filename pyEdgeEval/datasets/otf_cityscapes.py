@@ -6,17 +6,17 @@ from PIL import Image
 from pyEdgeEval.common.multi_label.evaluate_boundaries import (
     evaluate_boundaries_threshold,
 )
+from pyEdgeEval.datasets.cityscapes_attributes import (
+    CITYSCAPES_labelIds,
+    CITYSCAPES_label2trainId,
+    CITYSCAPES_inst_labelIds,
+)
 from pyEdgeEval.common.utils import check_thresholds
 from pyEdgeEval.utils import (
     mask2bdry,
     mask2onehot,
     mask_label2trainId,
     # edge_label2trainId,
-)
-from ..dataset_attributes import (
-    CITYSCAPES_labelIds,
-    CITYSCAPES_label2trainId,
-    CITYSCAPES_inst_labelIds,
 )
 
 # flip key-value

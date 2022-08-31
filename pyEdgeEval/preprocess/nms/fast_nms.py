@@ -28,11 +28,14 @@ def fast_nms(
 ) -> np.ndarray:
     """NMS for binary edges
 
-    :param img: np array, edge (np.uint8 or float)
-    :param r: radius for nms supr
-    :param s: radius for supr boundaries
-    :param m: multiplier for conservative supr
-    :return: supressed edge
+    Args:
+        img (np.ndarray): edge (np.uint8 or float)
+        r (int): radius for nms supr
+        s (int): radius for supr boundaries
+        m (float): multiplier for conservative supr
+
+    Returns:
+        supressed edge
 
     References:
     - https://github.com/pdollar/edges/blob/master/private/edgesNmsMex.cpp
@@ -84,11 +87,15 @@ Probably won't use...
 
 
 def nms_process_one_image(img, save_path=None, save=True):
-    """
-    :param img: numpy array, edge, model output
-    :param save_path: str, save path
-    :param save: bool, if True, save .png
-    :return: edge
+    """NMS single image
+
+    Args:
+        img (np.ndarray): edge, model output
+        save_path (str): save path
+        save (bool): if True, save .png
+
+    Returns:
+        edge
     """
 
     if save and save_path is not None:

@@ -47,7 +47,7 @@ def load_scaled_edge(
 ):
     """Load edge from file and scale it
 
-    return:
+    Returns:
         edge: PIL.Image.Image
         (height, width): tuple of int
     """

@@ -44,8 +44,11 @@ def edge_onehot2multilabel(edges: np.ndarray) -> np.ndarray:
 def mask_label2trainId(mask: np.ndarray, label2trainId: dict) -> np.ndarray:
     """Python version of `labelid2trainid` function for segmentation data
 
-    :param mask: single channel image containing segmentation label
-    :return: np.ndarray
+    Args:
+        mask: single channel image containing segmentation label
+
+    Returns:
+        np.ndarray
     """
 
     if len(mask.shape) == 2:

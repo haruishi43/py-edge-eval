@@ -7,6 +7,7 @@ from pyEdgeEval.common.binary_label import (
     calculate_metrics,
     save_results,
 )
+from pyEdgeEval.datasets import bsds_eval_single
 from pyEdgeEval.utils import print_log
 
 from .base import BaseBinaryEvaluator
@@ -36,6 +37,14 @@ class BSDS500Evaluator(BaseBinaryEvaluator):
             self.GT_DIR,
         )
 
+        try:
+            self.set_sample_names()
+        except Exception:
+            print_log(
+                "Tried to set sample_names, but couldn't",
+                logger=self._logger,
+            )
+
     def set_sample_names(
         self,
         sample_names=None,
@@ -44,7 +53,7 @@ class BSDS500Evaluator(BaseBinaryEvaluator):
             # load sample_names by going into the split file
             sample_names = []
 
-            # NOTE: for benchmark, there are not split
+            # NOTE: for benchmark, there are no split
             bsds_dir = osp.join(self.GT_root, self.split)
 
             print_log(f"Loading samples from {bsds_dir}", logger=self._logger)
@@ -130,6 +139,7 @@ class BSDS500Evaluator(BaseBinaryEvaluator):
 
         # evaluate
         (sample_metrics, threshold_metrics, overall_metric) = calculate_metrics(
+            eval_single=bsds_eval_single,
             thresholds=thresholds,
             samples=data,
             nproc=nproc,

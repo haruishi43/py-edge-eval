@@ -30,32 +30,34 @@ def evaluate_boundaries_threshold(
     """
     Evaluate the accuracy of a predicted boundary and a range of thresholds
 
-    :param thresholds: a 1D array specifying the thresholds
-    :param pred: the predicted boundaries as a (H,W)
-        floating point array where each pixel represents the strength of the
-        predicted boundary
-    :param gt: ground truth boundary, as returned
-        by the `load_boundary` or `boundary` methods
-    :param gt_seg: ground truth segmentation data needed for `kill_internal`
-    :param max_dist: (default=0.02) maximum distance parameter
-        used for determining pixel matches. This value is multiplied by the
-        length of the diagonal of the image to get the threshold used
-        for matching pixels.
-    :param apply_thinning: (default=True) if True, apply morphologial
-        thinning to the predicted boundaries before evaluation
-    :param kill_internal: (default=True) remove countors inside the segmentation mask
-    :param skip_if_nonexistent: (default=True) this will skip the evaluation and
-        disregards all false positives if there are no boundaries in the GT
-    :param apply_nms: (default=False) apply a fast nms preprocess
-    :param nms_kwargs: arguments for nms process
+    Args:
+        thresholds: a 1D array specifying the thresholds
+        pred: the predicted boundaries as a (H,W) floating point array where
+            each pixel represents the strength of the predicted boundary
+        gt: ground truth boundary, as returned by the `load_boundary` or
+            `boundary` methods
+        gt_seg: ground truth segmentation data needed for `kill_internal`
+        max_dist: (default=0.02) maximum distance parameter used for
+            determining pixel matches. This value is multiplied by the
+            length of the diagonal of the image to get the threshold used
+            for matching pixels.
+        apply_thinning: (default=True) if True, apply morphologial
+            thinning to the predicted boundaries before evaluation
+        kill_internal: (default=True) remove countors inside the
+            segmentation mask
+        skip_if_nonexistent: (default=True) this will skip the evaluation and
+            disregards all false positives if there are no boundaries in the GT
+        apply_nms: (default=False) apply a fast nms preprocess
+        nms_kwargs: arguments for nms process
 
-    :return: tuple `(count_r, sum_r, count_p, sum_p, thresholds)` where each
-        of the first four entries are arrays that can be used to compute
-        recall and precision at each threshold with:
-        ```
-        recall = count_r / (sum_r + (sum_r == 0))
-        precision = count_p / (sum_p + (sum_p == 0))
-        ```
+    Returns:
+        tuple `(count_r, sum_r, count_p, sum_p, thresholds)` where each
+            of the first four entries are arrays that can be used to compute
+            recall and precision at each threshold with:
+            ```
+            recall = count_r / (sum_r + (sum_r == 0))
+            precision = count_p / (sum_p + (sum_p == 0))
+            ```
 
     NOTE: compared to BSDS500, we don't have multiple GTs
     """

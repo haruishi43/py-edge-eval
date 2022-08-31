@@ -8,16 +8,16 @@ from cityscapesscripts.preparation.json2labelImg import json2labelImg
 import numpy as np
 from PIL import Image
 
-from pyEdgeEval.common.multi_label.edge_encoding import (
+from pyEdgeEval.common.multi_label import (
     default_multilabel_encoding,
     rgb_multilabel_encoding,
 )
-from pyEdgeEval.common.multi_label.dataset_attributes import (
+from pyEdgeEval.datasets.cityscapes_attributes import (
     CITYSCAPES_labelIds,
     CITYSCAPES_label2trainId,
     CITYSCAPES_inst_labelIds,
 )
-from pyEdgeEval.edge_tools.mask2edge_loop import (
+from pyEdgeEval.edge_tools import (
     loop_instance_mask2edge,
     loop_mask2edge,
 )

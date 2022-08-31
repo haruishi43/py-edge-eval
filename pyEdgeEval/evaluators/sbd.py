@@ -6,6 +6,7 @@ from pyEdgeEval.common.multi_label import (
     calculate_metrics,
     save_category_results,
 )
+from pyEdgeEval.datasets import sbd_eval_single
 from pyEdgeEval.utils import print_log
 
 from .base import BaseMultilabelEvaluator
@@ -221,10 +222,10 @@ class SBDEvaluator(BaseMultilabelEvaluator):
 
         # evaluate
         (sample_metrics, threshold_metrics, overall_metric) = calculate_metrics(
+            eval_single=sbd_eval_single,
             thresholds=thresholds,
             samples=data,
             nproc=nproc,
-            dataset_type="sbd",
         )
 
         # save metrics

@@ -16,34 +16,22 @@ __all__ = ["calculate_metrics"]
 
 
 def calculate_metrics(
+    eval_single,
     thresholds,
     samples,
     nproc=8,
-    dataset_type="cityscapes",
 ):
     """Main function to calculate boundary metrics
 
-    :param thresholds: thresholds used for evaluation which can be in the form of
-        (int, float, list, np.ndarray)
-    :param samples: list of dicts containing file paths and evaluation parameters
-    :param nproc: integer that specifies the number of processes to spawn
-    :param dataset_type: type of the dataset
+    Args:
+        eval_single (Callable): function that takes samples (dict) as input
+        threhsolds (int, float, list, np.ndarray): thresholds used for evaluation
+        samples (dict): list of dicts containing sample info
+        nproc (int): integer that specifies the number of processes to spawn
 
-    :return: tuple of results
+    Returns:
+        dict of metrics
     """
-
-    if dataset_type == "cityscapes":
-        from .datasets.cityscapes import cityscapes_eval_single as eval_single
-    elif dataset_type == "otf_cityscapes":
-        from .datasets.otf_cityscapes import (
-            otf_cityscapes_eval_single as eval_single,
-        )
-    elif dataset_type == "sbd":
-        from .datasets.sbd import sbd_eval_single as eval_single
-    else:
-        raise ValueError(
-            f"ERR: dataset_type is not supported, got {dataset_type}"
-        )
 
     # initial run (process heavy)
     if nproc > 1:
