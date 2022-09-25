@@ -110,6 +110,7 @@ class BSDS500Evaluator(BaseBinaryEvaluator):
         thresholds,
         nproc,
         save_dir,
+        no_split_dir=False,
     ):
         self._before_evaluation()
 
@@ -118,9 +119,15 @@ class BSDS500Evaluator(BaseBinaryEvaluator):
         for sample_name in self.sample_names:
 
             gt_path = osp.join(self.GT_root, f"{sample_name}{self.GT_SUFFIX}")
-            pred_path = osp.join(
-                self.pred_root, f"{sample_name}{self.PRED_SUFFIX}"
-            )
+            if no_split_dir:
+                _sample_name = sample_name.replace(f"{self.split}/", "")
+                pred_path = osp.join(
+                    self.pred_root, f"{_sample_name}{self.PRED_SUFFIX}"
+                )
+            else:
+                pred_path = osp.join(
+                    self.pred_root, f"{sample_name}{self.PRED_SUFFIX}"
+                )
 
             assert osp.exists(gt_path), f"ERR: {gt_path} is not valid"
             assert osp.exists(pred_path), f"ERR: {pred_path} is not valid"
@@ -154,5 +161,18 @@ class BSDS500Evaluator(BaseBinaryEvaluator):
                 threshold_metrics=threshold_metrics,
                 overall_metric=overall_metric,
             )
+
+        # TODO: better printing
+        metrics = [
+            "ODS_recall",
+            "ODS_precision",
+            "ODS_f1",
+            "OIS_recall",
+            "OIS_precision",
+            "OIS_f1",
+            "AP",
+        ]
+        for m in metrics:
+            print(m, overall_metric[m])
 
         return overall_metric
