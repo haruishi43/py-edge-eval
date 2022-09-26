@@ -172,7 +172,8 @@ class BSDS500Evaluator(BaseBinaryEvaluator):
             "OIS_f1",
             "AP",
         ]
+        print_log("Printing out Results:\n", logger=self._logger)
         for m in metrics:
-            print(m, overall_metric[m])
+            print_log(f"{m}:\t{overall_metric[m]}", logger=self._logger)
 
         return overall_metric
