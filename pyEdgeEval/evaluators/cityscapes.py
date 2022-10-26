@@ -145,6 +145,7 @@ class CityscapesEvaluator(BaseMultilabelEvaluator):
         self,
         eval_mode=None,
         scale: float = 0.5,
+        apply_thinning: bool = False,
         apply_nms: bool = False,
         instance_sensitive: bool = True,
         max_dist: float = 0.0035,
@@ -155,7 +156,7 @@ class CityscapesEvaluator(BaseMultilabelEvaluator):
 
         assert 0 < scale <= 1, f"ERR: scale ({scale}) is not valid"
         self.scale = scale
-        self.apply_thinning = self.thin
+        self.apply_thinning = apply_thinning
         self.apply_nms = apply_nms
 
         if eval_mode == "pre-seal":
