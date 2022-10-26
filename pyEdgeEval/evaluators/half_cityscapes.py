@@ -43,6 +43,9 @@ class HalfCityscapesEvaluator(CityscapesEvaluator):
 
         if eval_mode == "pre-seal":
             print_log("Using Pre-SEAL params", logger=self._logger)
+            assert (
+                not instance_sensitive
+            ), "Pre-SEAL configuration doesn't support instance sensitive edges"
             self.max_dist = 0.02
             self.kill_internal = True
             self.skip_if_nonexistent = True
@@ -50,10 +53,20 @@ class HalfCityscapesEvaluator(CityscapesEvaluator):
         elif eval_mode == "post-seal":
             print_log("Using Post-SEAL params", logger=self._logger)
             print_log(f"Using max_dist: {max_dist}", logger=self._logger)
+            print_log(
+                f"Using instance sensitive={instance_sensitive}",
+                logger=self._logger,
+            )
             self.max_dist = max_dist
-            self.kill_internal = False
-            self.skip_if_nonexistent = False
-            self.instance_sensitive = True
+            if instance_sensitive:
+                # instance-sensitive
+                self.instance_sensitive = True
+                self.kill_internal = False
+                self.skip_if_nonexistent = False
+            else:
+                self.instance_sensitive = False
+                self.kill_internal = True
+                self.skip_if_nonexistent = True
         else:
             print_log("Using custom params", logger=self._logger)
             self.max_dist = max_dist
