@@ -161,6 +161,9 @@ class CityscapesEvaluator(BaseMultilabelEvaluator):
 
         if eval_mode == "pre-seal":
             print_log("Using Pre-SEAL params", logger=self._logger)
+            assert (
+                not instance_sensitive
+            ), "Pre-SEAL configuration doesn't support instance sensitive edges"
             self.max_dist = 0.02
             self.kill_internal = True
             self.skip_if_nonexistent = True

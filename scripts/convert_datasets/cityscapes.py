@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 
+"""
+TODO:
+- each process uses around 10GB (potentially OOM on constrained systems)
+- debug memory usage and unnecessary allocations (probably cv2)
+"""
+
 import argparse
 from functools import partial
 import os
@@ -102,8 +108,11 @@ def convert_label_to_semantic_edges(
     inst_suffix: str = "_gtFine_instanceIds.png",
     edge_suffix: str = "_gtProc_edge.png",
     radius: int = 2,
+    thin: bool = False,
     scale: float = 1.0,
 ) -> None:
+    if thin:
+        assert radius == 1, "ERR: `thin` requires radius=1"
     label_dir = os.path.dirname(label_file)
     label_fn = os.path.basename(label_file)
     proc_dir = label_dir.replace("gtFine", proc_dir)
@@ -146,12 +155,14 @@ def convert_label_to_semantic_edges(
             inst_labelIds=CITYSCAPES_inst_labelIds,
             ignore_indices=ignore_indices,
             radius=radius,
+            thin=thin,
         )
     else:
         edge_ids = loop_mask2edge(
             mask=m,
             ignore_indices=ignore_indices,
             radius=radius,
+            thin=thin,
         )
 
     edge_trainIds = edge_label2trainId(edge=edge_ids, label2trainId=CITYSCAPES_label2trainId)
@@ -185,6 +196,7 @@ def convert_split(
     instIds_suffix,
     edge_suffix,
     radius,
+    thin=False,
     scale=1,
 ):
     """Wrapper function"""
@@ -196,6 +208,7 @@ def convert_split(
         inst_suffix=instIds_suffix,
         edge_suffix=edge_suffix,
         radius=radius,
+        thin=thin,
         scale=scale,
     )
     if nproc > 1:
@@ -359,7 +372,7 @@ def main():
 
                 # thin
                 print("generating thin")
-                convert_full(edge_suffix=thin_edge_suffix, radius=thin_val_radius)
+                convert_full(edge_suffix=thin_edge_suffix, radius=thin_val_radius, thin=True)
 
                 if save_half_val:
                     convert_half = partial(
@@ -376,7 +389,7 @@ def main():
                     convert_half(edge_suffix=half_raw_edge_suffix, radius=raw_val_radius)
 
                     print("generating half scale thin")
-                    convert_half(edge_suffix=half_thin_edge_suffix, radius=thin_val_radius)
+                    convert_half(edge_suffix=half_thin_edge_suffix, radius=thin_val_radius, thin=True)
 
         # 3. save split information
         split_save_root = os.path.join(cityscapes_root, "splits")

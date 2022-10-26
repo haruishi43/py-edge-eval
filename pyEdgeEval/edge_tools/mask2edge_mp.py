@@ -5,6 +5,9 @@ NOTE: not much speed ups probably because allocating memory is slower than
 the gain from multiprocessing
 
 Might be beneficial when each worker has more things to do...
+
+TODO:
+- add `thin`
 """
 
 from multiprocessing import Pool, RawArray
@@ -68,10 +71,16 @@ def mp_mask2edge(
     ignore_indices,
     nproc,
     radius,
+    thin=False,
     use_cv2=True,
     quality=0,
 ):
     """mask2edge multiprocessing"""
+
+    if thin:
+        raise NotImplementedError(
+            "thin=True has not been implemented for this function."
+        )
 
     global var_dict
 
@@ -199,10 +208,16 @@ def mp_instance_mask2edge(
     ignore_indices,
     nproc,
     radius,
+    thin=False,
     use_cv2=True,
     quality=0,
 ):
     """mask2edge multiprocessing"""
+
+    if thin:
+        raise NotImplementedError(
+            "thin=True has not been implemented for this function."
+        )
 
     global var_dict
 

@@ -32,6 +32,11 @@ def parse_args():
         help="prior to SEAL, the evaluations were not as strict",
     )
     parser.add_argument(
+        "--nonIS",
+        action="store_true",
+        help="non instance sensitive evaluation",
+    )
+    parser.add_argument(
         "--scale",
         type=float,
         default=0.5,
@@ -40,7 +45,12 @@ def parse_args():
     parser.add_argument(
         "--thin",
         action="store_true",
-        help="use thinned GTs (this will apply thinning to the predictions, as in Pre-SEAL evaluations)",
+        help="use thinned GTs",
+    )
+    parser.add_argument(
+        "--apply-thinning",
+        action="store_true",
+        help="applies thinning on predictions",
     )
     parser.add_argument(
         "--apply-nms",
@@ -70,7 +80,9 @@ def evaluate_cityscapes(
     categories: str,
     thin: bool,
     pre_seal: bool,
+    nonIS: bool,
     scale: float,
+    apply_thinning: bool,
     apply_nms: bool,
     thresholds: str,
     nproc: int,
@@ -136,8 +148,10 @@ def evaluate_cityscapes(
     logger.info(f"thresholds: \t{thresholds}")
     logger.info(f"scale: \t{scale}")
     logger.info(f"pre-seal: \t{pre_seal}")
-    logger.info(f"thin: \t{thin}")
+    logger.info(f"thinned GTs: \t{thin}")
+    logger.info(f"apply thinning: \t{apply_thinning}")
     logger.info(f"nms: \t{apply_nms}")
+    logger.info(f"nonIS: \t{nonIS}")
 
     # initialize evaluator
     evaluator = CityscapesEvaluator(
@@ -153,10 +167,13 @@ def evaluate_cityscapes(
     # set parameters
     # evaluator.set_pred_suffix("_leftImg8bit.png")  # potato save them using .png
     eval_mode = "pre-seal" if pre_seal else "post-seal"
+    instance_sensitive = not nonIS
     evaluator.set_eval_params(
         eval_mode=eval_mode,
         scale=scale,
+        apply_thinning=apply_thinning,
         apply_nms=apply_nms,
+        instance_sensitive=instance_sensitive,
     )
 
     # evaluate
@@ -178,7 +195,9 @@ def main():
         categories=args.categories,
         thin=args.thin,
         pre_seal=args.pre_seal,
+        nonIS=args.nonIS,
         scale=args.scale,
+        apply_thinning=args.apply_thinning,
         apply_nms=args.apply_nms,
         thresholds=args.thresholds,
         nproc=args.nproc,

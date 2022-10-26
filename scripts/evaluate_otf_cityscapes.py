@@ -40,7 +40,12 @@ def parse_args():
     parser.add_argument(
         "--thin",
         action="store_true",
-        help="use thinned GTs (this will apply thinning to the predictions, as in Pre-SEAL evaluations)",
+        help="use thinned GTs",
+    )
+    parser.add_argument(
+        "--apply-thinning",
+        action="store_true",
+        help="applies thinning on predictions",
     )
     parser.add_argument(
         "--apply-nms",
@@ -71,6 +76,7 @@ def evaluate_cityscapes(
     thin: bool,
     pre_seal: bool,
     scale: float,
+    apply_thinning: bool,
     apply_nms: bool,
     thresholds: str,
     nproc: int,
@@ -136,7 +142,8 @@ def evaluate_cityscapes(
     logger.info(f"thresholds: \t{thresholds}")
     logger.info(f"scale: \t{scale}")
     logger.info(f"pre-seal: \t{pre_seal}")
-    logger.info(f"thin: \t{thin}")
+    logger.info(f"thinned GTs: \t{thin}")
+    logger.info(f"apply thinning: \t{apply_thinning}")
     logger.info(f"nms: \t{apply_nms}")
 
     # initialize evaluator
@@ -156,6 +163,7 @@ def evaluate_cityscapes(
     evaluator.set_eval_params(
         eval_mode=eval_mode,
         scale=scale,
+        apply_thinning=apply_thinning,
         apply_nms=apply_nms,
     )
 
@@ -179,6 +187,7 @@ def main():
         thin=args.thin,
         pre_seal=args.pre_seal,
         scale=args.scale,
+        apply_thinning=args.apply_thinning,
         apply_nms=args.apply_nms,
         thresholds=args.thresholds,
         nproc=args.nproc,

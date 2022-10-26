@@ -2,6 +2,7 @@
 
 import numpy as np
 
+from pyEdgeEval.preprocess import binary_thin
 from pyEdgeEval.utils import mask2bdry
 
 __all__ = [
@@ -14,6 +15,7 @@ def loop_mask2edge(
     mask,
     ignore_indices,
     radius,
+    thin=False,
     use_cv2=True,
     quality=0,
 ):
@@ -37,13 +39,19 @@ def loop_mask2edge(
         if not np.count_nonzero(m):
             continue
 
-        edges[label] = mask2bdry(
+        edge = mask2bdry(
             mask=m,
             ignore_mask=ignore_mask,
             radius=radius,
             use_cv2=use_cv2,
             quality=quality,
         )
+
+        # thin the boundaries
+        if thin:
+            edge = binary_thin(edge).astype(np.uint8)
+
+        edges[label] = edge
 
     return edges
 
@@ -54,6 +62,7 @@ def loop_instance_mask2edge(
     inst_labelIds,
     ignore_indices,
     radius,
+    thin=False,
     use_cv2=True,
     quality=0,
 ):
@@ -112,6 +121,10 @@ def loop_instance_mask2edge(
                     ignore_mask=ignore_mask,
                     **args,
                 )
+
+        # thin the boundaries
+        if thin:
+            dist = binary_thin(dist).astype(np.uint8)
 
         edges[label] = dist
 
