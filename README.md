@@ -85,9 +85,10 @@ First, create GT data using this script:
 ```Bash
 # if you plan on evaluating with instance-sensitive edges (IS edges)
 python scripts/convert_dataset/cityscapes.py --nproc 8
-# if you plan on evaluating with instance-insensitive edges
-python scripts/convert_dataset/cityscapes.py --insensitive --nproc 8
+# if you plan on evaluating with non-instance-sensitive edges
+python scripts/convert_dataset/cityscapes.py --nonIS --nproc 8
 ```
+The scripts will create two types of edges (raw and thin) for two different scales (half and full).
 
 Evaluation script:
 ```Bash
@@ -96,13 +97,16 @@ python scripts/evaluate_cityscapes.py <path/to/cityscapes> <path/to/predictions>
 
 `--thin` will enable thinning on predictions and use thinned GTs.
 For instance-insensitive edges, you would need to supply `--pre-seal` argument.
+You can also preprocess the predictions by passing `--apply-thinning` and/or `--apply-nms` for thinning and NMS respectively.
 
 
 # Acknowledgements
 
 - [edges](https://github.com/pdollar/edges)
   - tools for processing edges (written in MATLAB and C++)
-- [seal](https://github.com/Chrisding/seal/blob/master/LICENSE)
+- [cityscapes-preprocess](https://github.com/Chrisding/cityscapes-preprocess)
+  - MATLAB script for preprocessing and creating GT edges
+- [seal](https://github.com/Chrisding/seal)
   - semantic boundary detection protocols
 - [edge_eval_python](https://github.com/Walstruzz/edge_eval_python):
   - referenced implementation for `bwmorph` thinning algorithm and `nms` preprocessing
