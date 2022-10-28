@@ -4,21 +4,12 @@
 TODO:
 - each process uses around 10GB (potentially OOM on constrained systems)
 - debug memory usage and unnecessary allocations (probably cv2)
-
-NOTE:
-- I noticed that preprocessing scripts for CASENet/SEAL generated
-    edges first before resizing for "raw" protocol. I think the
-    correct way is to resize before so that trained edges are fairly
-    evaluated (thickness for training and evaluation should not change).
-    The OTF edge generation will generate edges that have the same thickness
-    regardless of the resize scale.
 """
 
 import argparse
 from functools import partial
 import os
 
-import cv2
 import numpy as np
 from PIL import Image
 from cityscapesscripts.preparation.json2labelImg import json2labelImg
@@ -81,11 +72,6 @@ def parse_args():
         help="half scales are saved by default; this option disables this",
     )
     parser.add_argument(
-        "--old-preprocess",
-        action="store_true",
-        help="resize after generating edges (for 'raw' protocol)",
-    )
-    parser.add_argument(
         "--nproc",
         default=4,
         type=int,
@@ -114,13 +100,6 @@ def convert_json_to_label(
     json2labelImg(json_file, proc_file, "trainIds")
 
 
-def resize_np(array, scale=0.5):
-    h, w = array.shape
-    oh, ow = int(h * scale + 0.5), int(w * scale + 0.5)
-    array = cv2.resize(array, (ow, oh), interpolation=cv2.INTER_NEAREST)
-    return array
-
-
 def convert_label_to_semantic_edges(
     label_file: str,
     inst_sensitive: bool = True,
@@ -131,21 +110,8 @@ def convert_label_to_semantic_edges(
     radius: int = 2,
     thin: bool = False,
     scale: float = 1.0,
-    old_preprocess: bool = False,
 ) -> None:
-    """Preprocessing Cityscapes GTs
-
-    Args:
-        old_preprocess (bool): uses SEAL/CASENet approach of preprocessing
-
-    NOTE:
-    - I noticed that preprocessing scripts for CASENet/SEAL generated
-        edges first before resizing for "raw" protocol. I think the
-        correct way is to resize before so that trained edges are fairly
-        evaluated (thickness for training and evaluation should not change).
-        The OTF edge generation will generate edges that have the same thickness
-        regardless of the resize scale.
-    """
+    """Preprocessing Cityscapes GTs"""
     if thin:
         assert radius == 1, "ERR: `thin` requires radius=1"
     label_dir = os.path.dirname(label_file)
@@ -166,7 +132,7 @@ def convert_label_to_semantic_edges(
 
     # scale if needed
     # if "thin", it forces rescaling in the beginning
-    if scale < 1 and ((not old_preprocess) or thin):
+    if scale < 1:
         height, width = int(h * scale + 0.5), int(w * scale + 0.5)
         label_img = label_img.resize((width, height), Image.Resampling.NEAREST)
 
@@ -184,7 +150,7 @@ def convert_label_to_semantic_edges(
         inst_img = Image.open(inst_file)
         # scale if needed
         # if "thin", it forces rescaling in the beginning
-        if scale < 1 and (not old_preprocess or thin):
+        if scale < 1:
             inst_img = inst_img.resize((width, height), Image.Resampling.NEAREST)
         inst_mask = np.array(inst_img)  # int32
         edge_ids = loop_instance_mask2edge(
@@ -204,15 +170,6 @@ def convert_label_to_semantic_edges(
         )
 
     edge_trainIds = edge_label2trainId(edge=edge_ids, label2trainId=CITYSCAPES_label2trainId)
-
-    # resize at the end (used in CASENet/SEAL)
-    # don't resize when using "thin"
-    if scale < 1 and old_preprocess and not thin:
-        num_classes = len(CITYSCAPES_label2trainId)
-        new_edge_trainIds = np.zeros((num_classes, h, w), dtype=np.uint8)
-        for cat in range(num_classes):
-            new_edge_trainIds[cat, :, :] = resize_np(edge_trainIds[cat, :, :], scale=scale)
-        edge_trainIds = new_edge_trainIds
 
     # encode and save -->
     if save_format == ".png":
@@ -245,7 +202,6 @@ def convert_split(
     radius,
     thin=False,
     scale=1,
-    old_preprocess=False,
 ):
     """Wrapper function"""
     convert_to_edges = partial(
@@ -258,7 +214,6 @@ def convert_split(
         radius=radius,
         thin=thin,
         scale=scale,
-        old_preprocess=old_preprocess,
     )
     if nproc > 1:
         track_parallel_progress(convert_to_edges, label_files, nproc)
@@ -354,9 +309,6 @@ def main():
         half_thin_edge_suffix = f"_gtProc_half_{thin_edge_name}.{ext}"
 
     # hard-coded raw and thin radius
-    # NOTE: THIS PART IS IMPORTANT!!!
-    # The radius differs for each splits
-    # For "raw" evaluation, I think the radius should match
     train_radius = 2
     raw_val_radius = 2
     thin_val_radius = 1
@@ -409,7 +361,6 @@ def main():
                 proc_dir=proc_dir,
                 labelIds_suffix=labelIds_suffix,
                 instIds_suffix=instIds_suffix,
-                old_preprocess=args.old_preprocess,
             )
 
             if split == "train":
@@ -434,7 +385,6 @@ def main():
                         labelIds_suffix=labelIds_suffix,
                         instIds_suffix=instIds_suffix,
                         scale=0.5,
-                        old_preprocess=args.old_preprocess,
                     )
                     print("generating half scale raw")
                     convert_half(edge_suffix=half_raw_edge_suffix, radius=raw_val_radius)
