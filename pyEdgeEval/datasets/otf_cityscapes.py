@@ -150,8 +150,9 @@ def _evaluate_single(
 
     # load everything (not trainIds)
     seg_label = Image.open(seg_path)
-    _seg = np.array(seg_label)
-    h, w = _seg.shape
+    # _seg = np.array(seg_label)
+    # h, w = _seg.shape
+    w, h = seg_label.size
     height, width = int(h * scale + 0.5), int(w * scale + 0.5)
     pred = Image.open(pred_path)
 

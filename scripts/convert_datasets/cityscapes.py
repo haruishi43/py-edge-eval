@@ -4,15 +4,24 @@
 TODO:
 - each process uses around 10GB (potentially OOM on constrained systems)
 - debug memory usage and unnecessary allocations (probably cv2)
+
+NOTE:
+- I noticed that preprocessing scripts for CASENet/SEAL generated
+    edges first before resizing for "raw" protocol. I think the
+    correct way is to resize before so that trained edges are fairly
+    evaluated (thickness for training and evaluation should not change).
+    The OTF edge generation will generate edges that have the same thickness
+    regardless of the resize scale.
 """
 
 import argparse
 from functools import partial
 import os
 
-from cityscapesscripts.preparation.json2labelImg import json2labelImg
+import cv2
 import numpy as np
 from PIL import Image
+from cityscapesscripts.preparation.json2labelImg import json2labelImg
 
 from pyEdgeEval.common.multi_label import (
     default_multilabel_encoding,
@@ -62,14 +71,19 @@ def parse_args():
         help="format choices=(png, bin, tif)",
     )
     parser.add_argument(
-        "--insensitive",
+        "--nonIS",
         action="store_true",
-        help="default to instance-sensitive, but this argument makes it insensitive",
+        help="default to IS, but this argument makes it nonIS",
     )
     parser.add_argument(
         "--only-full-scale",
         action="store_true",
         help="half scales are saved by default; this option disables this",
+    )
+    parser.add_argument(
+        "--old-preprocess",
+        action="store_true",
+        help="resize after generating edges (for 'raw' protocol)",
     )
     parser.add_argument(
         "--nproc",
@@ -100,6 +114,13 @@ def convert_json_to_label(
     json2labelImg(json_file, proc_file, "trainIds")
 
 
+def resize_np(array, scale=0.5):
+    h, w = array.shape
+    oh, ow = int(h * scale + 0.5), int(w * scale + 0.5)
+    array = cv2.resize(array, (ow, oh), interpolation=cv2.INTER_NEAREST)
+    return array
+
+
 def convert_label_to_semantic_edges(
     label_file: str,
     inst_sensitive: bool = True,
@@ -110,7 +131,21 @@ def convert_label_to_semantic_edges(
     radius: int = 2,
     thin: bool = False,
     scale: float = 1.0,
+    old_preprocess: bool = False,
 ) -> None:
+    """Preprocessing Cityscapes GTs
+
+    Args:
+        old_preprocess (bool): uses SEAL/CASENet approach of preprocessing
+
+    NOTE:
+    - I noticed that preprocessing scripts for CASENet/SEAL generated
+        edges first before resizing for "raw" protocol. I think the
+        correct way is to resize before so that trained edges are fairly
+        evaluated (thickness for training and evaluation should not change).
+        The OTF edge generation will generate edges that have the same thickness
+        regardless of the resize scale.
+    """
     if thin:
         assert radius == 1, "ERR: `thin` requires radius=1"
     label_dir = os.path.dirname(label_file)
@@ -127,10 +162,11 @@ def convert_label_to_semantic_edges(
     assert save_format in (".png", ".tif", ".bin")
 
     label_img = Image.open(label_file)
+    (w, h) = label_img.size
+
     # scale if needed
-    if scale < 1:
-        _img = np.array(label_img)
-        h, w = _img.shape
+    # if "thin", it forces rescaling in the beginning
+    if scale < 1 and ((not old_preprocess) or thin):
         height, width = int(h * scale + 0.5), int(w * scale + 0.5)
         label_img = label_img.resize((width, height), Image.Resampling.NEAREST)
 
@@ -146,7 +182,9 @@ def convert_label_to_semantic_edges(
         inst_file = os.path.join(label_dir, label_fn.replace(label_suffix, inst_suffix))
         assert os.path.exists(inst_file)
         inst_img = Image.open(inst_file)
-        if scale < 1:
+        # scale if needed
+        # if "thin", it forces rescaling in the beginning
+        if scale < 1 and (not old_preprocess or thin):
             inst_img = inst_img.resize((width, height), Image.Resampling.NEAREST)
         inst_mask = np.array(inst_img)  # int32
         edge_ids = loop_instance_mask2edge(
@@ -166,6 +204,15 @@ def convert_label_to_semantic_edges(
         )
 
     edge_trainIds = edge_label2trainId(edge=edge_ids, label2trainId=CITYSCAPES_label2trainId)
+
+    # resize at the end (used in CASENet/SEAL)
+    # don't resize when using "thin"
+    if scale < 1 and old_preprocess and not thin:
+        num_classes = len(CITYSCAPES_label2trainId)
+        new_edge_trainIds = np.zeros((num_classes, h, w), dtype=np.uint8)
+        for cat in range(num_classes):
+            new_edge_trainIds[cat, :, :] = resize_np(edge_trainIds[cat, :, :], scale=scale)
+        edge_trainIds = new_edge_trainIds
 
     # encode and save -->
     if save_format == ".png":
@@ -198,6 +245,7 @@ def convert_split(
     radius,
     thin=False,
     scale=1,
+    old_preprocess=False,
 ):
     """Wrapper function"""
     convert_to_edges = partial(
@@ -210,6 +258,7 @@ def convert_split(
         radius=radius,
         thin=thin,
         scale=scale,
+        old_preprocess=old_preprocess,
     )
     if nproc > 1:
         track_parallel_progress(convert_to_edges, label_files, nproc)
@@ -269,7 +318,7 @@ def main():
     gt_dir = os.path.join(cityscapes_root, "gtFine")
     assert os.path.exists(gt_dir), f"cannot find {gt_dir}"
 
-    inst_sensitive = not args.insensitive
+    inst_sensitive = not args.nonIS
 
     split_names = ["train", "val", "test"]
 
@@ -284,7 +333,7 @@ def main():
     assert ext in ("png", "bin", "tif"), f"extention {ext} is not supported"
 
     if inst_sensitive:
-        print("Instance sensitive")
+        print("Instance Sensitive")
         raw_edge_name = "raw_isedge"
         thin_edge_name = "thin_isedge"
 
@@ -294,7 +343,7 @@ def main():
         half_raw_edge_suffix = f"_gtProc_half_{raw_edge_name}.{ext}"
         half_thin_edge_suffix = f"_gtProc_half_{thin_edge_name}.{ext}"
     else:
-        print("Instance insensitive")
+        print("non-Instance Sensitive")
         raw_edge_name = "raw_edge"
         thin_edge_name = "thin_edge"
 
@@ -360,6 +409,7 @@ def main():
                 proc_dir=proc_dir,
                 labelIds_suffix=labelIds_suffix,
                 instIds_suffix=instIds_suffix,
+                old_preprocess=args.old_preprocess,
             )
 
             if split == "train":
@@ -384,6 +434,7 @@ def main():
                         labelIds_suffix=labelIds_suffix,
                         instIds_suffix=instIds_suffix,
                         scale=0.5,
+                        old_preprocess=args.old_preprocess,
                     )
                     print("generating half scale raw")
                     convert_half(edge_suffix=half_raw_edge_suffix, radius=raw_val_radius)

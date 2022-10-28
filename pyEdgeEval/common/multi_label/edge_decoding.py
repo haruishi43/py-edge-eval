@@ -9,7 +9,10 @@ from PIL import Image
 
 
 def binary_multilabel_decoding(
-    edge_path: str, h: int, w: int, num_classes: int
+    edge_path: str,
+    h: int,
+    w: int,
+    num_classes: int,
 ):
     """Load binary file to edge map
 
@@ -41,10 +44,7 @@ def binary_multilabel_decoding(
     return edge
 
 
-def load_scaled_edge(
-    edge_path: str,
-    scale: float,
-):
+def load_scaled_edge(edge_path: str, scale: float):
     """Load edge from file and scale it
 
     Returns:
@@ -52,8 +52,9 @@ def load_scaled_edge(
         (height, width): tuple of int
     """
     edge = Image.open(edge_path)
-    _edge = np.array(edge)
-    (h, w, _) = _edge.shape
+    (w, h) = edge.size
+    # _edge = np.array(edge)  # allocation costs
+    # (h, w, _) = _edge.shape
     height, width = int(h * scale + 0.5), int(w * scale + 0.5)
     edge = edge.resize((width, height), Image.Resampling.NEAREST)
     return edge, (height, width)
