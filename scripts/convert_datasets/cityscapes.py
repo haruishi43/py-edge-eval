@@ -4,6 +4,14 @@
 TODO:
 - each process uses around 10GB (potentially OOM on constrained systems)
 - debug memory usage and unnecessary allocations (probably cv2)
+
+NOTE:
+- I noticed that preprocessing scripts for CASENet/SEAL generated
+    edges first before resizing for "raw" protocol. I think the
+    correct way is to resize before so that trained edges are fairly
+    evaluated (thickness for training and evaluation should not change).
+    The OTF edge generation will generate edges that have the same thickness
+    regardless of the resize scale.
 """
 
 import argparse
