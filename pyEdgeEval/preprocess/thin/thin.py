@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+"""Credit to @Britefury
+
+https://github.com/Britefury/py-bsds500/blob/master/bsds/thin.py
+"""
+
 import numpy as np
 
 

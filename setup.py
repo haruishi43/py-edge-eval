@@ -63,7 +63,7 @@ def get_extentions():
     - `correspond_pixels.pyx`
     - `nms.pyx`
 
-    # FIXME: need to compile sourcefiles everytime... but I guess -fPIC is saving me
+    # FIXME: need to compile sourcefiles everytime... but I guess -fPIC is working some magic
     """
 
     ROOT = osp.join(PKG_NAME, "_lib")

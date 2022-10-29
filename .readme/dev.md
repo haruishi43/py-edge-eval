@@ -50,13 +50,6 @@ I also test cityscapes' edge generation code (`convert_dataset/cityscapes.py`) a
 - Test code: WIP
 - Benchmark data: `data/cityscapes_test`
 
-How I perfromed the test:
-- I created a test dataset for Cityscapes which consists of 3 validation images.
-- I trained DFF (Resnet101) on the train split (original cityscapes) and ran the evaluation on MATLAB and Python.
-- The boundaries have radius of 2 for the training split whereas validation split has raidus of 1 (created using the `convert_datasets/cityscapes.py` script).
-- Compared the overall metrics as well as the PR curves.
-- Results are quite different, but shows similar characteristics.
-- This maybe an issue with the hyperparameters for the evaluation (converting the dataset, preprocessing the boundaries, re-scaling, etc). It will take sometime to figure out all the differences.
 
 ## TODO
 
@@ -73,7 +66,7 @@ How I perfromed the test:
 - [x] Multiprocessing for evaluation
 - [ ] Set random seed for `correspond_pixels`
 - [x] Move the scripts into the source code (currently moved to `scripts` for testing)
-- [ ] test coverage for important functions (would like to make tests for all functions)
+- [ ] unit test coverage for important functions (would like to make tests for all functions)
 - [ ] Make a CLI interface
 
 ## Bugs and Problems

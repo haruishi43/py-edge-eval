@@ -3,9 +3,11 @@
 #include "Matrix.hh"
 #include "benms.hh"
 
-/*
-  https://github.com/pdollar/edges/blob/master/private/edgesNmsMex.cpp
-*/
+/*******************************************************************************
+* Structured Edge Detection Toolbox      Version 3.01
+* Code written by Piotr Dollar, 2014.
+* Licensed under the MSR-LA Full Rights License [see license.txt]
+*******************************************************************************/
 
 inline double interp(const Matrix& I, int h, int w, double x, double y)
 {

@@ -1,5 +1,8 @@
-"""
-See https://gist.github.com/joefutrelle/562f25bbcf20691217b8
+#!/usr/bin/env python3
+
+"""Credit to: @joefutrelle
+
+https://gist.github.com/joefutrelle/562f25bbcf20691217b8
 """
 
 

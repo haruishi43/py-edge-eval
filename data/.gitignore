@@ -1,12 +1,6 @@
 *
 !.gitignore
-!/images/
-!/images/*
 !/BSDS500_bench/
 !/BSDS500_bench/**
 !/SBD_bench/
 !/SBD_bench/**
-!/cityscapes_test/
-!/cityscapes_test/**
-!/dff_matlab_results
-!/dff_matlab_results/**

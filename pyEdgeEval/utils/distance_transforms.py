@@ -4,9 +4,7 @@ import cv2
 import numpy as np
 from scipy.ndimage.morphology import distance_transform_edt
 
-__all__ = [
-    "mask2bdry",
-]
+__all__ = ["mask2bdry"]
 
 
 def cv2_mask2bdry(m, ignore_mask, radius, quality):

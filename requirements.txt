@@ -1,6 +1,7 @@
+cityscapesscripts
 matplotlib
+mat73
 numpy
 scipy
 prettytable
 pymatreader
-mat73
