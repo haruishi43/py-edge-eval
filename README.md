@@ -1,10 +1,11 @@
 # Python Edge Evaluation Tools
 
-Edge detection tasks heavily relies on the original codes used in BSDS300/500 written in [MATLAB and C++](https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/resources.html).
-In the field of computer vision, various edge detection algorithms are now resorting to Python and the various machine learning libraries.
-However, due to the fact that not everyone has access to MATLAB and that the original benchmark codes are outdated, evaluating these algorithms, especially on remote servers (i.e., linux environments, docker containers), has been difficult.
-This library aims to remove these limitations and make it easy for models to be evaluated and benchmarked.
+Edge detection tasks heavily relies on the original codes used in BSDS300/500 that runs on [MATLAB](https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/resources.html).
+In the field of computer vision, various edge detection algorithms are now resorting to Python which supports various machine learning libraries.
+However, not everyone has access to MATLAB and the original benchmark codes are outdated.
+I created this open-source library to make it easier to evaluate and reproduce recent deep learning models for edge and boundary detection.
 The original C++ codes used in the MATLAB benchmarks are ported with Cython and the evaluation scripts are rewritten in Python3.
+This means that benchmarking could be easily done on almost any environment, especially on remote servers (i.e., linux environments, docker containers), which has been difficult before.
 The codebase is created to be extensible and supports various tasks and datasets as well as different evaluation protocols.
 To test the validity of the evaluation code, `pyEdgeEval`'s results are compared with the results of the original MATLAB codes.
 Besides benchmarking, `pyEdgeEval` adds various tools for edge detection such as `mask2edge` transformation.
