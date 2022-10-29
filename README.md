@@ -7,6 +7,7 @@ This library aims to remove these limitations and make it easy for models to be 
 The original C++ codes used in the MATLAB benchmarks are ported with Cython and the evaluation scripts are rewritten in Python3.
 The codebase is created to be extensible and supports various tasks and datasets as well as different evaluation protocols.
 To test the validity of the evaluation code, `pyEdgeEval`'s results are compared with the results of the original MATLAB codes.
+Besides benchmarking, `pyEdgeEval` adds various tools for edge detection such as `mask2edge` transformation.
 
 `pyEdgeEval` is:
 - an alternative to the original MATLAB benchmark
