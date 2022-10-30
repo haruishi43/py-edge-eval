@@ -23,7 +23,7 @@ def parse_args():
         help="the root path of the predictions",
     )
     parser.add_argument(
-        "output_path",
+        "--output-path",
         type=str,
         help="the root path of where the results are populated",
     )
@@ -32,6 +32,12 @@ def parse_args():
         type=str,
         default="[15]",
         help="the category number to evaluate; can be multiple values'[15]'",
+    )
+    parser.add_argument(
+        "--thresholds",
+        type=str,
+        default="99",
+        help="the number of thresholds (could be a list of floats); use 99 for eval",
     )
     parser.add_argument(
         "--raw",
@@ -47,12 +53,6 @@ def parse_args():
         "--kill-internal",
         action="store_true",
         help="kill internal contour",
-    )
-    parser.add_argument(
-        "--thresholds",
-        type=str,
-        default="99",
-        help="the number of thresholds (could be a list of floats); use 99 for eval",
     )
     parser.add_argument(
         "--nproc",
@@ -128,6 +128,12 @@ def evaluate(
             )
             return
 
+    if output_path is None:
+        timestamp = time.strftime("%Y%m%d_%H%M%S", time.localtime())
+        output_path = osp.join(
+            osp.normpath(pred_path), f"edge_results_{timestamp}"
+        )
+
     mkdir_or_exist(output_path)
 
     timestamp = time.strftime("%Y%m%d_%H%M%S", time.localtime())
@@ -138,6 +144,7 @@ def evaluate(
     logger.info(f"thresholds: \t{thresholds}")
     logger.info(f"thin:       \t{apply_thinning}")
     logger.info(f"nms:        \t{apply_nms}")
+    print("\n\n")
 
     # initialize evaluator
     evaluator = SBDEvaluator(

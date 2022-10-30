@@ -34,7 +34,7 @@ def _common_parser_args(
         help="the root path of the predictions",
     )
     parser.add_argument(
-        "--output_path",
+        "--output-path",
         type=str,
         help="the root path of where the results are populated",
     )
@@ -60,15 +60,15 @@ def _common_parser_args(
         help="tolerance distance (default: 0.0035)",
     )
     parser.add_argument(
-        "--apply-nms",
-        action="store_true",
-        help="applies NMS before evaluation",
-    )
-    parser.add_argument(
         "--thresholds",
         type=str,
         default="99",
         help="the number of thresholds (could be a list of floats); use 99 for eval",
+    )
+    parser.add_argument(
+        "--apply-nms",
+        action="store_true",
+        help="applies NMS before evaluation",
     )
     parser.add_argument(
         "--nproc",

@@ -62,6 +62,7 @@ I also test cityscapes' edge generation code (`convert_dataset/cityscapes.py`) a
 - [x] Plot PR curves
 - [x] NMS preprocess script
 - [x] SBD evaluation script
+- [ ] "thin" GTs for SBD
 - [x] Cityscapes evaluation script
 - [x] Multiprocessing for evaluation
 - [ ] Set random seed for `correspond_pixels`

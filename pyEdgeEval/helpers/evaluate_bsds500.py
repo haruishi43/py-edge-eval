@@ -23,7 +23,7 @@ def parse_args():
         help="the root path of the predictions",
     )
     parser.add_argument(
-        "output_path",
+        "--output-path",
         type=str,
         help="the root path of where the results are populated",
     )
@@ -118,6 +118,7 @@ def evaluate(
     logger.info(f"max_dist:               \t{max_dist}")
     logger.info(f"thinning + thinned gts: \t{apply_thinning}")
     logger.info(f"nms:                    \t{apply_nms}")
+    print("\n\n")
 
     evaluator = BSDS500Evaluator(
         dataset_root=bsds_path,
