@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Edge Evaluation Tools &mdash; pyEdgeEval 0.1.3 documentation</title>
+  <title>Python Edge Evaluation Tools &mdash; pyEdgeEval 0.2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> pyEdgeEval
           </a>
               <div class="version">
-                0.1.3
+                0.2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -44,19 +44,21 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Edge Evaluation Tools</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Python Edge Evaluation Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#installation">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installation-guide">Installation guide</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="#converting-cityscapes-dataset-for-sbd">Converting Cityscapes Dataset for SBD</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#evaluation-for-each-datasets">Evaluation for each datasets</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#bsds500">BSDS500</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sbd">SBD</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cityscapes">CityScapes</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#development">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyEdgeEval.html">pyEdgeEval package</a></li>
 </ul>
 
@@ -74,7 +76,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Edge Evaluation Tools</li>
+      <li>Python Edge Evaluation Tools</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/readme_link.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -84,42 +86,45 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="edge-evaluation-tools">
-<h1>Edge Evaluation Tools<a class="headerlink" href="#edge-evaluation-tools" title="Permalink to this heading">¶</a></h1>
-<p>Edge detection tasks heavily relies on the original codes used in BSDS300/500 written in <a class="reference external" href="https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/resources.html">MATLAB and C++</a>.
-In the field of computer vision, various edge detection algorithms are now resorting to Python and the various machine learning libraries.
-However, due to the fact that not everyone has access to MATLAB and that the original benchmark codes are outdated, evaluating these algorithms, especially on remote servers (docker containers), has been difficult.
-This library aims to remove these limitations and make it easy for models to be evaluated and benchmarked without the need of MATLAB.
-The original C++ codes used in the MATLAB benchmarks are ported with Cython and the evaluation scripts are rewritten in Python.
-The codebase is created to be extensible and supports various tasks and datasets as well as different evaluation protocols.
-To test the validity of the evaluation code, <code class="docutils literal notranslate"><span class="pre">pyEdgeEval</span></code>’s results are compared with the results of the original MATLAB codes.</p>
+  <section id="python-edge-evaluation-tools">
+<h1>Python Edge Evaluation Tools<a class="headerlink" href="#python-edge-evaluation-tools" title="Permalink to this heading">¶</a></h1>
+<p>Edge detection tasks heavily relies on the original codes used in BSDS300/500 that runs on <a class="reference external" href="https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/resources.html">MATLAB</a>.
+In the field of computer vision, various edge detection algorithms are now resorting to Python which supports various machine learning libraries.
+However, not everyone has access to MATLAB and the original benchmark codes are outdated.
+I created this open-source library, <code class="docutils literal notranslate"><span class="pre">pyEdgeEval</span></code>, to make it easier to evaluate and reproduce recent deep learning models for edge and boundary detection.
+The original C++ codes used in the MATLAB benchmarks are ported with Cython and the evaluation scripts are rewritten in Python3.
+This means that benchmarking could be easily done on almost any environment, especially on remote servers (i.e., linux environments, docker containers), which have been difficult before.
+The codebase is designed to be extensible and supports various tasks and datasets as well as different evaluation protocols.
+To test the validity of the evaluation code, <code class="docutils literal notranslate"><span class="pre">pyEdgeEval</span></code>’s results are compared with the results of the original MATLAB codes.
+Besides benchmarking, <code class="docutils literal notranslate"><span class="pre">pyEdgeEval</span></code> adds various tools for edge detection such as <code class="docutils literal notranslate"><span class="pre">mask2edge</span></code> transformation.</p>
 <p><code class="docutils literal notranslate"><span class="pre">pyEdgeEval</span></code> is:</p>
 <ul class="simple">
-<li><p>an alternative to the original MATLAB benchmark</p></li>
+<li><p>a Python alternative to the original MATLAB benchmark</p></li>
 <li><p>light with minimal dependencies</p></li>
-<li><p>modular and easily customizable</p></li>
-<li><p>fast (uses multiprocessing and Cython)</p></li>
+<li><p>modular architecture and easily customizable</p></li>
+<li><p>relatively fast (uses multiprocessing and Cython)</p></li>
 <li><p>implements common preprocessing algorithms</p></li>
-<li><p>supports various tasks and datasets</p></li>
+<li><p>supports various tasks and datasets (extensible to other datasets)</p></li>
 <li><p>supports various evaluation protocols</p></li>
 <li><p>edge generation tools</p></li>
 <li><p>etc…</p></li>
 </ul>
-<p>Supported tasks:</p>
+<p><strong>Supported tasks</strong>:</p>
 <ul class="simple">
 <li><p>Edge Detection</p></li>
 <li><p>Semantic Boundary Detection</p></li>
 </ul>
-<p>Supported datasets:</p>
+<p><strong>Supported datasets</strong>:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/resources.html">BSDS500</a></p></li>
 <li><p><a class="reference external" href="http://home.bharathh.info/pubs/codes/SBD/download.html">SBD</a></p></li>
-<li><p><a class="reference external" href="https://www.cityscapes-dataset.com">Cityscapes</a></p></li>
+<li><p><a class="reference external" href="https://www.cityscapes-dataset.com">Cityscapes</a> (semantic boundary detection)</p></li>
 </ul>
-<p>Disclaimers:</p>
+<p><em>Disclaimers</em>:</p>
 <ul class="simple">
-<li><p>The evaluation code does not output results that exactly match the original MATLAB benchmark. This could be for various reasons. The results are, for the most part, close enough. I recommend NOT to compare the results from this evaluation directly with results obtained through the MATLAB code for this reason.</p></li>
-<li><p>The codes and algorithms are not perfect. I will not take responsibility for how the code is used. If there are some bugs or improvements, please submit issues or pull requests.</p></li>
+<li><p>The evaluation code does not output results that exactly match the original MATLAB benchmark. This could be for various reasons such as random seeds for matching algorithm. The results are, for the most part, close enough (around 0.01% difference).</p></li>
+<li><p>The codes and algorithms are not perfect. I will not take responsibility for how the code is used (check the license(s)).</p></li>
+<li><p>If you find some bugs or want to improve this project, please submit issues or pull requests.</p></li>
 </ul>
 </section>
 <section id="installation">
@@ -127,7 +132,7 @@ To test the validity of the evaluation code, <code class="docutils literal notra
 <section id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">&gt;=</span> <span class="pre">3.8</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">&gt;=</span> <span class="pre">3.8</span></code> (tested on 3.8.x)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">cv2</span></code></p></li>
 </ul>
 </section>
@@ -148,6 +153,19 @@ pip install -e .
 </pre></div>
 </div>
 </section>
+</section>
+<section id="converting-cityscapes-dataset-for-sbd">
+<h1>Converting Cityscapes Dataset for SBD<a class="headerlink" href="#converting-cityscapes-dataset-for-sbd" title="Permalink to this heading">¶</a></h1>
+<p>Script:</p>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>python scripts/convert_datasets/cityscapes.py --nproc<span class="o">=</span><span class="m">8</span>
+</pre></div>
+</div>
+<p>NOTE:</p>
+<ul class="simple">
+<li><p>Beaware that using multi-processing will consume at most 10GB per process (I’m working on debugging memory allocation issues).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--nonIS</span></code> will generate non-IS boundaries.</p></li>
+<li><p>The script will generate full resolution training dataset, full resolution validation dataset, and half resolution validation dataset (both raw/thin for validation).</p></li>
+</ul>
 </section>
 <section id="evaluation-for-each-datasets">
 <h1>Evaluation for each datasets<a class="headerlink" href="#evaluation-for-each-datasets" title="Permalink to this heading">¶</a></h1>
@@ -173,44 +191,30 @@ However, due to the randomness in the original MATLAB (C++) codebase, the result
 <p>First, create GT data using this script:</p>
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># if you plan on evaluating with instance-sensitive edges (IS edges)</span>
 python scripts/convert_dataset/cityscapes.py --nproc <span class="m">8</span>
-<span class="c1"># if you plan on evaluating with instance-insensitive edges</span>
-python scripts/convert_dataset/cityscapes.py --insensitive --nproc <span class="m">8</span>
+<span class="c1"># if you plan on evaluating with non-instance-sensitive edges</span>
+python scripts/convert_dataset/cityscapes.py --nonIS --nproc <span class="m">8</span>
 </pre></div>
 </div>
+<p>The scripts will create two types of edges (raw and thin) for two different scales (half and full).</p>
 <p>Evaluation script:</p>
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>python scripts/evaluate_cityscapes.py &lt;path/to/cityscapes&gt; &lt;path/to/predictions&gt; &lt;path/to/output&gt; --categories<span class="o">=</span><span class="s1">&#39;[1, 14]&#39;</span> --thresholds <span class="m">99</span> --nproc <span class="m">8</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">--thin</span></code> will enable thinning on predictions and use thinned GTs.
-For instance-insensitive edges, you would need to supply <code class="docutils literal notranslate"><span class="pre">--pre-seal</span></code> argument.</p>
+For instance-insensitive edges, you would need to supply <code class="docutils literal notranslate"><span class="pre">--pre-seal</span></code> argument.
+You can also preprocess the predictions by passing <code class="docutils literal notranslate"><span class="pre">--apply-thinning</span></code> and/or <code class="docutils literal notranslate"><span class="pre">--apply-nms</span></code> for thinning and NMS respectively.</p>
 </section>
 </section>
-<section id="acknowledgements">
-<h1>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this heading">¶</a></h1>
+<section id="license">
+<h1>License<a class="headerlink" href="#license" title="Permalink to this heading">¶</a></h1>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/pdollar/edges">edges</a></p>
-<ul>
-<li><p>tools for processing edges (written in MATLAB and C++)</p></li>
+<li><p>The code is released under the MIT License (please refer to the LICENSE file for details).</p></li>
+<li><p>I modified codes from other projects and their licenses applies to those files (please refer to <span class="xref myst">Licenses</span>).</p></li>
 </ul>
-</li>
-<li><p><a class="reference external" href="https://github.com/Chrisding/seal/blob/master/LICENSE">seal</a></p>
-<ul>
-<li><p>semantic boundary detection protocols</p></li>
-</ul>
-</li>
-<li><p><a class="reference external" href="https://github.com/Walstruzz/edge_eval_python">edge_eval_python</a>:</p>
-<ul>
-<li><p>referenced implementation for <code class="docutils literal notranslate"><span class="pre">bwmorph</span></code> thinning algorithm and <code class="docutils literal notranslate"><span class="pre">nms</span></code> preprocessing</p></li>
-<li><p>referenced PR-curve visualization codes</p></li>
-</ul>
-</li>
-<li><p><a class="reference external" href="https://github.com/Britefury/py-bsds500">py-bsds500</a></p>
-<ul>
-<li><p>referenced Cython ports for <code class="docutils literal notranslate"><span class="pre">correspond_pixels</span></code> used in the original MATLAB code</p></li>
-<li><p>referenced python version of the evaluation script for BSDS500</p></li>
-</ul>
-</li>
-</ul>
+</section>
+<section id="development">
+<h1>Development<a class="headerlink" href="#development" title="Permalink to this heading">¶</a></h1>
+<p>See <span class="xref myst">dev.md</span>.</p>
 </section>
 
 

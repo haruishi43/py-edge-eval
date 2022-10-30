@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyEdgeEval.utils package &mdash; pyEdgeEval 0.1.3 documentation</title>
+  <title>pyEdgeEval.utils package &mdash; pyEdgeEval 0.2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> pyEdgeEval
           </a>
               <div class="version">
-                0.1.3
+                0.2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -44,16 +44,19 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="readme_link.html">Edge Evaluation Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html">Python Edge Evaluation Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme_link.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#converting-cityscapes-dataset-for-sbd">Converting Cityscapes Dataset for SBD</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme_link.html#evaluation-for-each-datasets">Evaluation for each datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme_link.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#development">Development</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="pyEdgeEval.html">pyEdgeEval package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pyEdgeEval.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.common.html">pyEdgeEval.common package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.datasets.html">pyEdgeEval.datasets package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.edge_tools.html">pyEdgeEval.edge_tools package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.evaluators.html">pyEdgeEval.evaluators package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.helpers.html">pyEdgeEval.helpers package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.preprocess.html">pyEdgeEval.preprocess package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">pyEdgeEval.utils package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -131,7 +134,7 @@ while preserving multi-label</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyEdgeEval.utils.convert_formats.mask_label2trainId">
-<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.convert_formats.</span></span><span class="sig-name descname"><span class="pre">mask_label2trainId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label2trainId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/pyEdgeEval/utils/convert_formats.html#mask_label2trainId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.convert_formats.mask_label2trainId" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.convert_formats.</span></span><span class="sig-name descname"><span class="pre">mask_label2trainId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label2trainId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/pyEdgeEval/utils/convert_formats.html#mask_label2trainId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.convert_formats.mask_label2trainId" title="Permalink to this definition">¶</a></dt>
 <dd><p>Python version of <cite>labelid2trainid</cite> function for segmentation data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -145,7 +148,7 @@ while preserving multi-label</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyEdgeEval.utils.convert_formats.edge_label2trainId">
-<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.convert_formats.</span></span><span class="sig-name descname"><span class="pre">edge_label2trainId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label2trainId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/pyEdgeEval/utils/convert_formats.html#edge_label2trainId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.convert_formats.edge_label2trainId" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.convert_formats.</span></span><span class="sig-name descname"><span class="pre">edge_label2trainId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label2trainId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/pyEdgeEval/utils/convert_formats.html#edge_label2trainId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.convert_formats.edge_label2trainId" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </section>
@@ -153,13 +156,16 @@ while preserving multi-label</p>
 <span id="pyedgeeval-utils-distance-transforms-module"></span><h2>pyEdgeEval.utils.distance_transforms module<a class="headerlink" href="#module-pyEdgeEval.utils.distance_transforms" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyEdgeEval.utils.distance_transforms.mask2bdry">
-<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.distance_transforms.</span></span><span class="sig-name descname"><span class="pre">mask2bdry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cv2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/pyEdgeEval/utils/distance_transforms.html#mask2bdry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.distance_transforms.mask2bdry" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.distance_transforms.</span></span><span class="sig-name descname"><span class="pre">mask2bdry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cv2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/pyEdgeEval/utils/distance_transforms.html#mask2bdry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.distance_transforms.mask2bdry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </section>
 <section id="module-pyEdgeEval.utils.logger">
 <span id="pyedgeeval-utils-logger-module"></span><h2>pyEdgeEval.utils.logger module<a class="headerlink" href="#module-pyEdgeEval.utils.logger" title="Permalink to this heading">¶</a></h2>
 <p>Modified from mmcv.utils</p>
+<ul class="simple">
+<li><p>logger name</p></li>
+</ul>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyEdgeEval.utils.logger.get_logger">
 <span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.logger.</span></span><span class="sig-name descname"><span class="pre">get_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/utils/logger.html#get_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.logger.get_logger" title="Permalink to this definition">¶</a></dt>
@@ -172,13 +178,13 @@ will also be added.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Logger name.</p></li>
-<li><p><strong>log_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> | </em><em>None</em>) – The log filename. If specified, a FileHandler
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Logger name.</p></li>
+<li><p><strong>log_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><em>None</em>) – The log filename. If specified, a FileHandler
 will be added to the logger.</p></li>
-<li><p><strong>log_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The logger level. Note that only the process of
+<li><p><strong>log_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The logger level. Note that only the process of
 rank 0 is affected, and other processes will set the level to
 “Error” thus be silent most of the time.</p></li>
-<li><p><strong>file_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The file mode used in opening log file.
+<li><p><strong>file_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The file mode used in opening log file.
 Defaults to ‘w’.</p></li>
 </ul>
 </dd>
@@ -195,13 +201,13 @@ Defaults to ‘w’.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The message to be logged.</p></li>
-<li><p><strong>logger</strong> (<a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.10)"><em>logging.Logger</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> | </em><em>None</em>) – The logger to be used.
+<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The message to be logged.</p></li>
+<li><p><strong>logger</strong> (<a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.11)"><em>logging.Logger</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><em>None</em>) – The logger to be used.
 Some special loggers are:
 - “silent”: no message will be printed.
 - other str: the logger obtained with <cite>get_root_logger(logger)</cite>.
 - None: The <cite>print()</cite> method will be used to print log messages.</p></li>
-<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Logging level. Only available when <cite>logger</cite> is a Logger
+<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Logging level. Only available when <cite>logger</cite> is a Logger
 object or “root”.</p></li>
 </ul>
 </dd>
@@ -219,9 +225,9 @@ e.g., “potato”.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>log_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> | </em><em>None</em>) – The log filename. If specified, a FileHandler
+<li><p><strong>log_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><em>None</em>) – The log filename. If specified, a FileHandler
 will be added to the root logger.</p></li>
-<li><p><strong>log_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The root logger level. Note that only the process of
+<li><p><strong>log_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The root logger level. Note that only the process of
 rank 0 is affected, while other processes will set the level to
 “Error” and be silent most of the time.</p></li>
 </ul>
@@ -237,7 +243,7 @@ rank 0 is affected, while other processes will set the level to
 <span id="pyedgeeval-utils-mat-utils-module"></span><h2>pyEdgeEval.utils.mat_utils module<a class="headerlink" href="#module-pyEdgeEval.utils.mat_utils" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyEdgeEval.utils.mat_utils.loadmat">
-<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.mat_utils.</span></span><span class="sig-name descname"><span class="pre">loadmat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_mat73</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/utils/mat_utils.html#loadmat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.mat_utils.loadmat" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.mat_utils.</span></span><span class="sig-name descname"><span class="pre">loadmat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_mat73</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/utils/mat_utils.html#loadmat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.mat_utils.loadmat" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -250,6 +256,9 @@ rank 0 is affected, while other processes will set the level to
 <section id="module-pyEdgeEval.utils.path">
 <span id="pyedgeeval-utils-path-module"></span><h2>pyEdgeEval.utils.path module<a class="headerlink" href="#module-pyEdgeEval.utils.path" title="Permalink to this heading">¶</a></h2>
 <p>Modified from mmcv.utils</p>
+<ul class="simple">
+<li><p>no changes</p></li>
+</ul>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyEdgeEval.utils.path.check_file_exist">
 <span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.path.</span></span><span class="sig-name descname"><span class="pre">check_file_exist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg_tmpl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'file</span> <span class="pre">&quot;{}&quot;</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/utils/path.html#check_file_exist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.path.check_file_exist" title="Permalink to this definition">¶</a></dt>
@@ -273,11 +282,11 @@ rank 0 is affected, while other processes will set the level to
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dir_path</strong> (str | <code class="xref py py-obj docutils literal notranslate"><span class="pre">Path</span></code>) – Path of the directory.</p></li>
-<li><p><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>)</em><em>, </em><em>optional</em>) – File suffix that we are
+<li><p><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>)</em><em>, </em><em>optional</em>) – File suffix that we are
 interested in. Default: None.</p></li>
-<li><p><strong>recursive</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to True, recursively scan the
+<li><p><strong>recursive</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to True, recursively scan the
 directory. Default: False.</p></li>
-<li><p><strong>case_sensitive</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to False, ignore the case of
+<li><p><strong>case_sensitive</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to False, ignore the case of
 suffix. Default: True.</p></li>
 </ul>
 </dd>
@@ -291,10 +300,13 @@ suffix. Default: True.</p></li>
 <section id="module-pyEdgeEval.utils.progressbar">
 <span id="pyedgeeval-utils-progressbar-module"></span><h2>pyEdgeEval.utils.progressbar module<a class="headerlink" href="#module-pyEdgeEval.utils.progressbar" title="Permalink to this heading">¶</a></h2>
 <p>Modified from mmcv.utils</p>
+<ul class="simple">
+<li><p>added <cite>no_bar</cite> mode</p></li>
+</ul>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyEdgeEval.utils.progressbar.ProgressBar">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.progressbar.</span></span><span class="sig-name descname"><span class="pre">ProgressBar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_num=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_width=50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='utf-8'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/utils/progressbar.html#ProgressBar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.progressbar.ProgressBar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A progress bar which can print the progress.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="pyEdgeEval.utils.progressbar.ProgressBar.terminal_width">
@@ -322,9 +334,9 @@ suffix. Default: True.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>callable</em>) – The function to be applied to each task.</p></li>
-<li><p><strong>tasks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a><em>[</em><em>Iterable</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – A list of tasks or
+<li><p><strong>tasks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em>[</em><em>Iterable</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – A list of tasks or
 (tasks, total num).</p></li>
-<li><p><strong>bar_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Width of progress bar.</p></li>
+<li><p><strong>bar_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Width of progress bar.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -342,25 +354,25 @@ suffix. Default: True.</p></li>
 <dt class="sig sig-object py" id="pyEdgeEval.utils.progressbar.track_parallel_progress">
 <span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.progressbar.</span></span><span class="sig-name descname"><span class="pre">track_parallel_progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nproc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initializer=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initargs=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_width=50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_first=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_order=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='utf-8'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_bar=False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/utils/progressbar.html#track_parallel_progress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.progressbar.track_parallel_progress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Track the progress of parallel task execution with a progress bar.</p>
-<p>The built-in <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> module is used for process pools and
+<p>The built-in <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> module is used for process pools and
 tasks are done with <code class="xref py py-func docutils literal notranslate"><span class="pre">Pool.map()</span></code> or <code class="xref py py-func docutils literal notranslate"><span class="pre">Pool.imap_unordered()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>callable</em>) – The function to be applied to each task.</p></li>
-<li><p><strong>tasks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a><em>[</em><em>Iterable</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – A list of tasks or
+<li><p><strong>tasks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em>[</em><em>Iterable</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – A list of tasks or
 (tasks, total num).</p></li>
-<li><p><strong>nproc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Process (worker) number.</p></li>
+<li><p><strong>nproc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Process (worker) number.</p></li>
 <li><p><strong>initializer</strong> (<em>None</em><em> or </em><em>callable</em>) – Refer to <code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.Pool</span></code>
 for details.</p></li>
-<li><p><strong>initargs</strong> (<em>None</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a>) – Refer to <code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.Pool</span></code> for
+<li><p><strong>initargs</strong> (<em>None</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – Refer to <code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.Pool</span></code> for
 details.</p></li>
-<li><p><strong>chunksize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Refer to <code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.Pool</span></code> for details.</p></li>
-<li><p><strong>bar_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Width of progress bar.</p></li>
-<li><p><strong>skip_first</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – Whether to skip the first sample for each worker
+<li><p><strong>chunksize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Refer to <code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.Pool</span></code> for details.</p></li>
+<li><p><strong>bar_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Width of progress bar.</p></li>
+<li><p><strong>skip_first</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – Whether to skip the first sample for each worker
 when estimating fps, since the initialization step may takes
 longer.</p></li>
-<li><p><strong>keep_order</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – If True, <code class="xref py py-func docutils literal notranslate"><span class="pre">Pool.imap()</span></code> is used, otherwise
+<li><p><strong>keep_order</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – If True, <code class="xref py py-func docutils literal notranslate"><span class="pre">Pool.imap()</span></code> is used, otherwise
 <code class="xref py py-func docutils literal notranslate"><span class="pre">Pool.imap_unordered()</span></code> is used.</p></li>
 </ul>
 </dd>
@@ -379,9 +391,9 @@ bar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tasks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a><em>[</em><em>Iterable</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – A list of tasks or
+<li><p><strong>tasks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em>[</em><em>Iterable</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – A list of tasks or
 (tasks, total num).</p></li>
-<li><p><strong>bar_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Width of progress bar.</p></li>
+<li><p><strong>bar_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Width of progress bar.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Yields</dt>
@@ -393,16 +405,20 @@ bar.</p>
 </section>
 <section id="module-pyEdgeEval.utils.timer">
 <span id="pyedgeeval-utils-timer-module"></span><h2>pyEdgeEval.utils.timer module<a class="headerlink" href="#module-pyEdgeEval.utils.timer" title="Permalink to this heading">¶</a></h2>
+<p>Modified from mmcv.utils</p>
+<ul class="simple">
+<li><p>no changes</p></li>
+</ul>
 <dl class="py exception">
 <dt class="sig sig-object py" id="pyEdgeEval.utils.timer.TimerError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.timer.</span></span><span class="sig-name descname"><span class="pre">TimerError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/utils/timer.html#TimerError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.timer.TimerError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pyEdgeEval.utils.timer.Timer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.timer.</span></span><span class="sig-name descname"><span class="pre">Timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_tmpl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/utils/timer.html#Timer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.timer.Timer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A flexible Timer class.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">time</span>
@@ -415,7 +431,7 @@ bar.</p>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># simulate a code block that will run for 1s</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="go">it takes 1.0 seconds</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">timer</span> <span class="o">=</span> <span class="n">mmcv</span><span class="o">.</span><span class="n">Timer</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">timer</span> <span class="o">=</span> <span class="n">Timer</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">timer</span><span class="o">.</span><span class="n">since_start</span><span class="p">())</span>
 <span class="go">0.500</span>
@@ -432,7 +448,7 @@ bar.</p>
 <dd><p>indicate whether the timer is running</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -520,7 +536,7 @@ while preserving multi-label</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyEdgeEval.utils.mask_label2trainId">
-<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.</span></span><span class="sig-name descname"><span class="pre">mask_label2trainId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label2trainId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/pyEdgeEval/utils/convert_formats.html#mask_label2trainId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.mask_label2trainId" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.</span></span><span class="sig-name descname"><span class="pre">mask_label2trainId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label2trainId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/pyEdgeEval/utils/convert_formats.html#mask_label2trainId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.mask_label2trainId" title="Permalink to this definition">¶</a></dt>
 <dd><p>Python version of <cite>labelid2trainid</cite> function for segmentation data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -534,12 +550,12 @@ while preserving multi-label</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyEdgeEval.utils.edge_label2trainId">
-<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.</span></span><span class="sig-name descname"><span class="pre">edge_label2trainId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label2trainId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/pyEdgeEval/utils/convert_formats.html#edge_label2trainId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.edge_label2trainId" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.</span></span><span class="sig-name descname"><span class="pre">edge_label2trainId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label2trainId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/pyEdgeEval/utils/convert_formats.html#edge_label2trainId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.edge_label2trainId" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyEdgeEval.utils.mask2bdry">
-<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.</span></span><span class="sig-name descname"><span class="pre">mask2bdry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cv2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/pyEdgeEval/utils/distance_transforms.html#mask2bdry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.mask2bdry" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.</span></span><span class="sig-name descname"><span class="pre">mask2bdry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cv2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/pyEdgeEval/utils/distance_transforms.html#mask2bdry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.mask2bdry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -554,13 +570,13 @@ will also be added.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Logger name.</p></li>
-<li><p><strong>log_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> | </em><em>None</em>) – The log filename. If specified, a FileHandler
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Logger name.</p></li>
+<li><p><strong>log_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><em>None</em>) – The log filename. If specified, a FileHandler
 will be added to the logger.</p></li>
-<li><p><strong>log_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The logger level. Note that only the process of
+<li><p><strong>log_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The logger level. Note that only the process of
 rank 0 is affected, and other processes will set the level to
 “Error” thus be silent most of the time.</p></li>
-<li><p><strong>file_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The file mode used in opening log file.
+<li><p><strong>file_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The file mode used in opening log file.
 Defaults to ‘w’.</p></li>
 </ul>
 </dd>
@@ -581,9 +597,9 @@ e.g., “potato”.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>log_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> | </em><em>None</em>) – The log filename. If specified, a FileHandler
+<li><p><strong>log_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><em>None</em>) – The log filename. If specified, a FileHandler
 will be added to the root logger.</p></li>
-<li><p><strong>log_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The root logger level. Note that only the process of
+<li><p><strong>log_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The root logger level. Note that only the process of
 rank 0 is affected, while other processes will set the level to
 “Error” and be silent most of the time.</p></li>
 </ul>
@@ -601,13 +617,13 @@ rank 0 is affected, while other processes will set the level to
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The message to be logged.</p></li>
-<li><p><strong>logger</strong> (<a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.10)"><em>logging.Logger</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> | </em><em>None</em>) – The logger to be used.
+<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The message to be logged.</p></li>
+<li><p><strong>logger</strong> (<a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.11)"><em>logging.Logger</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><em>None</em>) – The logger to be used.
 Some special loggers are:
 - “silent”: no message will be printed.
 - other str: the logger obtained with <cite>get_root_logger(logger)</cite>.
 - None: The <cite>print()</cite> method will be used to print log messages.</p></li>
-<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Logging level. Only available when <cite>logger</cite> is a Logger
+<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Logging level. Only available when <cite>logger</cite> is a Logger
 object or “root”.</p></li>
 </ul>
 </dd>
@@ -616,7 +632,7 @@ object or “root”.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyEdgeEval.utils.loadmat">
-<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.</span></span><span class="sig-name descname"><span class="pre">loadmat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_mat73</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/utils/mat_utils.html#loadmat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.loadmat" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.</span></span><span class="sig-name descname"><span class="pre">loadmat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_mat73</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/utils/mat_utils.html#loadmat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.loadmat" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -643,11 +659,11 @@ object or “root”.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dir_path</strong> (str | <code class="xref py py-obj docutils literal notranslate"><span class="pre">Path</span></code>) – Path of the directory.</p></li>
-<li><p><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>)</em><em>, </em><em>optional</em>) – File suffix that we are
+<li><p><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>)</em><em>, </em><em>optional</em>) – File suffix that we are
 interested in. Default: None.</p></li>
-<li><p><strong>recursive</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to True, recursively scan the
+<li><p><strong>recursive</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to True, recursively scan the
 directory. Default: False.</p></li>
-<li><p><strong>case_sensitive</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to False, ignore the case of
+<li><p><strong>case_sensitive</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to False, ignore the case of
 suffix. Default: True.</p></li>
 </ul>
 </dd>
@@ -671,9 +687,9 @@ bar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tasks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a><em>[</em><em>Iterable</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – A list of tasks or
+<li><p><strong>tasks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em>[</em><em>Iterable</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – A list of tasks or
 (tasks, total num).</p></li>
-<li><p><strong>bar_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Width of progress bar.</p></li>
+<li><p><strong>bar_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Width of progress bar.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Yields</dt>
@@ -686,25 +702,25 @@ bar.</p>
 <dt class="sig sig-object py" id="pyEdgeEval.utils.track_parallel_progress">
 <span class="sig-prename descclassname"><span class="pre">pyEdgeEval.utils.</span></span><span class="sig-name descname"><span class="pre">track_parallel_progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nproc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initializer=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initargs=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_width=50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_first=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_order=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='utf-8'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_bar=False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/utils/progressbar.html#track_parallel_progress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.utils.track_parallel_progress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Track the progress of parallel task execution with a progress bar.</p>
-<p>The built-in <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> module is used for process pools and
+<p>The built-in <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> module is used for process pools and
 tasks are done with <code class="xref py py-func docutils literal notranslate"><span class="pre">Pool.map()</span></code> or <code class="xref py py-func docutils literal notranslate"><span class="pre">Pool.imap_unordered()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>callable</em>) – The function to be applied to each task.</p></li>
-<li><p><strong>tasks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a><em>[</em><em>Iterable</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – A list of tasks or
+<li><p><strong>tasks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em>[</em><em>Iterable</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – A list of tasks or
 (tasks, total num).</p></li>
-<li><p><strong>nproc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Process (worker) number.</p></li>
+<li><p><strong>nproc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Process (worker) number.</p></li>
 <li><p><strong>initializer</strong> (<em>None</em><em> or </em><em>callable</em>) – Refer to <code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.Pool</span></code>
 for details.</p></li>
-<li><p><strong>initargs</strong> (<em>None</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a>) – Refer to <code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.Pool</span></code> for
+<li><p><strong>initargs</strong> (<em>None</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – Refer to <code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.Pool</span></code> for
 details.</p></li>
-<li><p><strong>chunksize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Refer to <code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.Pool</span></code> for details.</p></li>
-<li><p><strong>bar_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Width of progress bar.</p></li>
-<li><p><strong>skip_first</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – Whether to skip the first sample for each worker
+<li><p><strong>chunksize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Refer to <code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.Pool</span></code> for details.</p></li>
+<li><p><strong>bar_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Width of progress bar.</p></li>
+<li><p><strong>skip_first</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – Whether to skip the first sample for each worker
 when estimating fps, since the initialization step may takes
 longer.</p></li>
-<li><p><strong>keep_order</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – If True, <code class="xref py py-func docutils literal notranslate"><span class="pre">Pool.imap()</span></code> is used, otherwise
+<li><p><strong>keep_order</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – If True, <code class="xref py py-func docutils literal notranslate"><span class="pre">Pool.imap()</span></code> is used, otherwise
 <code class="xref py py-func docutils literal notranslate"><span class="pre">Pool.imap_unordered()</span></code> is used.</p></li>
 </ul>
 </dd>
@@ -723,9 +739,9 @@ longer.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>callable</em>) – The function to be applied to each task.</p></li>
-<li><p><strong>tasks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a><em>[</em><em>Iterable</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – A list of tasks or
+<li><p><strong>tasks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em>[</em><em>Iterable</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – A list of tasks or
 (tasks, total num).</p></li>
-<li><p><strong>bar_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Width of progress bar.</p></li>
+<li><p><strong>bar_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Width of progress bar.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

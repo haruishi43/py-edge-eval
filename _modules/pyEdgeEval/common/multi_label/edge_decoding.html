@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyEdgeEval.common.multi_label.edge_decoding &mdash; pyEdgeEval 0.1.3 documentation</title>
+  <title>pyEdgeEval.common.multi_label.edge_decoding &mdash; pyEdgeEval 0.2.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
@@ -29,7 +29,7 @@
             <a href="../../../../index.html" class="icon icon-home"> pyEdgeEval
           </a>
               <div class="version">
-                0.1.3
+                0.2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -41,10 +41,12 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../readme_link.html">Edge Evaluation Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../readme_link.html">Python Edge Evaluation Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../readme_link.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../readme_link.html#converting-cityscapes-dataset-for-sbd">Converting Cityscapes Dataset for SBD</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../readme_link.html#evaluation-for-each-datasets">Evaluation for each datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../readme_link.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../readme_link.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../readme_link.html#development">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyEdgeEval.html">pyEdgeEval package</a></li>
 </ul>
 
@@ -84,7 +86,10 @@
 
 
 <div class="viewcode-block" id="binary_multilabel_decoding"><a class="viewcode-back" href="../../../../pyEdgeEval.common.multi_label.html#pyEdgeEval.common.multi_label.edge_decoding.binary_multilabel_decoding">[docs]</a><span class="k">def</span> <span class="nf">binary_multilabel_decoding</span><span class="p">(</span>
-    <span class="n">edge_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">edge_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">h</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">w</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Load binary file to edge map</span>
 
@@ -116,10 +121,7 @@
     <span class="k">return</span> <span class="n">edge</span></div>
 
 
-<div class="viewcode-block" id="load_scaled_edge"><a class="viewcode-back" href="../../../../pyEdgeEval.common.multi_label.html#pyEdgeEval.common.multi_label.edge_decoding.load_scaled_edge">[docs]</a><span class="k">def</span> <span class="nf">load_scaled_edge</span><span class="p">(</span>
-    <span class="n">edge_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<span class="p">):</span>
+<div class="viewcode-block" id="load_scaled_edge"><a class="viewcode-back" href="../../../../pyEdgeEval.common.multi_label.html#pyEdgeEval.common.multi_label.edge_decoding.load_scaled_edge">[docs]</a><span class="k">def</span> <span class="nf">load_scaled_edge</span><span class="p">(</span><span class="n">edge_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Load edge from file and scale it</span>
 
 <span class="sd">    Returns:</span>
@@ -127,8 +129,9 @@
 <span class="sd">        (height, width): tuple of int</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">edge</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">edge_path</span><span class="p">)</span>
-    <span class="n">_edge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
-    <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">_edge</span><span class="o">.</span><span class="n">shape</span>
+    <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="o">=</span> <span class="n">edge</span><span class="o">.</span><span class="n">size</span>
+    <span class="c1"># _edge = np.array(edge)  # allocation costs</span>
+    <span class="c1"># (h, w, _) = _edge.shape</span>
     <span class="n">height</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
     <span class="n">edge</span> <span class="o">=</span> <span class="n">edge</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">Resampling</span><span class="o">.</span><span class="n">NEAREST</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">edge</span><span class="p">,</span> <span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span></div>

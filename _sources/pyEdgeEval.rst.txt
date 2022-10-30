@@ -11,6 +11,7 @@ Subpackages
    pyEdgeEval.datasets
    pyEdgeEval.edge_tools
    pyEdgeEval.evaluators
+   pyEdgeEval.helpers
    pyEdgeEval.preprocess
    pyEdgeEval.utils
    pyEdgeEval.visualization

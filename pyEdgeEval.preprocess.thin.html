@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyEdgeEval.preprocess.thin package &mdash; pyEdgeEval 0.1.3 documentation</title>
+  <title>pyEdgeEval.preprocess.thin package &mdash; pyEdgeEval 0.2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> pyEdgeEval
           </a>
               <div class="version">
-                0.1.3
+                0.2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -44,16 +44,19 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="readme_link.html">Edge Evaluation Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html">Python Edge Evaluation Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme_link.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#converting-cityscapes-dataset-for-sbd">Converting Cityscapes Dataset for SBD</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme_link.html#evaluation-for-each-datasets">Evaluation for each datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme_link.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#development">Development</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="pyEdgeEval.html">pyEdgeEval package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pyEdgeEval.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.common.html">pyEdgeEval.common package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.datasets.html">pyEdgeEval.datasets package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.edge_tools.html">pyEdgeEval.edge_tools package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.evaluators.html">pyEdgeEval.evaluators package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.helpers.html">pyEdgeEval.helpers package</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pyEdgeEval.preprocess.html">pyEdgeEval.preprocess package</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="pyEdgeEval.preprocess.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyEdgeEval.preprocess.html#module-pyEdgeEval.preprocess">Module contents</a></li>
@@ -103,7 +106,8 @@
 </section>
 <section id="module-pyEdgeEval.preprocess.thin.bwmorph_thin">
 <span id="pyedgeeval-preprocess-thin-bwmorph-thin-module"></span><h2>pyEdgeEval.preprocess.thin.bwmorph_thin module<a class="headerlink" href="#module-pyEdgeEval.preprocess.thin.bwmorph_thin" title="Permalink to this heading">¶</a></h2>
-<p>See <a class="reference external" href="https://gist.github.com/joefutrelle/562f25bbcf20691217b8">https://gist.github.com/joefutrelle/562f25bbcf20691217b8</a></p>
+<p>Credit to: &#64;joefutrelle</p>
+<p><a class="reference external" href="https://gist.github.com/joefutrelle/562f25bbcf20691217b8">https://gist.github.com/joefutrelle/562f25bbcf20691217b8</a></p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.bwmorph_thin.bwmorph_thin">
 <span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.bwmorph_thin.</span></span><span class="sig-name descname"><span class="pre">bwmorph_thin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/bwmorph_thin.html#bwmorph_thin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.bwmorph_thin.bwmorph_thin" title="Permalink to this definition">¶</a></dt>
@@ -112,7 +116,7 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>image</strong> (<em>np.ndarray</em>) – The image to be thinned (binary (M, N) ndarray).</p></li>
-<li><p><strong>n_iter</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – Regardless of the value of this parameter,
+<li><p><strong>n_iter</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – Regardless of the value of this parameter,
 the thinned image is returned immediately if an iteration produces
 no change.
 If this parameter is specified it thus sets an upper bound on
@@ -164,6 +168,8 @@ the central pixel should be deleted in that sub-iteration.</p>
 </section>
 <section id="module-pyEdgeEval.preprocess.thin.thin">
 <span id="pyedgeeval-preprocess-thin-thin-module"></span><h2>pyEdgeEval.preprocess.thin.thin module<a class="headerlink" href="#module-pyEdgeEval.preprocess.thin.thin" title="Permalink to this heading">¶</a></h2>
+<p>Credit to &#64;Britefury</p>
+<p><a class="reference external" href="https://github.com/Britefury/py-bsds500/blob/master/bsds/thin.py">https://github.com/Britefury/py-bsds500/blob/master/bsds/thin.py</a></p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyEdgeEval.preprocess.thin.thin.binary_image_to_lut_indices">
 <span class="sig-prename descclassname"><span class="pre">pyEdgeEval.preprocess.thin.thin.</span></span><span class="sig-name descname"><span class="pre">binary_image_to_lut_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/preprocess/thin/thin.html#binary_image_to_lut_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.preprocess.thin.thin.binary_image_to_lut_indices" title="Permalink to this definition">¶</a></dt>
@@ -236,7 +242,7 @@ as 1, zero elements as 0</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> – a binary image, or an image that is to be converted to a binary image</p></li>
-<li><p><strong>max_iter</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – maximum number of iterations; default is <code class="docutils literal notranslate"><span class="pre">None</span></code>
+<li><p><strong>max_iter</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – maximum number of iterations; default is <code class="docutils literal notranslate"><span class="pre">None</span></code>
 that results in an infinite number of iterations (note that <code class="docutils literal notranslate"><span class="pre">binary_thin</span></code>
 will automatically terminate when no more changes occur)</p></li>
 </ul>
@@ -258,7 +264,7 @@ will automatically terminate when no more changes occur)</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>image</strong> (<em>np.ndarray</em>) – The image to be thinned (binary (M, N) ndarray).</p></li>
-<li><p><strong>n_iter</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – Regardless of the value of this parameter,
+<li><p><strong>n_iter</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – Regardless of the value of this parameter,
 the thinned image is returned immediately if an iteration produces
 no change.
 If this parameter is specified it thus sets an upper bound on
@@ -315,7 +321,7 @@ the central pixel should be deleted in that sub-iteration.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> – a binary image, or an image that is to be converted to a binary image</p></li>
-<li><p><strong>max_iter</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – maximum number of iterations; default is <code class="docutils literal notranslate"><span class="pre">None</span></code>
+<li><p><strong>max_iter</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – maximum number of iterations; default is <code class="docutils literal notranslate"><span class="pre">None</span></code>
 that results in an infinite number of iterations (note that <code class="docutils literal notranslate"><span class="pre">binary_thin</span></code>
 will automatically terminate when no more changes occur)</p></li>
 </ul>

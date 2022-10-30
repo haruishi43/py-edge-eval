@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyEdgeEval.helpers package &mdash; pyEdgeEval 0.2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pyEdgeEval.preprocess package" href="pyEdgeEval.preprocess.html" />
+    <link rel="prev" title="pyEdgeEval.evaluators package" href="pyEdgeEval.evaluators.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> pyEdgeEval
+          </a>
+              <div class="version">
+                0.2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html">Python Edge Evaluation Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#converting-cityscapes-dataset-for-sbd">Converting Cityscapes Dataset for SBD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#evaluation-for-each-datasets">Evaluation for each datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#development">Development</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pyEdgeEval.html">pyEdgeEval package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pyEdgeEval.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.common.html">pyEdgeEval.common package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.datasets.html">pyEdgeEval.datasets package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.edge_tools.html">pyEdgeEval.edge_tools package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.evaluators.html">pyEdgeEval.evaluators package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pyEdgeEval.helpers package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyEdgeEval.helpers.convert_cityscapes">pyEdgeEval.helpers.convert_cityscapes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyEdgeEval.helpers.evaluate_bsds500">pyEdgeEval.helpers.evaluate_bsds500 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyEdgeEval.helpers.evaluate_cityscapes">pyEdgeEval.helpers.evaluate_cityscapes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyEdgeEval.helpers.evaluate_sbd">pyEdgeEval.helpers.evaluate_sbd module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyEdgeEval.helpers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.preprocess.html">pyEdgeEval.preprocess package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.utils.html">pyEdgeEval.utils package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.visualization.html">pyEdgeEval.visualization package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.html#module-pyEdgeEval.info">pyEdgeEval.info module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.html#module-pyEdgeEval">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyEdgeEval</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="pyEdgeEval.html">pyEdgeEval package</a> &raquo;</li>
+      <li>pyEdgeEval.helpers package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pyEdgeEval.helpers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pyedgeeval-helpers-package">
+<h1>pyEdgeEval.helpers package<a class="headerlink" href="#pyedgeeval-helpers-package" title="Permalink to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="module-pyEdgeEval.helpers.convert_cityscapes">
+<span id="pyedgeeval-helpers-convert-cityscapes-module"></span><h2>pyEdgeEval.helpers.convert_cityscapes module<a class="headerlink" href="#module-pyEdgeEval.helpers.convert_cityscapes" title="Permalink to this heading">¶</a></h2>
+<p>Convert Cityscapes to SBD format</p>
+<p>TODO:
+- each process uses around 10GB (potentially OOM on constrained systems)
+- debug memory usage and unnecessary allocations (probably cv2)</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.helpers.convert_cityscapes.convert_cityscapes">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.helpers.convert_cityscapes.</span></span><span class="sig-name descname"><span class="pre">convert_cityscapes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proc_dirname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cityscapes_root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'data/cityscapes'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_sensitive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_half_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw_val_radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thin_val_radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nproc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/helpers/convert_cityscapes.html#convert_cityscapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.helpers.convert_cityscapes.convert_cityscapes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.helpers.convert_cityscapes.test_against_matlab">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.helpers.convert_cityscapes.</span></span><span class="sig-name descname"><span class="pre">test_against_matlab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proc_dirname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">matlab_proc_dirname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gtProc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cityscapes_root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'data/cityscapes'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_sensitive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nproc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/helpers/convert_cityscapes.html#test_against_matlab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.helpers.convert_cityscapes.test_against_matlab" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pyEdgeEval.helpers.evaluate_bsds500">
+<span id="pyedgeeval-helpers-evaluate-bsds500-module"></span><h2>pyEdgeEval.helpers.evaluate_bsds500 module<a class="headerlink" href="#module-pyEdgeEval.helpers.evaluate_bsds500" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.helpers.evaluate_bsds500.evaluate_bsds500">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.helpers.evaluate_bsds500.</span></span><span class="sig-name descname"><span class="pre">evaluate_bsds500</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">no_split_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/helpers/evaluate_bsds500.html#evaluate_bsds500"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.helpers.evaluate_bsds500.evaluate_bsds500" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pyEdgeEval.helpers.evaluate_cityscapes">
+<span id="pyedgeeval-helpers-evaluate-cityscapes-module"></span><h2>pyEdgeEval.helpers.evaluate_cityscapes module<a class="headerlink" href="#module-pyEdgeEval.helpers.evaluate_cityscapes" title="Permalink to this heading">¶</a></h2>
+<p>General evaluation protocols for Cityscapes Semantic Boundary Benchmark</p>
+<p><strong>The ‘Raw’ Protocol:</strong>
+- Use <cite>CityscapesEvaluator</cite> or <cite>HalfcityscapesEvaluator</cite></p>
+<p><strong>The ‘Thin’ Protocol:</strong>
+- Use <cite>HalfCityscapesEvaluator</cite></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.helpers.evaluate_cityscapes.evaluate_cityscapes_thin">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.helpers.evaluate_cityscapes.</span></span><span class="sig-name descname"><span class="pre">evaluate_cityscapes_thin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gt_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gtEval'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/helpers/evaluate_cityscapes.html#evaluate_cityscapes_thin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.helpers.evaluate_cityscapes.evaluate_cityscapes_thin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.helpers.evaluate_cityscapes.evaluate_cityscapes_raw">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.helpers.evaluate_cityscapes.</span></span><span class="sig-name descname"><span class="pre">evaluate_cityscapes_raw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gt_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gtEval'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/helpers/evaluate_cityscapes.html#evaluate_cityscapes_raw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.helpers.evaluate_cityscapes.evaluate_cityscapes_raw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pyEdgeEval.helpers.evaluate_sbd">
+<span id="pyedgeeval-helpers-evaluate-sbd-module"></span><h2>pyEdgeEval.helpers.evaluate_sbd module<a class="headerlink" href="#module-pyEdgeEval.helpers.evaluate_sbd" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyEdgeEval.helpers.evaluate_sbd.evaluate_sbd">
+<span class="sig-prename descclassname"><span class="pre">pyEdgeEval.helpers.evaluate_sbd.</span></span><span class="sig-name descname"><span class="pre">evaluate_sbd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyEdgeEval/helpers/evaluate_sbd.html#evaluate_sbd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyEdgeEval.helpers.evaluate_sbd.evaluate_sbd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pyEdgeEval.helpers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyEdgeEval.helpers" title="Permalink to this heading">¶</a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pyEdgeEval.evaluators.html" class="btn btn-neutral float-left" title="pyEdgeEval.evaluators package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pyEdgeEval.preprocess.html" class="btn btn-neutral float-right" title="pyEdgeEval.preprocess package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, haruishi43.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

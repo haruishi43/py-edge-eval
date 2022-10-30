@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyEdgeEval package &mdash; pyEdgeEval 0.1.3 documentation</title>
+  <title>pyEdgeEval package &mdash; pyEdgeEval 0.2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyEdgeEval.common package" href="pyEdgeEval.common.html" />
-    <link rel="prev" title="Edge Evaluation Tools" href="readme_link.html" /> 
+    <link rel="prev" title="Python Edge Evaluation Tools" href="readme_link.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -32,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> pyEdgeEval
           </a>
               <div class="version">
-                0.1.3
+                0.2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -44,16 +44,19 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="readme_link.html">Edge Evaluation Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html">Python Edge Evaluation Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme_link.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#converting-cityscapes-dataset-for-sbd">Converting Cityscapes Dataset for SBD</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme_link.html#evaluation-for-each-datasets">Evaluation for each datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme_link.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html#development">Development</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">pyEdgeEval package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.common.html">pyEdgeEval.common package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.datasets.html">pyEdgeEval.datasets package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.edge_tools.html">pyEdgeEval.edge_tools package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.evaluators.html">pyEdgeEval.evaluators package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.helpers.html">pyEdgeEval.helpers package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.preprocess.html">pyEdgeEval.preprocess package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.utils.html">pyEdgeEval.utils package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.visualization.html">pyEdgeEval.visualization package</a></li>
@@ -158,6 +161,15 @@
 <li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.evaluators.html#module-pyEdgeEval.evaluators">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="pyEdgeEval.helpers.html">pyEdgeEval.helpers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.helpers.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.helpers.html#module-pyEdgeEval.helpers.convert_cityscapes">pyEdgeEval.helpers.convert_cityscapes module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.helpers.html#module-pyEdgeEval.helpers.evaluate_bsds500">pyEdgeEval.helpers.evaluate_bsds500 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.helpers.html#module-pyEdgeEval.helpers.evaluate_cityscapes">pyEdgeEval.helpers.evaluate_cityscapes module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.helpers.html#module-pyEdgeEval.helpers.evaluate_sbd">pyEdgeEval.helpers.evaluate_sbd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.helpers.html#module-pyEdgeEval.helpers">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="pyEdgeEval.preprocess.html">pyEdgeEval.preprocess package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pyEdgeEval.preprocess.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pyEdgeEval.preprocess.nms.html">pyEdgeEval.preprocess.nms package</a><ul>
@@ -205,7 +217,7 @@
 </section>
 <section id="module-pyEdgeEval.info">
 <span id="pyedgeeval-info-module"></span><h2>pyEdgeEval.info module<a class="headerlink" href="#module-pyEdgeEval.info" title="Permalink to this heading">¶</a></h2>
-<p>Information about this module</p>
+<p>Information about this library</p>
 </section>
 <section id="module-pyEdgeEval">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyEdgeEval" title="Permalink to this heading">¶</a></h2>
@@ -226,7 +238,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="readme_link.html" class="btn btn-neutral float-left" title="Edge Evaluation Tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="readme_link.html" class="btn btn-neutral float-left" title="Python Edge Evaluation Tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pyEdgeEval.common.html" class="btn btn-neutral float-right" title="pyEdgeEval.common package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

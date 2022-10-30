@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyEdgeEval.evaluators.bsds &mdash; pyEdgeEval 0.1.3 documentation</title>
+  <title>pyEdgeEval.evaluators.bsds &mdash; pyEdgeEval 0.2.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -29,7 +29,7 @@
             <a href="../../../index.html" class="icon icon-home"> pyEdgeEval
           </a>
               <div class="version">
-                0.1.3
+                0.2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -41,10 +41,12 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../readme_link.html">Edge Evaluation Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme_link.html">Python Edge Evaluation Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme_link.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme_link.html#converting-cityscapes-dataset-for-sbd">Converting Cityscapes Dataset for SBD</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme_link.html#evaluation-for-each-datasets">Evaluation for each datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../readme_link.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme_link.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme_link.html#development">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pyEdgeEval.html">pyEdgeEval package</a></li>
 </ul>
 
@@ -185,6 +187,7 @@
         <span class="n">thresholds</span><span class="p">,</span>
         <span class="n">nproc</span><span class="p">,</span>
         <span class="n">save_dir</span><span class="p">,</span>
+        <span class="n">no_split_dir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_before_evaluation</span><span class="p">()</span>
 
@@ -193,9 +196,15 @@
         <span class="k">for</span> <span class="n">sample_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_names</span><span class="p">:</span>
 
             <span class="n">gt_path</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GT_root</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sample_name</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">GT_SUFFIX</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">pred_path</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">pred_root</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sample_name</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">PRED_SUFFIX</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">no_split_dir</span><span class="p">:</span>
+                <span class="n">_sample_name</span> <span class="o">=</span> <span class="n">sample_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">pred_path</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pred_root</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_sample_name</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">PRED_SUFFIX</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pred_path</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pred_root</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sample_name</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">PRED_SUFFIX</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
 
             <span class="k">assert</span> <span class="n">osp</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">gt_path</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;ERR: </span><span class="si">{</span><span class="n">gt_path</span><span class="si">}</span><span class="s2"> is not valid&quot;</span>
             <span class="k">assert</span> <span class="n">osp</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pred_path</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;ERR: </span><span class="si">{</span><span class="n">pred_path</span><span class="si">}</span><span class="s2"> is not valid&quot;</span>
@@ -222,13 +231,27 @@
 
         <span class="c1"># save metrics</span>
         <span class="k">if</span> <span class="n">save_dir</span><span class="p">:</span>
-            <span class="n">print_log</span><span class="p">(</span><span class="s2">&quot;Saving category results&quot;</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">)</span>
+            <span class="n">print_log</span><span class="p">(</span><span class="s2">&quot;Saving results&quot;</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">)</span>
             <span class="n">save_results</span><span class="p">(</span>
                 <span class="n">root</span><span class="o">=</span><span class="n">save_dir</span><span class="p">,</span>
                 <span class="n">sample_metrics</span><span class="o">=</span><span class="n">sample_metrics</span><span class="p">,</span>
                 <span class="n">threshold_metrics</span><span class="o">=</span><span class="n">threshold_metrics</span><span class="p">,</span>
                 <span class="n">overall_metric</span><span class="o">=</span><span class="n">overall_metric</span><span class="p">,</span>
             <span class="p">)</span>
+
+        <span class="c1"># TODO: better printing</span>
+        <span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;ODS_recall&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ODS_precision&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ODS_f1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;OIS_recall&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;OIS_precision&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;OIS_f1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;AP&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">print_log</span><span class="p">(</span><span class="s2">&quot;Printing out Results:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+            <span class="n">print_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">:</span><span class="se">\t</span><span class="si">{</span><span class="n">overall_metric</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">overall_metric</span></div></div>
 </pre></div>
