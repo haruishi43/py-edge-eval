@@ -120,8 +120,8 @@ You can also preprocess the predictions by passing `--apply-thinning` and/or `--
 # License
 
 - The code is released under the MIT License (please refer to the LICENSE file for details).
-- I modified codes from other projects and their licenses applies to those files (please refer to [Licenses](LICENSES.md)).
+- I modified codes from other projects and their licenses applies to those files (please refer to [Licenses](./LICENSES.md)).
 
 # Development
 
-See [dev.md](.readme/dev.md).
+See [dev.md](./.readme/dev.md).
