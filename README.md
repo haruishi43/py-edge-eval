@@ -3,36 +3,37 @@
 Edge detection tasks heavily relies on the original codes used in BSDS300/500 that runs on [MATLAB](https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/resources.html).
 In the field of computer vision, various edge detection algorithms are now resorting to Python which supports various machine learning libraries.
 However, not everyone has access to MATLAB and the original benchmark codes are outdated.
-I created this open-source library to make it easier to evaluate and reproduce recent deep learning models for edge and boundary detection.
+I created this open-source library, `pyEdgeEval`, to make it easier to evaluate and reproduce recent deep learning models for edge and boundary detection.
 The original C++ codes used in the MATLAB benchmarks are ported with Cython and the evaluation scripts are rewritten in Python3.
-This means that benchmarking could be easily done on almost any environment, especially on remote servers (i.e., linux environments, docker containers), which has been difficult before.
-The codebase is created to be extensible and supports various tasks and datasets as well as different evaluation protocols.
+This means that benchmarking could be easily done on almost any environment, especially on remote servers (i.e., linux environments, docker containers), which have been difficult before.
+The codebase is designed to be extensible and supports various tasks and datasets as well as different evaluation protocols.
 To test the validity of the evaluation code, `pyEdgeEval`'s results are compared with the results of the original MATLAB codes.
 Besides benchmarking, `pyEdgeEval` adds various tools for edge detection such as `mask2edge` transformation.
 
 `pyEdgeEval` is:
-- an alternative to the original MATLAB benchmark
+- a Python alternative to the original MATLAB benchmark
 - light with minimal dependencies
-- modular and easily customizable
-- fast (uses multiprocessing and Cython)
+- modular architecture and easily customizable
+- relatively fast (uses multiprocessing and Cython)
 - implements common preprocessing algorithms
-- supports various tasks and datasets
+- supports various tasks and datasets (extensible to other datasets)
 - supports various evaluation protocols
 - edge generation tools
 - etc...
 
-Supported tasks:
+**Supported tasks**:
 - Edge Detection
 - Semantic Boundary Detection
 
-Supported datasets:
+**Supported datasets**:
 - [BSDS500](https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/resources.html)
 - [SBD](http://home.bharathh.info/pubs/codes/SBD/download.html)
 - [Cityscapes](https://www.cityscapes-dataset.com) (semantic boundary detection)
 
-Disclaimers:
-- The evaluation code does not output results that exactly match the original MATLAB benchmark. This could be for various reasons. The results are, for the most part, close enough. I recommend NOT to compare the results from this evaluation directly with results obtained through the MATLAB code for this reason.
-- The codes and algorithms are not perfect. I will not take responsibility for how the code is used (check the license). If there are some bugs or improvements, please submit issues or pull requests.
+*Disclaimers*:
+- The evaluation code does not output results that exactly match the original MATLAB benchmark. This could be for various reasons such as random seeds for matching algorithm. The results are, for the most part, close enough (around 0.01% difference).
+- The codes and algorithms are not perfect. I will not take responsibility for how the code is used (check the license(s)).
+- If you find some bugs or want to improve this project, please submit issues or pull requests.
 
 # Installation
 
@@ -119,41 +120,8 @@ You can also preprocess the predictions by passing `--apply-thinning` and/or `--
 # License
 
 - The code is released under the MIT License (please refer to the LICENSE file for details).
-- C/C++ files used for `correspond_pixels` module are borrowed from BSDS500 benchmark which are under __GNU General Public License v2.0__. The files retain their license (marked in the header). Note that I have added [changelog](./pyEdgeEval/_lib/README.md) for any changes to their codes.
-- `_lib/src/benms.cc` is borrowed from [Structured Edge Detection Toolbox V3.0](https://github.com/pdollar/edges) which is under the Microsoft Research License.
-- Please repect their licenses and agree to their terms before using this software.
+- I modified codes from other projects and their licenses applies to those files (please refer to [Licenses](LICENSES.md)).
 
-The SBD benchmark (Cityscapes benchmark is a derivative of this work):
-```
-@InProceedings{BharathICCV2011,
-  author       = "Bharath Hariharan and Pablo Arbelaez and Lubomir Bourdev and Subhransu Maji and Jitendra Malik",
-  title        = "Semantic Contours from Inverse Detectors",
-  booktitle    = "International Conference on Computer Vision (ICCV)",
-  year         = "2011",
-}
-```
+# Development
 
-The BSDS500 benchmark (SBD benchmark is a derivative of this work):
-```
-@InProceedings{BSDS500TPAMI2011,
-  author       = "P. Arbelaez, M. Maire, C. Fowlkes and J. Malik.",
-  title        = "Contour Detection and Hierarchical Image Segmentation",
-  booktitle    = "IEEE TPAMI",
-  year         = "2011",
-}
-```
-
-# Acknowledgements
-
-- [py-bsds500](https://github.com/Britefury/py-bsds500)
-  - referenced Cython ports for `correspond_pixels` used in the original MATLAB code
-  - referenced python version of the evaluation script for BSDS500
-- [cityscapes-preprocess](https://github.com/Chrisding/cityscapes-preprocess)
-  - MATLAB script for preprocessing and creating GT edges
-- [seal](https://github.com/Chrisding/seal)
-  - semantic boundary detection protocols
-- [edge_eval_python](https://github.com/Walstruzz/edge_eval_python):
-  - referenced implementation for `bwmorph` thinning algorithm and `nms` preprocessing
-  - referenced PR-curve visualization codes
-- [edges](https://github.com/pdollar/edges)
-  - tools for processing edges (written in MATLAB and C++)
+See [dev.md](.readme/dev.md).

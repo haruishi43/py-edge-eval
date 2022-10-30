@@ -67,9 +67,25 @@ I also test cityscapes' edge generation code (`convert_dataset/cityscapes.py`) a
 - [ ] Set random seed for `correspond_pixels`
 - [x] Move the scripts into the source code (currently moved to `scripts` for testing)
 - [ ] unit test coverage for important functions (would like to make tests for all functions)
-- [ ] Make a CLI interface
+- [ ] Make a CLI interface (for evaluation/convert dataset)
 
 ## Bugs and Problems
 
 - `pyEdgeEval` and MATLAB results differ slightly. This is due to various factors such as randomness in `correspond_pixels` and slight differences in preprocessing algorithms (`thin`, `kill_internal`, etc...). I would love to do a more comprehensive study on the differences MATLAB and Python, but I believe this benchmark code is currently robust enough to evaluate models. Note that MATLAB results and `pyEdgeEval` results should not be compared against each other because of this.
 - Using multiprocessing causes a bug where every run produces different results. The seed for random number generator used in `correspond_pixels.pyx` causes the randomness which is the same as the original MATLAB code. To solve the issue, we would need to set the random seed every time we call `correspond_pixels` so that the results are reproducible (TODO).
+
+
+# Acknowledgements
+
+- [py-bsds500](https://github.com/Britefury/py-bsds500)
+  - referenced Cython ports for `correspond_pixels` used in the original MATLAB code
+  - referenced python version of the evaluation script for BSDS500
+- [cityscapes-preprocess](https://github.com/Chrisding/cityscapes-preprocess)
+  - MATLAB script for preprocessing and creating GT edges
+- [seal](https://github.com/Chrisding/seal)
+  - semantic boundary detection protocols
+- [edge_eval_python](https://github.com/Walstruzz/edge_eval_python):
+  - referenced implementation for `bwmorph` thinning algorithm and `nms` preprocessing
+  - referenced PR-curve visualization codes
+- [edges](https://github.com/pdollar/edges)
+  - tools for processing edges (written in MATLAB and C++)

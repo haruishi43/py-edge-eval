@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
+# Copyright (c) OpenMMLab. All rights reserved.
 
 """Modified from mmcv.utils
+
+- logger name
 """
 
 import logging

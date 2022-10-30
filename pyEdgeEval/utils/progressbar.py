@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
+# Copyright (c) OpenMMLab. All rights reserved.
 
 """Modified from mmcv.utils
+
+- added `no_bar` mode
 """
 
 import sys

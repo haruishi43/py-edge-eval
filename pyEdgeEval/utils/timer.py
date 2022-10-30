@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+# Copyright (c) OpenMMLab. All rights reserved.
+
+"""Modified from mmcv.utils
+
+- no changes
+"""
 
 from time import time
 
