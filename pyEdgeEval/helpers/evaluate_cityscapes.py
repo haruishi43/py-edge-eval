@@ -34,14 +34,13 @@ def _common_parser_args(
         help="the root path of the predictions",
     )
     parser.add_argument(
-        "output_path",
+        "--output_path",
         type=str,
         help="the root path of where the results are populated",
     )
     parser.add_argument(
         "--categories",
         type=str,
-        default="[1, 14]",
         help="the category number to evaluate; can be multiple values'[1, 14]'",
     )
     parser.add_argument(

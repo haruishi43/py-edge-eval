@@ -33,6 +33,12 @@ def parse_args():
         help="val or test",
     )
     parser.add_argument(
+        "--max-dist",
+        type=float,
+        default=0.0075,
+        help="tolerance distance (default: 0.0075)",
+    )
+    parser.add_argument(
         "--thresholds",
         type=str,
         default="99",
@@ -42,6 +48,11 @@ def parse_args():
         "--raw",
         action="store_true",
         help="option to remove the thinning process (i.e. uses raw predition)",
+    )
+    parser.add_argument(
+        "--apply-nms",
+        action="store_true",
+        help="applies NMS before evaluation",
     )
     parser.add_argument(
         "--nproc",
@@ -58,9 +69,12 @@ def evaluate(
     pred_path: str,
     output_path: str,
     use_val: bool,
+    max_dist: float,
     thresholds: str,
     apply_thinning: bool,
+    apply_nms: bool,
     nproc: int,
+    no_split_dir: bool = False,
 ):
     """Evaluate BSDS500"""
 
@@ -84,6 +98,12 @@ def evaluate(
             )
             return
 
+    if output_path is None:
+        timestamp = time.strftime("%Y%m%d_%H%M%S", time.localtime())
+        output_path = osp.join(
+            osp.normpath(pred_path), f"edge_results_{timestamp}"
+        )
+
     mkdir_or_exist(output_path)
 
     split = "val" if use_val else "test"
@@ -93,9 +113,11 @@ def evaluate(
     log_file = osp.join(output_path, f"{timestamp}.log")
     logger = get_root_logger(log_file=log_file, log_level="INFO")
     logger.info("Running BSDS5000 Evaluation")
-    logger.info(f"split:      \t{split}")
-    logger.info(f"thresholds: \t{thresholds}")
-    logger.info(f"thin:       \t{apply_thinning}")
+    logger.info(f"split:                  \t{split}")
+    logger.info(f"thresholds:             \t{thresholds}")
+    logger.info(f"max_dist:               \t{max_dist}")
+    logger.info(f"thinning + thinned gts: \t{apply_thinning}")
+    logger.info(f"nms:                    \t{apply_nms}")
 
     evaluator = BSDS500Evaluator(
         dataset_root=bsds_path,
@@ -106,18 +128,19 @@ def evaluate(
     evaluator.set_eval_params(
         scale=1.0,
         apply_thinning=apply_thinning,
-        apply_nms=False,
-        max_dist=0.0075,
+        apply_nms=apply_nms,
+        max_dist=max_dist,
     )
 
     evaluator.evaluate(
         thresholds=thresholds,
         nproc=nproc,
         save_dir=output_path,
+        no_split_dir=no_split_dir,
     )
 
 
-def evaluate_bsds500():
+def evaluate_bsds500(no_split_dir=False):
     args = parse_args()
 
     apply_thinning = not args.raw
@@ -127,7 +150,10 @@ def evaluate_bsds500():
         pred_path=args.pred_path,
         output_path=args.output_path,
         use_val=args.use_val,
+        max_dist=args.max_dist,
         thresholds=args.thresholds,
         apply_thinning=apply_thinning,
+        apply_nms=args.apply_nms,
         nproc=args.nproc,
+        no_split_dir=no_split_dir,
     )
