@@ -13,6 +13,7 @@
 import argparse
 import os.path as osp
 import time
+import warnings
 
 from pyEdgeEval.evaluators import CityscapesEvaluator, HalfCityscapesEvaluator
 from pyEdgeEval.utils import get_root_logger, mkdir_or_exist
@@ -176,6 +177,16 @@ def evaluate(
                 "Bad threshold format; should be a python list of ints (`[a, b, c]`)"
             )
             return
+
+    if half:
+        warnings.warn(
+            (
+                "Using Half Resolution Evaluator: using this evaluation means that the "
+                "prediction size is already preprocessed to half resolution prior to running "
+                "this script. If not, please don't use `--half` since it will result in "
+                "unfair results."
+            )
+        )
 
     # generate output_path if given None
     if output_path is None:
