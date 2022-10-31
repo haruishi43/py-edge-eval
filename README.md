@@ -109,9 +109,9 @@ python scripts/evaluate/bsds500.py <path/to/bsds500> <path/to/pred> <path/to/out
     --thresholds=5 --nproc=8
 ```
 
-Tested with [@xwjabc's HED implementation](https://github.com/xwjabc/hed).
-Setting `--nproc` will drastically improve the evaluation.
-However, due to the randomness in the original MATLAB (C++) codebase, the results will be different (at most +-0.001 difference).
+- Tested with [@xwjabc's HED implementation](https://github.com/xwjabc/hed).
+- Due to the randomness in the original MATLAB (C++) codebase, the results will be different (at most +-0.001 difference).
+- Setting `--nproc` will drastically improve the speed of evaluation.
 
 
 ## SBD
