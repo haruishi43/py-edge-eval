@@ -178,7 +178,7 @@ def evaluate(
             )
             return
 
-    if half:
+    if half and not thin:
         warnings.warn(
             (
                 "Using Half Resolution Evaluator: using this evaluation means that the "
