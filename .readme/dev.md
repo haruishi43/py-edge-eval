@@ -1,25 +1,30 @@
 # Developing
 
-## Installation, Building, and Packaging
+## TODO
 
-```Bash
-# Install dependencies
-pip install -r requirements-dev.txt
+- [x] Cython `correspond_pixels` port
+- [x] Cython `nms` port
+- [x] Building script
+- [x] Packaging script
+- [x] BSDS evaluation script
+- [x] BSDS evaluation test codes
+- [x] Plot PR curves
+- [x] NMS preprocess script
+- [x] SBD evaluation script
+- [ ] "thin" GTs for SBD
+- [x] Cityscapes evaluation script
+- [x] Multiprocessing for evaluation
+- [ ] Set random seed for `correspond_pixels`
+- [x] Move the scripts into the source code (currently moved to `scripts` for testing)
+- [ ] unit test coverage for important functions (would like to make tests for all functions)
+- [ ] Make a CLI interface (for evaluation/convert dataset)
 
-# [try to build]
-# Option 1. build as a package (`-v` for complete output)
-pip install -e . -v
-# Option 2. build, but don't install it as a pip package (doesn't conflict with pip installed versions)
-python setup.py build_ext --inplace
 
-# [build distribution]
-python -m build
+## Known Bugs and Problems
 
-# [convert wheel (for linux)]
-auditwheel -v repair dist/<package>.whl
-mv wheelhouse/<new package>.whl dist/
-rm dist/<old package>.whl
-```
+- `pyEdgeEval` and MATLAB results differ slightly. This is due to various factors such as randomness in `correspond_pixels` and slight differences in preprocessing algorithms (`thin`, `kill_internal`, etc...). I would love to do a more comprehensive study on the differences MATLAB and Python, but I believe this benchmark code is currently robust enough to evaluate models.
+- Using multiprocessing causes a bug where every run produces different results. The seed for random number generator used in `correspond_pixels.pyx` causes randomness. Since this is a port of the original codebase, this problem exists on MATLAB script as well. To solve the issue, we would need to set the random seed every time we call `correspond_pixels` so that the results are reproducible (TODO).
+
 
 ## Testing validity
 
@@ -27,7 +32,7 @@ BSDS500 provides a benchmark to test if the code is running as expected (on MATL
 I used the same benchmark and created a test script to check if the results are the same.
 SBD also provides a similar benchmark which I converted to Python.
 
-Theoratically the results should match exactly, but due to the results coming from two complete languages as well as the dependencies being diffferent, it is understandable to have some minor diferences.
+Theoratically the results should match exactly, but due to the results coming from two completely different languages as well as the dependencies being diffferent, it is understandable to have some minor diferences.
 
 For BSDS500 and SBD, I have provided a test script inside `tests`.
 The results are very close and near identical, which means that the general functions are working.
@@ -50,30 +55,26 @@ I also test cityscapes' edge generation code (`convert_dataset/cityscapes.py`) a
 - Test code: WIP
 - Benchmark data: `data/cityscapes_test`
 
+## Installation, Building, and Packaging
 
-## TODO
+```Bash
+# Install dependencies
+pip install -r requirements-dev.txt
 
-- [x] Cython `correspond_pixels` port
-- [x] Cython `nms` port
-- [x] Building script
-- [x] Packaging script
-- [x] BSDS evaluation script
-- [x] BSDS evaluation test codes
-- [x] Plot PR curves
-- [x] NMS preprocess script
-- [x] SBD evaluation script
-- [ ] "thin" GTs for SBD
-- [x] Cityscapes evaluation script
-- [x] Multiprocessing for evaluation
-- [ ] Set random seed for `correspond_pixels`
-- [x] Move the scripts into the source code (currently moved to `scripts` for testing)
-- [ ] unit test coverage for important functions (would like to make tests for all functions)
-- [ ] Make a CLI interface (for evaluation/convert dataset)
+# [try to build]
+# Option 1. build as a package (`-v` for complete output)
+pip install -e . -v
+# Option 2. build, but don't install it as a pip package (doesn't conflict with pip installed versions)
+python setup.py build_ext --inplace
 
-## Bugs and Problems
+# [build distribution]
+python -m build
 
-- `pyEdgeEval` and MATLAB results differ slightly. This is due to various factors such as randomness in `correspond_pixels` and slight differences in preprocessing algorithms (`thin`, `kill_internal`, etc...). I would love to do a more comprehensive study on the differences MATLAB and Python, but I believe this benchmark code is currently robust enough to evaluate models. Note that MATLAB results and `pyEdgeEval` results should not be compared against each other because of this.
-- Using multiprocessing causes a bug where every run produces different results. The seed for random number generator used in `correspond_pixels.pyx` causes the randomness which is the same as the original MATLAB code. To solve the issue, we would need to set the random seed every time we call `correspond_pixels` so that the results are reproducible (TODO).
+# [convert wheel (for linux)]
+auditwheel -v repair dist/<package>.whl
+mv wheelhouse/<new package>.whl dist/
+rm dist/<old package>.whl
+```
 
 
 # Acknowledgements
