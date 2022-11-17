@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from warnings import warn
+
 import numpy as np
 
 from pyEdgeEval.preprocess import binary_thin
@@ -65,6 +67,8 @@ def loop_instance_mask2edge(
     thin=False,
     use_cv2=True,
     quality=0,
+    _inst_len=5,
+    _inst_id_dig=2,
 ):
     """mask2edge with looping (instance sensitive)"""
     assert mask.ndim == 3
@@ -77,15 +81,25 @@ def loop_instance_mask2edge(
 
     # make sure that instance labels are sorted
     inst_labels = sorted(inst_labelIds)
+    if inst_labels[0] == 0:
+        # when the first label is 0, it's probably not right
+        warn(
+            "inst labels has labelId of 0, but this should be the background Id"
+        )
+    min_inst_id = inst_labels[0] * (10 ** (_inst_len - _inst_id_dig))
 
     # create a lookup dictionary {label: [instances]}
     label_inst = {}
     _cand_insts = np.unique(inst_mask)
     for inst_label in _cand_insts:
-        if inst_label < inst_labels[0] * 1000:  # 24000
+        if inst_label < min_inst_id:
             continue
-        _label = int(str(inst_label)[:2])
-        _inst = int(str(inst_label)[2:])
+
+        # convert to string and fill
+        inst_label = str(inst_label).zfill(_inst_len)
+
+        _label = int(inst_label[:_inst_id_dig])
+        _inst = int(inst_label[_inst_id_dig:])
         if _label not in label_inst.keys():
             label_inst[_label] = [_inst]
         else:

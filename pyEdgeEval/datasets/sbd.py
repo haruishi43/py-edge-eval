@@ -22,6 +22,12 @@ def load_sbd_gt_cls_mat(path: str, new_loader: bool = False):
         boundaries = gt["Boundaries"]  # list[csc_matrix]
         segmentation = gt["Segmentation"]  # np.ndarray(h, w)
         present_categories = gt["CategoriesPresent"]  # np.ndarray()
+        if isinstance(present_categories, int):
+            present_categories = np.array([present_categories])
+        if present_categories.ndim == 0:
+            # single value, or no instances
+            present_categories = present_categories[None]
+        assert present_categories.ndim == 1, f"{present_categories.ndim}"
 
         assert len(segmentation.shape) == 2
         h, w = segmentation.shape
@@ -34,7 +40,12 @@ def load_sbd_gt_cls_mat(path: str, new_loader: bool = False):
         gt = loadmat(path, False)["GTcls"][0, 0]
         boundaries = gt[0]  # np.ndarray(np.ndarray(csc_matrix))
         segmentation = gt[1]  # np.ndarray(h, w)
-        present_categories = gt[2].squeeze()  # np.ndarray()
+        present_categories = gt[2]  # np.ndarray()
+        if present_categories.ndim > 1:
+            present_categories = present_categories.squeeze()
+        if present_categories.ndim == 0:
+            # single value, or no instances
+            present_categories = present_categories[None]
 
         assert len(segmentation.shape) == 2
         h, w = segmentation.shape
@@ -57,6 +68,12 @@ def load_sbd_gt_inst_mat(path: str, new_loader: bool = False):
         segmentation = gt["Segmentation"]
         boundaries = gt["Boundaries"]
         categories = gt["Categories"]
+        if isinstance(categories, int):
+            categories = np.array([categories])
+        if categories.ndim == 0:
+            # single value, or no instances
+            categories = categories[None]
+        assert categories.ndim == 1, f"{categories.ndim}"
 
         assert len(segmentation.shape) == 2
         h, w = segmentation.shape
@@ -69,7 +86,12 @@ def load_sbd_gt_inst_mat(path: str, new_loader: bool = False):
         gt = loadmat(path, False)["GTinst"][0, 0]
         segmentation = gt[0]
         boundaries = gt[1]
-        categories = gt[2].squeeze()
+        categories = gt[2]
+        if categories.ndim > 1:
+            categories = categories.squeeze()
+        if categories.ndim == 0:
+            # single value, or no instances
+            categories = categories[None]
 
         assert len(segmentation.shape) == 2
         h, w = segmentation.shape
@@ -89,7 +111,7 @@ def load_instance_sensitive_gt(
     cls_path: str, inst_path: str, new_loader: bool = False
 ):
     cls_bdry, cls_seg, present_cats = load_sbd_gt_cls_mat(cls_path, new_loader)
-    inst_bdry, inst_seg, inst_cats = load_sbd_gt_inst_mat(inst_path, new_loader)
+    inst_bdry, _, inst_cats = load_sbd_gt_inst_mat(inst_path, new_loader)
 
     for inst_cat in inst_cats:
         assert (
@@ -102,6 +124,42 @@ def load_instance_sensitive_gt(
         _inst_bdry = inst_bdry[i]
         # NOTE: inst_cat is indexed from 1
         new_bdry[inst_cat - 1] = new_bdry[inst_cat - 1] | _inst_bdry
+
+    return new_bdry, cls_seg, present_cats
+
+
+def load_reanno_instance_insensitive_gt(cls_path: str):
+    """Just a wrapper"""
+    return load_sbd_gt_cls_mat(cls_path, True)
+
+
+def load_reanno_instance_sensitive_gt(cls_path: str, inst_path: str):
+    """Re-annoated GTs have minor changes to how the instances are saved
+
+    inst_bdry contains already preprocessed instance boundaries here, wheras
+    before, it contained arrays for each of the instances and were indexed
+    for each instances.
+
+    we also need to use the new_loader, because old loader cannot read it correctly
+    """
+    cls_bdry, cls_seg, present_cats = load_sbd_gt_cls_mat(cls_path, True)
+    inst_bdry, _, inst_cats = load_sbd_gt_inst_mat(inst_path, True)
+
+    for inst_cat in inst_cats:
+        assert (
+            inst_cat in present_cats
+        ), f"ERR: instance category of {inst_cat} not available in {present_cats}"
+
+    assert (
+        cls_bdry.shape == inst_bdry.shape
+    ), "the two bdries should have equal shape"
+
+    # create a new bdry map and add instance boundary pixels
+    new_bdry = deepcopy(cls_bdry)
+    for cat in present_cats:
+        # NOTE: bdry idx doesn't include background (0)
+        _inst_bdry = inst_bdry[cat - 1]
+        new_bdry[cat - 1] = new_bdry[cat - 1] | _inst_bdry
 
     return new_bdry, cls_seg, present_cats
 
@@ -139,6 +197,7 @@ def _evaluate_single(
             cls_path=cls_path,
         )
 
+    # NOTE: background ID is 0
     # TODO: would be smart to return here using `present_categories`
 
     cat_idx = category - 1

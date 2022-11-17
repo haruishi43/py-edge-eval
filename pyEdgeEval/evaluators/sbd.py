@@ -27,16 +27,16 @@ class SBDEvaluator(BaseMultilabelEvaluator):
         "cat",
         "chair",
         "cow",
-        "diningtable",
+        "dining table",
         "dog",
         "horse",
-        "motorbike",
+        "motor bike",
         "person",
-        "pottedplant",
+        "potted plant",
         "sheep",
         "sofa",
         "train",
-        "tvmonitor",
+        "tv/monitor",
     )
     CLS_DIR = "cls"
     INST_DIR = "inst"
