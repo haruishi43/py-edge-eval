@@ -65,7 +65,7 @@ if __name__ == "__main__":
     splits = ('train', 'val')
 
     data_dir = args.root
-    save_dir = osp.join(data_dir, 'gtEval')
+    save_dir = osp.join(data_dir, args.out_dir)
     mkdir_or_exist(save_dir)
     nonIS = args.nonIS
     nproc = args.nproc
@@ -171,7 +171,7 @@ if __name__ == "__main__":
             track_progress(thin_reanno_routine, thin_list)
 
         # save sample names as txt file
-        with open(osp.join(save_dir, 'reanno_val.txt'), 'w') as f:
+        with open(osp.join(data_dir, 'reanno_val.txt'), 'w') as f:
             f.writelines(s + "\n" for s in raw_list)
 
     print(">>> done!")
