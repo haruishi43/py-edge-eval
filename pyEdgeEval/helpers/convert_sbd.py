@@ -31,6 +31,12 @@ def check_path(path):
     return path
 
 
+def get_samples(path):
+    with open(path, "r") as f:
+        sample_names = [line.rstrip("\n") for line in f]
+    return sample_names
+
+
 def add_ignore_pixel(
     cls_seg: np.ndarray,
     border_px: int = 5,

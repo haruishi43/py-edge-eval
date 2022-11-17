@@ -14,6 +14,7 @@ from functools import partial
 
 from pyEdgeEval.helpers.convert_sbd import (
     check_path,
+    get_samples,
     load_reanno_samples,
     routine,
     reanno_routine,
@@ -56,12 +57,6 @@ def parse_args():
     )
     args = parser.parse_args()
     return args
-
-
-def get_samples(path):
-    with open(path, 'r') as f:
-        sample_names = [line.rstrip('\n') for line in f]
-    return sample_names
 
 
 if __name__ == "__main__":
