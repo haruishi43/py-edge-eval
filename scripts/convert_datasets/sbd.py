@@ -40,11 +40,6 @@ def parse_args():
         help="where to save the processed gts (`gtEval`)",
     )
     parser.add_argument(
-        "--nonIS",
-        action="store_true",
-        help="default to IS, but this argument makes it nonIS",
-    )
-    parser.add_argument(
         "--nproc",
         default=4,
         type=int,
@@ -67,7 +62,6 @@ if __name__ == "__main__":
     data_dir = args.root
     save_dir = osp.join(data_dir, args.out_dir)
     mkdir_or_exist(save_dir)
-    nonIS = args.nonIS
     nproc = args.nproc
     reanno = args.reanno
     radius = 2
@@ -83,7 +77,6 @@ if __name__ == "__main__":
 
     print(">>> root:  \t", data_dir)
     print(">>> save:  \t", save_dir)
-    print(">>> nonIS: \t", nonIS)
     print(">>> nproc: \t", nproc)
     print(">>> radius:\t", radius)
     print(">>> reanno:\t", reanno)
