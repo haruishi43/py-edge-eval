@@ -35,7 +35,8 @@ jobs:
       run: |
         sudo apt install patchelf
         python -m pip install --upgrade pip
-        pip install build auditwheel
+        pip install build
+        pip install auditwheel==5.1.2
         pip install cython numpy
     - name: Build package
       run: |
