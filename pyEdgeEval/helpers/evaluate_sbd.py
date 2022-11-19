@@ -23,6 +23,18 @@ def parse_args():
         help="the root path of the predictions",
     )
     parser.add_argument(
+        "--cls-dir",
+        type=str,
+        default="cls_orig",
+        help="directory name for class labels",
+    )
+    parser.add_argument(
+        "--inst-dir",
+        type=str,
+        default="inst_orig",
+        help="directory name for instance labels",
+    )
+    parser.add_argument(
         "--output-path",
         type=str,
         help="the root path of where the results are populated",
@@ -67,6 +79,8 @@ def parse_args():
 def evaluate(
     sbd_path: str,
     pred_path: str,
+    cls_dir: str,
+    inst_dir: str,
     output_path: str,
     categories: str,
     apply_thinning: bool,
@@ -144,12 +158,16 @@ def evaluate(
     logger.info(f"thresholds: \t{thresholds}")
     logger.info(f"thin:       \t{apply_thinning}")
     logger.info(f"nms:        \t{apply_nms}")
+    logger.info(f"cls_dir:    \t{cls_dir}")
+    logger.info(f"inst_dir:   \t{inst_dir}")
     print("\n\n")
 
     # initialize evaluator
     evaluator = SBDEvaluator(
         dataset_root=sbd_path,
         pred_root=pred_path,
+        cls_dir=cls_dir,
+        inst_dir=inst_dir,
     )
     if evaluator.sample_names is None:
         # load custom sample names
@@ -184,6 +202,8 @@ def evaluate_sbd():
     evaluate(
         sbd_path=args.sbd_path,
         pred_path=args.pred_path,
+        cls_dir=args.cls_dir,
+        inst_dir=args.inst_dir,
         output_path=args.output_path,
         categories=args.categories,
         apply_thinning=apply_thinning,

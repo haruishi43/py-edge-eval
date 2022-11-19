@@ -38,8 +38,6 @@ class SBDEvaluator(BaseMultilabelEvaluator):
         "train",
         "tv/monitor",
     )
-    CLS_DIR = "cls"
-    INST_DIR = "inst"
     GT_SUFFIX = ".mat"
     PRED_SUFFIX = ".bmp"
 
@@ -48,6 +46,8 @@ class SBDEvaluator(BaseMultilabelEvaluator):
         dataset_root: str,
         pred_root: str,
         split: str = "val",
+        cls_dir: str = "cls",
+        inst_dir: str = "inst",
         **kwargs,
     ):
         self.dataset_root = dataset_root
@@ -58,11 +58,11 @@ class SBDEvaluator(BaseMultilabelEvaluator):
 
         self.CLS_root = osp.join(
             self.dataset_root,
-            self.CLS_DIR,
+            cls_dir,
         )
         self.INST_root = osp.join(
             self.dataset_root,
-            self.INST_DIR,
+            inst_dir,
         )
 
         # we can try to load some sample names
