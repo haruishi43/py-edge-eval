@@ -48,8 +48,7 @@ def parse_args():
     parser.add_argument(
         "--categories",
         type=str,
-        default="[15]",
-        help="the category number to evaluate; can be multiple values'[15]'",
+        help="the category number to evaluate; can be multiple values",
     )
     parser.add_argument(
         "--thresholds",
