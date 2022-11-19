@@ -48,6 +48,7 @@ class SBDEvaluator(BaseMultilabelEvaluator):
         split: str = "val",
         cls_dir: str = "cls",
         inst_dir: str = "inst",
+        pred_suffix=None,
         **kwargs,
     ):
         self.dataset_root = dataset_root
@@ -64,6 +65,10 @@ class SBDEvaluator(BaseMultilabelEvaluator):
             self.dataset_root,
             inst_dir,
         )
+
+        if pred_suffix is not None:
+            print_log(f"changed suffix to {pred_suffix}")
+            self.PRED_SUFFIX = pred_suffix
 
         # we can try to load some sample names
         try:

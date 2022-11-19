@@ -35,6 +35,12 @@ def parse_args():
         help="directory name for instance labels",
     )
     parser.add_argument(
+        "--pred-suffix",
+        type=str,
+        default=".png",
+        help="suffix for predicted images",
+    )
+    parser.add_argument(
         "--output-path",
         type=str,
         help="the root path of where the results are populated",
@@ -81,6 +87,7 @@ def evaluate(
     pred_path: str,
     cls_dir: str,
     inst_dir: str,
+    pred_suffix: str,
     output_path: str,
     categories: str,
     apply_thinning: bool,
@@ -160,6 +167,7 @@ def evaluate(
     logger.info(f"nms:        \t{apply_nms}")
     logger.info(f"cls_dir:    \t{cls_dir}")
     logger.info(f"inst_dir:   \t{inst_dir}")
+    logger.info(f"pred_suffix:\t{pred_suffix}")
     print("\n\n")
 
     # initialize evaluator
@@ -168,6 +176,7 @@ def evaluate(
         pred_root=pred_path,
         cls_dir=cls_dir,
         inst_dir=inst_dir,
+        pred_suffix=pred_suffix,
     )
     if evaluator.sample_names is None:
         # load custom sample names
@@ -204,6 +213,7 @@ def evaluate_sbd():
         pred_path=args.pred_path,
         cls_dir=args.cls_dir,
         inst_dir=args.inst_dir,
+        pred_suffix=args.pred_suffix,
         output_path=args.output_path,
         categories=args.categories,
         apply_thinning=apply_thinning,
