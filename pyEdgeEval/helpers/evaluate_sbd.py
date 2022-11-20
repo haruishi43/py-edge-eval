@@ -237,6 +237,8 @@ def evaluate_sbd():
         pre_seal=args.pre_seal,
         apply_thinning=apply_thinning,
         apply_nms=args.apply_nms,
+        nonIS=args.nonIS,
+        max_dist=args.max_dist,
         thresholds=args.thresholds,
         nproc=args.nproc,
     )
@@ -381,6 +383,8 @@ def evaluate_reanno_sbd():
         categories=args.categories,
         apply_thinning=apply_thinning,
         apply_nms=args.apply_nms,
+        nonIS=args.nonIS,
+        max_dist=args.max_dist,
         thresholds=args.thresholds,
         nproc=args.nproc,
     )
