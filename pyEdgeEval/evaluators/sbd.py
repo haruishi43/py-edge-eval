@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os.path as osp
+from warnings import warn
 
 from pyEdgeEval.common.multi_label import (
     calculate_metrics,
@@ -121,28 +122,31 @@ class SBDEvaluator(BaseMultilabelEvaluator):
             self.max_dist = 0.02
             self.kill_internal = True
             self.skip_if_nonexistent = True
+
+            if instance_sensitive:
+                warn("Pre-SEAL mode doesn't support instance sensitive")
             self.instance_sensitive = False
         elif eval_mode == "post-seal":
             print_log("Using Post-SEAL params", logger=self._logger)
             self.max_dist = 0.02
             self.kill_internal = False
             self.skip_if_nonexistent = False
-            self.instance_sensitive = True
-        elif eval_mode == "high-quality":
+            self.instance_sensitive = instance_sensitive
+        elif eval_mode == "reanno":
             print_log(
-                "Using params for high-quality annotations", logger=self._logger
+                "Using params for re-annotated test split", logger=self._logger
             )
             self.max_dist = 0.0075
             self.kill_internal = False
             self.skip_if_nonexistent = False
-            self.instance_sensitive = True
+            self.instance_sensitive = instance_sensitive
         else:
             print_log("Using custom params", logger=self._logger)
             self.max_dist = max_dist
             self.kill_internal = kill_internal
             self.skip_if_nonexistent = skip_if_nonexistent
-            self.instance_sensitive = instance_sensitive
 
+            self.instance_sensitive = instance_sensitive
         if self.kill_internal and self.instance_sensitive:
             print_log(
                 "kill_internal and instance_sensitive are both True which will conflict with each either",
