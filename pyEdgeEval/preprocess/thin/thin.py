@@ -261,6 +261,7 @@ def binary_thin(x, max_iter=None):
     while max_iter is None or iter_count < max_iter:
         # Iter 1
         lut_indices = binary_image_to_lut_indices(x)
+        # FIXME: index "" is out of bounds for axis 0 with size 512
         x_mut = thin1_mut[lut_indices]
         if x_mut.sum() == 0:
             break
