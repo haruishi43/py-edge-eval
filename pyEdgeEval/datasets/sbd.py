@@ -164,6 +164,16 @@ def load_reanno_instance_sensitive_gt(cls_path: str, inst_path: str):
     return new_bdry, cls_seg, present_cats
 
 
+def remove_boundary_pixels(array, px=5):
+    """Remove boundary pixels from 2D array."""
+    h, w = array.shape
+    array[0:px, :] = 0
+    array[h - px : h, :] = 0
+    array[:, 0:px] = 0
+    array[:, w - px : w] = 0
+    return array
+
+
 def _evaluate_single(
     cls_path,
     inst_path,
@@ -207,12 +217,16 @@ def _evaluate_single(
     (h, w) = cat_edge.shape
     height, width = int(h * scale + 0.5), int(w * scale + 0.5)
     cat_edge = cv2.resize(cat_edge, (width, height), cv2.INTER_NEAREST)
+    cat_edge = remove_boundary_pixels(cat_edge)
     if kill_internal:
         seg = cv2.resize(seg, (width, height), cv2.INTER_NEAREST)
 
         # SBD explicitly starts from 1 (because of matlab)
         # 0 is the background
         cat_seg = seg == category
+
+        # remove boundary
+        cat_seg = remove_boundary_pixels(cat_seg)
     else:
         cat_seg = None
 
@@ -223,6 +237,9 @@ def _evaluate_single(
     # pred = cv2.resize(pred, (width, height), cv2.INTER_NEAREST)
     pred = np.array(pred)
     pred = (pred / 255).astype(float)
+
+    # ignore boundaries
+    pred = remove_boundary_pixels(pred)
 
     # evaluate multi-label boundaries
     count_r, sum_r, count_p, sum_p = evaluate_boundaries_threshold(

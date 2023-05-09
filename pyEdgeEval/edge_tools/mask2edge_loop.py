@@ -5,6 +5,7 @@ from warnings import warn
 import numpy as np
 
 from pyEdgeEval.preprocess import binary_thin
+
 # from pyEdgeEval.preprocess import bwmorph_thin as binary_thin
 from pyEdgeEval.utils import mask2bdry
 
