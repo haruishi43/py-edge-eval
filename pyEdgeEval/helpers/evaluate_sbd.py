@@ -4,6 +4,7 @@ import argparse
 import os.path as osp
 import time
 
+import pyEdgeEval
 from pyEdgeEval.evaluators.sbd import SBDEvaluator
 from pyEdgeEval.utils import get_root_logger, mkdir_or_exist
 
@@ -174,6 +175,7 @@ def evaluate(
     log_file = osp.join(output_path, f"{timestamp}.log")
     logger = get_root_logger(log_file=log_file, log_level="INFO")
     logger.info("Running SBD Evaluation")
+    logger.info(f"pyEdgeEval version: {pyEdgeEval.__version__}")
     logger.info(f"cls_dir:    \t{cls_dir}")
     logger.info(f"inst_dir:   \t{inst_dir}")
     logger.info(f"pred_suffix:\t{pred_suffix}")
@@ -324,6 +326,7 @@ def evaluate_reanno(
     log_file = osp.join(output_path, f"{timestamp}.log")
     logger = get_root_logger(log_file=log_file, log_level="INFO")
     logger.info("Running Re-Annotated SBD Evaluation")
+    logger.info(f"pyEdgeEval version: {pyEdgeEval.__version__}")
     logger.info(f"cls_dir:    \t{cls_dir}")
     logger.info(f"inst_dir:   \t{inst_dir}")
     logger.info(f"pred_suffix:\t{pred_suffix}")

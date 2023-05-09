@@ -15,6 +15,7 @@ import os.path as osp
 import time
 import warnings
 
+import pyEdgeEval
 from pyEdgeEval.evaluators import CityscapesEvaluator, HalfCityscapesEvaluator
 from pyEdgeEval.utils import get_root_logger, mkdir_or_exist
 
@@ -202,6 +203,7 @@ def evaluate(
     log_file = osp.join(output_path, f"{timestamp}.log")
     logger = get_root_logger(log_file=log_file, log_level="INFO")
     logger.info("Running Cityscapes Evaluation")
+    logger.info(f"pyEdgeEval version: {pyEdgeEval.__version__}")
     logger.info(f"categories:         \t{categories}")
     logger.info(f"thresholds:         \t{thresholds}")
     logger.info(f"scale:              \t{scale}")

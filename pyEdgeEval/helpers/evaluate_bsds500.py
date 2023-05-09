@@ -4,6 +4,7 @@ import argparse
 import os.path as osp
 import time
 
+import pyEdgeEval
 from pyEdgeEval.evaluators.bsds import BSDS500Evaluator
 from pyEdgeEval.utils import get_root_logger, mkdir_or_exist
 
@@ -113,6 +114,7 @@ def evaluate(
     log_file = osp.join(output_path, f"{timestamp}.log")
     logger = get_root_logger(log_file=log_file, log_level="INFO")
     logger.info("Running BSDS5000 Evaluation")
+    logger.info(f"pyEdgeEval version: {pyEdgeEval.__version__}")
     logger.info(f"split:                  \t{split}")
     logger.info(f"thresholds:             \t{thresholds}")
     logger.info(f"max_dist:               \t{max_dist}")
