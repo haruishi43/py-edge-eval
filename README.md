@@ -32,8 +32,21 @@ Besides benchmarking, `pyEdgeEval` adds various tools for edge detection such as
 
 *Disclaimers*:
 - The evaluation code does not output results that exactly match the original MATLAB benchmark. This could be for various reasons such as random seeds for matching algorithm. The results are, for the most part, close enough (around 0.01% difference).
+- The evaluation speed should, in theory, be around the same as the original MATLAB benchmark as we use the same C/C++ code. However, from my experience, using `pyEdgeEval` is around __3x ~ 5x__ faster than the original MATLAB benchmark (tested using 10-threads). This is a night-and-day improvement in quality-of-life ('raw' protocol evaluation for SBD on MATLAB took around 35 hours, whereas `pyEdgeEval` took around 9 hours).
 - The codes and algorithms are not perfect. I will not take responsibility for how the code is used (check the license(s)).
 - If you find some bugs or want to improve this project, please submit issues or pull requests.
+
+Please cite the following if you found this project useful:
+```
+@misc{pyEdgeEval,
+  author = {Haruya Ishikawa},
+  title = {pyEdgeEval: Python Edge Evaluation Tools},
+  year = {2022},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/haruishi43/py-edge-eval}}
+}
+```
 
 # Installation
 
@@ -116,10 +129,12 @@ python scripts/evaluate/bsds500.py <path/to/bsds500> <path/to/pred> <path/to/out
 
 ## SBD
 
-```Bash
-python scripts/evaluate/sbd.py <path/to/sbd> <path/to/pred> <path/to/output> --categories=15 --thresholds=5 --nproc=8
-```
+First, you need to generate the GT using the `scripts/convert_dataset/sbd.py` script.
 
+Example evaluation commands:
+```Bash
+python scripts/evaluate/sbd.py <path/to/sbd> <path/to/pred> --categories=15 --thresholds=5 --nproc=8
+```
 
 ## CityScapes
 
