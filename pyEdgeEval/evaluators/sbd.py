@@ -102,6 +102,7 @@ class SBDEvaluator(BaseMultilabelEvaluator):
     def set_eval_params(
         self,
         eval_mode=None,
+        radius=2,
         scale: float = 1.0,
         apply_thinning: bool = False,
         apply_nms: bool = False,
@@ -112,6 +113,7 @@ class SBDEvaluator(BaseMultilabelEvaluator):
         **kwargs,
     ) -> None:
 
+        self.radius = radius
         assert 0 < scale <= 1, f"ERR: scale ({scale}) is not valid"
         self.scale = scale
         self.apply_thinning = apply_thinning
@@ -156,6 +158,7 @@ class SBDEvaluator(BaseMultilabelEvaluator):
     @property
     def eval_params(self):
         return dict(
+            radius=self.radius,
             scale=self.scale,
             apply_thinning=self.apply_thinning,
             apply_nms=self.apply_nms,
