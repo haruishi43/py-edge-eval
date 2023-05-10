@@ -48,6 +48,10 @@ Please cite the following if you found this project useful:
 }
 ```
 
+*Help Wanted*:
+- If anyone knows a better way to package Cython codes, please let me know. I'm not a Cython expert and I'm not sure if I'm doing it right. I'm having trouble supporting various platforms since I'm only creating a wheel for Linux (`manylinux`).
+- I'm aware that the documentation is a little rough. If anyone is willing to help, please let me know.
+
 # Installation
 
 ## Dependencies
