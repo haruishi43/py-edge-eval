@@ -5,7 +5,7 @@ import os.path as osp
 import time
 
 import pyEdgeEval
-from pyEdgeEval.evaluators.sbd import SBDEvaluator
+from pyEdgeEval.evaluators.sbd import SBDEvaluator, ReannoSBDEvaluator
 from pyEdgeEval.utils import get_root_logger, mkdir_or_exist
 
 __all__ = ["evaluate_sbd"]
@@ -22,18 +22,6 @@ def parse_args():
         "pred_path",
         type=str,
         help="the root path of the predictions",
-    )
-    parser.add_argument(
-        "--cls-dir",
-        type=str,
-        default="cls_orig",
-        help="directory name for class labels",
-    )
-    parser.add_argument(
-        "--inst-dir",
-        type=str,
-        default="inst_orig",
-        help="directory name for instance labels",
     )
     parser.add_argument(
         "--pred-suffix",
@@ -94,10 +82,9 @@ def parse_args():
 
 
 def evaluate(
+    gt_dir: str,
     sbd_path: str,
     pred_path: str,
-    cls_dir: str,
-    inst_dir: str,
     pred_suffix: str,
     output_path: str,
     categories: str,
@@ -176,8 +163,7 @@ def evaluate(
     logger = get_root_logger(log_file=log_file, log_level="INFO")
     logger.info("Running SBD Evaluation")
     logger.info(f"pyEdgeEval version: {pyEdgeEval.__version__}")
-    logger.info(f"cls_dir:    \t{cls_dir}")
-    logger.info(f"inst_dir:   \t{inst_dir}")
+    logger.info(f"GT dir:     \t{gt_dir}")
     logger.info(f"pred_suffix:\t{pred_suffix}")
     logger.info(f"categories: \t{categories}")
     logger.info(f"thresholds: \t{thresholds}")
@@ -192,9 +178,8 @@ def evaluate(
     evaluator = SBDEvaluator(
         dataset_root=sbd_path,
         pred_root=pred_path,
-        cls_dir=cls_dir,
-        inst_dir=inst_dir,
-        pred_suffix=pred_suffix,
+        thin=apply_thinning,
+        gt_dir=gt_dir,  # NOTE: we can change the directory where the preprocessed GTs are located
     )
     if evaluator.sample_names is None:
         # load custom sample names
@@ -222,17 +207,16 @@ def evaluate(
     )
 
 
-def evaluate_sbd():
+def evaluate_sbd(gt_dir: str = "gtEval"):
     args = parse_args()
 
     # by default, we apply thinning
     apply_thinning = not args.raw
 
     evaluate(
+        gt_dir=gt_dir,
         sbd_path=args.sbd_path,
         pred_path=args.pred_path,
-        cls_dir=args.cls_dir,
-        inst_dir=args.inst_dir,
         pred_suffix=args.pred_suffix,
         output_path=args.output_path,
         categories=args.categories,
@@ -247,10 +231,9 @@ def evaluate_sbd():
 
 
 def evaluate_reanno(
+    gt_dir: str,
     sbd_path: str,
     pred_path: str,
-    cls_dir: str,
-    inst_dir: str,
     pred_suffix: str,
     output_path: str,
     categories: str,
@@ -264,7 +247,7 @@ def evaluate_reanno(
 
     if categories is None:
         print("use all categories")
-        categories = list(range(1, len(SBDEvaluator.CLASSES) + 1))
+        categories = list(range(1, len(ReannoSBDEvaluator.CLASSES) + 1))
     else:
         # string evaluation for categories
         categories = categories.strip()
@@ -327,8 +310,7 @@ def evaluate_reanno(
     logger = get_root_logger(log_file=log_file, log_level="INFO")
     logger.info("Running Re-Annotated SBD Evaluation")
     logger.info(f"pyEdgeEval version: {pyEdgeEval.__version__}")
-    logger.info(f"cls_dir:    \t{cls_dir}")
-    logger.info(f"inst_dir:   \t{inst_dir}")
+    logger.info(f"GT dir:     \t{gt_dir}")
     logger.info(f"pred_suffix:\t{pred_suffix}")
     logger.info(f"categories: \t{categories}")
     logger.info(f"thresholds: \t{thresholds}")
@@ -338,12 +320,12 @@ def evaluate_reanno(
     print("\n\n")
 
     # initialize evaluator
-    evaluator = SBDEvaluator(
+    evaluator = ReannoSBDEvaluator(
         dataset_root=sbd_path,
         pred_root=pred_path,
-        cls_dir=cls_dir,
-        inst_dir=inst_dir,
         pred_suffix=pred_suffix,
+        thin=apply_thinning,
+        gt_dir=gt_dir,
     )
     if evaluator.sample_names is None:
         # load custom sample names
@@ -353,7 +335,6 @@ def evaluate_reanno(
     # set parameters
     instance_sensitive = not nonIS
     evaluator.set_eval_params(
-        eval_mode="reanno",  # fixed to "reanno" mode
         scale=1.0,
         apply_thinning=apply_thinning,
         apply_nms=apply_nms,
@@ -370,17 +351,16 @@ def evaluate_reanno(
     )
 
 
-def evaluate_reanno_sbd():
+def evaluate_reanno_sbd(gt_dir: str = "gtEval"):
     args = parse_args()
 
     # by default, we apply thinning
     apply_thinning = not args.raw
 
     evaluate_reanno(
+        gt_dir=gt_dir,
         sbd_path=args.sbd_path,
         pred_path=args.pred_path,
-        cls_dir=args.cls_dir,
-        inst_dir=args.inst_dir,
         pred_suffix=args.pred_suffix,
         output_path=args.output_path,
         categories=args.categories,

@@ -39,7 +39,19 @@ class SBDEvaluator(BaseMultilabelEvaluator):
         "train",
         "tv/monitor",
     )
-    GT_SUFFIX = ".mat"
+
+    GT_DIR = "gtEval"  # pre-processed GTs
+
+    EDGE_SUFFIX = None
+    ISEDGE_SUFFIX = None
+    RAW_EDGE_SUFFIX = "_raw_edge.png"
+    THIN_EDGE_SUFFIX = "_thin_edge.png"
+    RAW_ISEDGE_SUFFIX = "_raw_isedge.png"
+    THIN_ISEDGE_SUFFIX = "_thin_isedge.png"
+
+    SEG_SUFFIX = "_labelIds.png"
+    PRED_SUFFIX = ".png"
+
     PRED_SUFFIX = ".bmp"
 
     def __init__(
@@ -47,8 +59,8 @@ class SBDEvaluator(BaseMultilabelEvaluator):
         dataset_root: str,
         pred_root: str,
         split: str = "val",
-        cls_dir: str = "cls",
-        inst_dir: str = "inst",
+        thin: bool = False,
+        gt_dir=None,
         pred_suffix=None,
         **kwargs,
     ):
@@ -57,15 +69,34 @@ class SBDEvaluator(BaseMultilabelEvaluator):
 
         assert split in ("val", "test")
         self.split = split
+        self.thin = thin
+        if self.thin:
+            print_log(
+                "Using `thin` mode; setting the suffix respectively",
+                logger=self._logger,
+            )
+            self.EDGE_SUFFIX = self.THIN_EDGE_SUFFIX
+            self.ISEDGE_SUFFIX = self.THIN_ISEDGE_SUFFIX
+        else:
+            print_log(
+                "Using `raw` mode; setting the suffix respectively",
+                logger=self._logger,
+            )
+            self.EDGE_SUFFIX = self.RAW_EDGE_SUFFIX
+            self.ISEDGE_SUFFIX = self.RAW_ISEDGE_SUFFIX
 
-        self.CLS_root = osp.join(
-            self.dataset_root,
-            cls_dir,
-        )
-        self.INST_root = osp.join(
-            self.dataset_root,
-            inst_dir,
-        )
+        # change dataset directory and suffix
+        if gt_dir:
+            print_log(f"changing GT_DIR to {gt_dir}", logger=self._logger)
+            self.GT_DIR = gt_dir
+        if pred_suffix:
+            print_log(
+                f"changing PRED_SUFFIX to {pred_suffix}", logger=self._logger
+            )
+            self.PRED_SUFFIX = pred_suffix
+
+        # set parameters
+        self.gtEval_root = osp.join(self.dataset_root, self.GT_DIR)
 
         if pred_suffix is not None:
             print_log(f"changed suffix to {pred_suffix}")
@@ -102,7 +133,6 @@ class SBDEvaluator(BaseMultilabelEvaluator):
     def set_eval_params(
         self,
         eval_mode=None,
-        radius=2,
         scale: float = 1.0,
         apply_thinning: bool = False,
         apply_nms: bool = False,
@@ -113,7 +143,6 @@ class SBDEvaluator(BaseMultilabelEvaluator):
         **kwargs,
     ) -> None:
 
-        self.radius = radius
         assert 0 < scale <= 1, f"ERR: scale ({scale}) is not valid"
         self.scale = scale
         self.apply_thinning = apply_thinning
@@ -131,24 +160,21 @@ class SBDEvaluator(BaseMultilabelEvaluator):
         elif eval_mode == "post-seal":
             print_log("Using Post-SEAL params", logger=self._logger)
             self.max_dist = 0.02
-            self.kill_internal = False
-            self.skip_if_nonexistent = False
-            self.instance_sensitive = instance_sensitive
-        elif eval_mode == "reanno":
-            print_log(
-                "Using params for re-annotated test split", logger=self._logger
-            )
-            self.max_dist = 0.0075
-            self.kill_internal = False
-            self.skip_if_nonexistent = False
-            self.instance_sensitive = instance_sensitive
+            if instance_sensitive:
+                self.instance_sensitive = True
+                self.kill_internal = False
+                self.skip_if_nonexistent = False
+            else:
+                self.instance_sensitive = False
+                self.kill_internal = True
+                self.skip_if_nonexistent = True
         else:
             print_log("Using custom params", logger=self._logger)
             self.max_dist = max_dist
             self.kill_internal = kill_internal
             self.skip_if_nonexistent = skip_if_nonexistent
-
             self.instance_sensitive = instance_sensitive
+
         if self.kill_internal and self.instance_sensitive:
             print_log(
                 "kill_internal and instance_sensitive are both True which will conflict with each either",
@@ -158,23 +184,25 @@ class SBDEvaluator(BaseMultilabelEvaluator):
     @property
     def eval_params(self):
         return dict(
-            radius=self.radius,
             scale=self.scale,
             apply_thinning=self.apply_thinning,
             apply_nms=self.apply_nms,
             max_dist=self.max_dist,
             kill_internal=self.kill_internal,
             skip_if_nonexistent=self.skip_if_nonexistent,
+            num_classes=len(self.CLASSES),
         )
 
     def _before_evaluation(self):
+        assert (
+            self._sample_names is not None
+        ), "ERR: no samples yet. load them before evaluation"
         assert osp.exists(
             self.dataset_root
         ), f"ERR: {self.dataset_root} does not exist"
-        assert osp.exists(self.CLS_root), f"ERR: {self.CLS_root} does not exist"
         assert osp.exists(
-            self.INST_root
-        ), f"ERR: {self.INST_root} does not exist"
+            self.gtEval_root
+        ), f"ERR: {self.gtEval_root} does not exist"
         assert osp.exists(
             self.pred_root
         ), f"ERR: {self.pred_root} does not exist"
@@ -198,16 +226,22 @@ class SBDEvaluator(BaseMultilabelEvaluator):
             category_dir = f"class_{str(category).zfill(3)}"
 
             # GT file paths
-            cls_path = osp.join(self.CLS_root, f"{sample_name}{self.GT_SUFFIX}")
             if self.instance_sensitive:
-                inst_path = osp.join(
-                    self.INST_root, f"{sample_name}{self.GT_SUFFIX}"
+                edge_path = osp.join(
+                    self.gtEval_root,
+                    f"{sample_name}{self.ISEDGE_SUFFIX}",
                 )
-                assert osp.exists(inst_path), f"ERR: {inst_path} is not valid"
             else:
-                inst_path = None
-
-            assert osp.exists(cls_path), f"ERR: {cls_path} is not valid"
+                edge_path = osp.join(
+                    self.gtEval_root,
+                    f"{sample_name}{self.EDGE_SUFFIX}",
+                )
+            seg_path = osp.join(
+                self.gtEval_root,
+                f"{sample_name}{self.SEG_SUFFIX}",
+            )
+            assert osp.exists(edge_path), f"ERR: {edge_path} is not valid"
+            assert osp.exists(seg_path), f"ERR: {seg_path} is not valid"
 
             # prediction file path
             # sample_name = sample_name.split("/")[1]  # assert city/img
@@ -223,8 +257,8 @@ class SBDEvaluator(BaseMultilabelEvaluator):
                     category=category,
                     thresholds=thresholds,
                     # file paths
-                    cls_path=cls_path,
-                    inst_path=inst_path,
+                    edge_path=edge_path,
+                    seg_path=seg_path,
                     pred_path=pred_path,
                     **self.eval_params,
                 )
@@ -252,3 +286,98 @@ class SBDEvaluator(BaseMultilabelEvaluator):
             )
 
         return overall_metric
+
+
+class ReannoSBDEvaluator(SBDEvaluator):
+    """Reannotated SBD validation split evaluator."""
+
+    RAW_EDGE_SUFFIX = "_reanno_raw_edge.png"
+    THIN_EDGE_SUFFIX = "_reanno_thin_edge.png"
+    RAW_ISEDGE_SUFFIX = "_reanno_raw_isedge.png"
+    THIN_ISEDGE_SUFFIX = "_reanno_thin_isedge.png"
+
+    def __init__(
+        self,
+        dataset_root: str,
+        pred_root: str,
+        split: str = "val",
+        thin: bool = False,
+        gt_dir=None,
+        pred_suffix=None,
+        **kwargs,
+    ):
+        self.dataset_root = dataset_root
+        self.pred_root = pred_root
+
+        assert split in ("val", "test")
+        self.split = split
+        self.thin = thin
+        if self.thin:
+            print_log(
+                "Using `thin` mode; setting the suffix respectively",
+                logger=self._logger,
+            )
+            self.EDGE_SUFFIX = self.THIN_EDGE_SUFFIX
+            self.ISEDGE_SUFFIX = self.THIN_ISEDGE_SUFFIX
+        else:
+            print_log(
+                "Using `raw` mode; setting the suffix respectively",
+                logger=self._logger,
+            )
+            self.EDGE_SUFFIX = self.RAW_EDGE_SUFFIX
+            self.ISEDGE_SUFFIX = self.RAW_ISEDGE_SUFFIX
+
+        # change dataset directory and suffix
+        if gt_dir:
+            print_log(f"changing GT_DIR to {gt_dir}", logger=self._logger)
+            self.GT_DIR = gt_dir
+        if pred_suffix:
+            print_log(
+                f"changing PRED_SUFFIX to {pred_suffix}", logger=self._logger
+            )
+            self.PRED_SUFFIX = pred_suffix
+
+        # set parameters
+        self.gtEval_root = osp.join(self.dataset_root, self.GT_DIR)
+
+        if pred_suffix is not None:
+            print_log(f"changed suffix to {pred_suffix}")
+            self.PRED_SUFFIX = pred_suffix
+
+        # we can try to load some sample names
+        try:
+            self.set_sample_names()
+        except Exception:
+            print_log(
+                "Tried to set sample_names, but couldn't",
+                logger=self._logger,
+            )
+
+    def set_eval_params(
+        self,
+        eval_mode=None,
+        scale: float = 1.0,
+        apply_thinning: bool = False,
+        apply_nms: bool = False,
+        instance_sensitive: bool = True,
+        max_dist: float = 0.0075,
+        **kwargs,
+    ) -> None:
+        print_log(
+            "Using params for re-annotated test split", logger=self._logger
+        )
+        assert 0 < scale <= 1, f"ERR: scale ({scale}) is not valid"
+        self.scale = scale
+        self.apply_thinning = apply_thinning
+        self.apply_nms = apply_nms
+
+        self.max_dist = max_dist
+        self.kill_internal = False
+        self.skip_if_nonexistent = False
+        self.instance_sensitive = instance_sensitive
+
+        if self.kill_internal and self.instance_sensitive:
+            print_log(
+                "kill_internal and instance_sensitive are both True which will conflict with each either",
+                logger=self._logger,
+            )

@@ -3,6 +3,7 @@
 """Helper functions for SBD dataset"""
 
 import os.path as osp
+from copy import deepcopy
 from warnings import warn
 from typing import Optional
 
@@ -15,18 +16,182 @@ from pyEdgeEval.common.multi_label import (
     convert_inst_seg,
 )
 from pyEdgeEval.edge_tools import loop_instance_mask2edge, loop_mask2edge
-from pyEdgeEval.datasets.sbd import (
-    load_sbd_gt_cls_mat,
-    load_sbd_gt_inst_mat,
-    load_reanno_instance_insensitive_gt,
-    load_reanno_instance_sensitive_gt,
-)
 from pyEdgeEval.datasets.sbd_attributes import (
     SBD_labelIds,
     SBD_inst_labelIds,
     SBD_label2trainId,
 )
-from pyEdgeEval.utils import loadmat, mask2onehot, edge_label2trainId
+from pyEdgeEval.utils import (
+    loadmat,
+    mask2onehot,
+    edge_label2trainId,
+    sparse2numpy,
+)
+
+
+def load_sbd_gt_cls_mat(path: str, new_loader: bool = False):
+    """Load Per Class Ground Truth Annoation"""
+    if new_loader:
+        gt = loadmat(path, True)["GTcls"]
+        boundaries = gt["Boundaries"]  # list[csc_matrix]
+        segmentation = gt["Segmentation"]  # np.ndarray(h, w)
+        present_categories = gt["CategoriesPresent"]  # np.ndarray()
+        if isinstance(present_categories, int):
+            present_categories = np.array([present_categories])
+        if present_categories.ndim == 0:
+            # single value, or no instances
+            present_categories = present_categories[None]
+        assert present_categories.ndim == 1, f"{present_categories.ndim}"
+
+        assert len(segmentation.shape) == 2
+        h, w = segmentation.shape
+        num_categories = len(boundaries)
+        np_boundaries = np.zeros([num_categories, h, w], dtype=np.uint8)
+        for cat in range(num_categories):
+            np_boundaries[cat] = sparse2numpy(boundaries[cat])
+
+    else:
+        gt = loadmat(path, False)["GTcls"][0, 0]
+        boundaries = gt[0]  # np.ndarray(np.ndarray(csc_matrix))
+        segmentation = gt[1]  # np.ndarray(h, w)
+        present_categories = gt[2]  # np.ndarray()
+        if present_categories.ndim > 1:
+            present_categories = present_categories.squeeze()
+        if present_categories.ndim == 0:
+            # single value, or no instances
+            present_categories = present_categories[None]
+
+        assert len(segmentation.shape) == 2
+        h, w = segmentation.shape
+        num_categories = len(boundaries)
+        np_boundaries = np.zeros([num_categories, h, w], dtype=np.uint8)
+        for cat in range(num_categories):
+            np_boundaries[cat] = sparse2numpy(boundaries[cat][0])
+
+    # TODO: do checks for present categories?
+    return np_boundaries, segmentation, present_categories
+
+
+def load_sbd_gt_inst_mat(path: str, new_loader: bool = False):
+    """Load Per Instance Ground Truth Annotation
+
+    NOTE: seg and bdry is indexed by instances (not category)
+    """
+    if new_loader:
+        gt = loadmat(path, True)["GTinst"]
+        segmentation = gt["Segmentation"]
+        boundaries = gt["Boundaries"]
+        categories = gt["Categories"]
+        if isinstance(categories, int):
+            categories = np.array([categories])
+        if categories.ndim == 0:
+            # single value, or no instances
+            categories = categories[None]
+        assert categories.ndim == 1, f"{categories.ndim}"
+
+        assert len(segmentation.shape) == 2
+        h, w = segmentation.shape
+        num_categories = len(boundaries)
+        np_boundaries = np.zeros([num_categories, h, w], dtype=np.uint8)
+        for cat in range(num_categories):
+            np_boundaries[cat] = sparse2numpy(boundaries[cat])
+
+    else:
+        gt = loadmat(path, False)["GTinst"][0, 0]
+        segmentation = gt[0]
+        boundaries = gt[1]
+        categories = gt[2]
+        if categories.ndim > 1:
+            categories = categories.squeeze()
+        if categories.ndim == 0:
+            # single value, or no instances
+            categories = categories[None]
+
+        assert len(segmentation.shape) == 2
+        h, w = segmentation.shape
+        num_categories = len(boundaries)
+        np_boundaries = np.zeros([num_categories, h, w], dtype=np.uint8)
+        for cat in range(num_categories):
+            np_boundaries[cat] = sparse2numpy(boundaries[cat][0])
+
+    return np_boundaries, segmentation, categories
+
+
+def load_instance_insensitive_gt(cls_path: str, new_loader: bool = False):
+    warn("This function has been deprecated.", DeprecationWarning)
+    return load_sbd_gt_cls_mat(cls_path, new_loader)
+
+
+def load_instance_sensitive_gt(
+    cls_path: str, inst_path: str, new_loader: bool = False
+):
+    """Loads instance sensitive ground truth annotation from .mat file.
+
+    This function has been deprecated.
+    """
+    warn("This function has been deprecated.", DeprecationWarning)
+
+    cls_bdry, cls_seg, present_cats = load_sbd_gt_cls_mat(cls_path, new_loader)
+    inst_bdry, _, inst_cats = load_sbd_gt_inst_mat(inst_path, new_loader)
+
+    for inst_cat in inst_cats:
+        assert (
+            inst_cat in present_cats
+        ), f"ERR: instance category of {inst_cat} not available in {present_cats}"
+
+    # create a new bdry map and add instance boundary pixels
+    new_bdry = deepcopy(cls_bdry)
+    for i, inst_cat in enumerate(inst_cats):
+        _inst_bdry = inst_bdry[i]
+        # NOTE: inst_cat is indexed from 1
+        new_bdry[inst_cat - 1] = new_bdry[inst_cat - 1] | _inst_bdry
+
+    return new_bdry, cls_seg, present_cats
+
+
+def load_reanno_instance_insensitive_gt(cls_path: str):
+    """Just a wrapper"""
+    warn("This function does not work correctly for 'thin' evaluation")
+    # TODO: the radius and thinning is not applied here
+    # we should do this in this function, but this will change
+    # the results for pre-processing the edges.
+    return load_sbd_gt_cls_mat(cls_path, True)
+
+
+def load_reanno_instance_sensitive_gt(cls_path: str, inst_path: str):
+    """Re-annoated GTs have minor changes to how the instances are saved
+
+    inst_bdry contains already preprocessed instance boundaries here, wheras
+    before, it contained arrays for each of the instances and were indexed
+    for each instances.
+
+    we also need to use the new_loader, because old loader cannot read it correctly
+    """
+    warn("This function does not work correctly for 'thin' evaluation")
+    cls_bdry, cls_seg, present_cats = load_sbd_gt_cls_mat(cls_path, True)
+    inst_bdry, _, inst_cats = load_sbd_gt_inst_mat(inst_path, True)
+
+    for inst_cat in inst_cats:
+        assert (
+            inst_cat in present_cats
+        ), f"ERR: instance category of {inst_cat} not available in {present_cats}"
+
+    assert (
+        cls_bdry.shape == inst_bdry.shape
+    ), "the two bdries should have equal shape"
+
+    # create a new bdry map and add instance boundary pixels
+    new_bdry = deepcopy(cls_bdry)
+    for cat in present_cats:
+        # NOTE: bdry idx doesn't include background (0)
+        _inst_bdry = inst_bdry[cat - 1]
+        new_bdry[cat - 1] = new_bdry[cat - 1] | _inst_bdry
+
+    # TODO: the radius and thinning is not applied here
+    # we should do this in this function, but this will change
+    # the results for pre-processing the edges.
+
+    return new_bdry, cls_seg, present_cats
 
 
 def check_path(path):
