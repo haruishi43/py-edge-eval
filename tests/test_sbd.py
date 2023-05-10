@@ -3,6 +3,8 @@
 """Test SBD
 
 - SBD_bench consists of single category evaluation (class 14 (human))
+
+FIXME: this test fails due to the updated SBDEvaluator.
 """
 
 import os.path as osp

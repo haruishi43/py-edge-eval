@@ -18,6 +18,7 @@
 - [x] Move the scripts into the source code (currently moved to `scripts` for testing)
 - [ ] unit test coverage for important functions (would like to make tests for all functions)
 - [ ] Make a CLI interface (for evaluation/convert dataset)
+- [ ] SBDEvaluator tests are failing due to recent API updates in `0.2.7`
 
 
 ## Known Bugs and Problems
