@@ -52,8 +52,6 @@ class SBDEvaluator(BaseMultilabelEvaluator):
     SEG_SUFFIX = "_labelIds.png"
     PRED_SUFFIX = ".png"
 
-    PRED_SUFFIX = ".bmp"
-
     def __init__(
         self,
         dataset_root: str,
