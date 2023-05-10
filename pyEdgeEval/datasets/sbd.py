@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 from copy import deepcopy
+from typing import Optional
+from warnings import warn
 
 import cv2
 import numpy as np
@@ -8,11 +10,24 @@ from PIL import Image
 
 # from skimage.io import imread
 
-from pyEdgeEval.common.multi_label.evaluate_boundaries import (
+from pyEdgeEval.common.multi_label import (
     evaluate_boundaries_threshold,
+    add_ignore_pixel,
+    convert_inst_seg,
 )
 from pyEdgeEval.common.utils import check_thresholds
-from pyEdgeEval.utils import loadmat, sparse2numpy
+from pyEdgeEval.datasets.sbd_attributes import (
+    SBD_labelIds,
+    SBD_inst_labelIds,
+    SBD_label2trainId,
+)
+from pyEdgeEval.edge_tools import loop_instance_mask2edge, loop_mask2edge
+from pyEdgeEval.utils import (
+    edge_label2trainId,
+    loadmat,
+    mask2onehot,
+    sparse2numpy,
+)
 
 
 def load_sbd_gt_cls_mat(path: str, new_loader: bool = False):
@@ -104,12 +119,19 @@ def load_sbd_gt_inst_mat(path: str, new_loader: bool = False):
 
 
 def load_instance_insensitive_gt(cls_path: str, new_loader: bool = False):
+    warn("This function has been deprecated.", DeprecationWarning)
     return load_sbd_gt_cls_mat(cls_path, new_loader)
 
 
 def load_instance_sensitive_gt(
     cls_path: str, inst_path: str, new_loader: bool = False
 ):
+    """Loads instance sensitive ground truth annotation from .mat file.
+
+    This function has been deprecated.
+    """
+    warn("This function has been deprecated.", DeprecationWarning)
+
     cls_bdry, cls_seg, present_cats = load_sbd_gt_cls_mat(cls_path, new_loader)
     inst_bdry, _, inst_cats = load_sbd_gt_inst_mat(inst_path, new_loader)
 
@@ -128,8 +150,82 @@ def load_instance_sensitive_gt(
     return new_bdry, cls_seg, present_cats
 
 
+def convert_mat2np(
+    cls_path: str,
+    inst_path: Optional[str] = None,
+    radius: int = 2,
+    thin: bool = False,
+    outer_pixel: int = 21,
+    new_loader: bool = False,
+):
+    """Segmentation maps to boundaries
+
+    Since the preprocessed boundaries are fixed to a certain radius,
+    we need to create custom boundaries from MATLAB files.
+
+    Args:
+        cls_path (str)
+        inst_path (str)
+        radius (int)
+        thin (bool)
+        outer_pixel (int)
+        new_loader (bool)
+    Returns:
+        boundary and segmentation maps
+
+    NOTE: added outer pixel introduced in SEAL
+    """
+
+    if thin and (radius != 1):
+        warn("Thin, but radius was set to >1")
+
+    # get segmentation from MATLAB file
+    _, cls_seg, present_cats = load_sbd_gt_cls_mat(cls_path, new_loader)
+
+    # add ignore pixels around the image
+    cls_seg = add_ignore_pixel(cls_seg, border_px=5, ignore_id=outer_pixel)
+
+    # convert mask to onehot vector
+    mask = mask2onehot(cls_seg, labels=SBD_labelIds)
+
+    if inst_path:
+        # get instance segmentation from MATLAB file
+        _, inst_seg, inst_cats = load_sbd_gt_inst_mat(inst_path, new_loader)
+
+        # convert instance segmentation
+        new_inst_seg = convert_inst_seg(inst_seg, inst_cats, present_cats)
+
+        # generate edges
+        bdry = loop_instance_mask2edge(
+            mask=mask,
+            inst_mask=new_inst_seg,
+            inst_labelIds=SBD_inst_labelIds,
+            ignore_indices=[outer_pixel],
+            radius=radius,
+            thin=thin,
+        )
+        bdry = edge_label2trainId(bdry, SBD_label2trainId)
+
+        return bdry, cls_seg
+    else:
+        # generate edges
+        bdry = loop_mask2edge(
+            mask=mask,
+            ignore_indices=[outer_pixel],
+            radius=radius,
+            thin=thin,
+        )
+        bdry = edge_label2trainId(bdry, SBD_label2trainId)
+
+        return bdry, cls_seg
+
+
 def load_reanno_instance_insensitive_gt(cls_path: str):
     """Just a wrapper"""
+    warn("This function does not work correctly for 'thin' evaluation")
+    # TODO: the radius and thinning is not applied here
+    # we should do this in this function, but this will change
+    # the results for pre-processing the edges.
     return load_sbd_gt_cls_mat(cls_path, True)
 
 
@@ -142,6 +238,7 @@ def load_reanno_instance_sensitive_gt(cls_path: str, inst_path: str):
 
     we also need to use the new_loader, because old loader cannot read it correctly
     """
+    warn("This function does not work correctly for 'thin' evaluation")
     cls_bdry, cls_seg, present_cats = load_sbd_gt_cls_mat(cls_path, True)
     inst_bdry, _, inst_cats = load_sbd_gt_inst_mat(inst_path, True)
 
@@ -161,17 +258,11 @@ def load_reanno_instance_sensitive_gt(cls_path: str, inst_path: str):
         _inst_bdry = inst_bdry[cat - 1]
         new_bdry[cat - 1] = new_bdry[cat - 1] | _inst_bdry
 
+    # TODO: the radius and thinning is not applied here
+    # we should do this in this function, but this will change
+    # the results for pre-processing the edges.
+
     return new_bdry, cls_seg, present_cats
-
-
-def remove_boundary_pixels(array, px=5):
-    """Remove boundary pixels from 2D array."""
-    h, w = array.shape
-    array[0:px, :] = 0
-    array[h - px : h, :] = 0
-    array[:, 0:px] = 0
-    array[:, w - px : w] = 0
-    return array
 
 
 def _evaluate_single(
@@ -179,6 +270,7 @@ def _evaluate_single(
     inst_path,
     pred_path,
     category,
+    radius,
     scale,
     max_dist,
     thresholds,
@@ -195,38 +287,31 @@ def _evaluate_single(
     # checks and converts thresholds
     thresholds = check_thresholds(thresholds)
 
-    if inst_path:
-        # instance sensitive
-        edge, seg, present_categories = load_instance_sensitive_gt(
-            cls_path=cls_path,
-            inst_path=inst_path,
-        )
-    else:
-        # instance insensitive
-        edge, seg, present_categories = load_instance_insensitive_gt(
-            cls_path=cls_path,
-        )
+    # load GT
+    edge, seg = convert_mat2np(
+        cls_path=cls_path,
+        inst_path=inst_path,
+        radius=radius,
+        thin=apply_thinning,
+        outer_pixel=21,
+    )
 
     # NOTE: background ID is 0
     # TODO: would be smart to return here using `present_categories`
-
     cat_idx = category - 1
-    cat_edge = edge[cat_idx, :, :]
+    gt_edge = edge[cat_idx, :, :]
 
     # rescale
-    (h, w) = cat_edge.shape
+    (h, w) = gt_edge.shape
     height, width = int(h * scale + 0.5), int(w * scale + 0.5)
-    cat_edge = cv2.resize(cat_edge, (width, height), cv2.INTER_NEAREST)
-    cat_edge = remove_boundary_pixels(cat_edge)
+    gt_edge = cv2.resize(gt_edge, (width, height), cv2.INTER_NEAREST)
+
     if kill_internal:
         seg = cv2.resize(seg, (width, height), cv2.INTER_NEAREST)
 
         # SBD explicitly starts from 1 (because of matlab)
         # 0 is the background
         cat_seg = seg == category
-
-        # remove boundary
-        cat_seg = remove_boundary_pixels(cat_seg)
     else:
         cat_seg = None
 
@@ -238,14 +323,14 @@ def _evaluate_single(
     pred = np.array(pred)
     pred = (pred / 255).astype(float)
 
-    # ignore boundaries
-    pred = remove_boundary_pixels(pred)
+    # ignore boundaries (as background pixel)
+    pred = add_ignore_pixel(pred, border_px=5, ignore_id=0)
 
     # evaluate multi-label boundaries
     count_r, sum_r, count_p, sum_p = evaluate_boundaries_threshold(
         thresholds=thresholds,
         pred=pred,
-        gt=cat_edge,
+        gt=gt_edge,
         gt_seg=cat_seg,
         max_dist=max_dist,
         apply_thinning=apply_thinning,

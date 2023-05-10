@@ -21,6 +21,10 @@ from .io import (
     save_overall_metric,
     save_pretty_metrics,
 )
+from .utils import (
+    add_ignore_pixel,
+    convert_inst_seg,
+)
 
 __all__ = [
     "calculate_metrics",
@@ -36,4 +40,6 @@ __all__ = [
     "save_threshold_metrics",
     "save_overall_metric",
     "save_pretty_metrics",
+    "add_ignore_pixel",
+    "convert_inst_seg",
 ]

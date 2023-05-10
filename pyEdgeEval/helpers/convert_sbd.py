@@ -9,7 +9,11 @@ from typing import Optional
 import numpy as np
 from PIL import Image
 
-from pyEdgeEval.common.multi_label import rgb_multilabel_encoding
+from pyEdgeEval.common.multi_label import (
+    rgb_multilabel_encoding,
+    add_ignore_pixel,
+    convert_inst_seg,
+)
 from pyEdgeEval.edge_tools import loop_instance_mask2edge, loop_mask2edge
 from pyEdgeEval.datasets.sbd import (
     load_sbd_gt_cls_mat,
@@ -35,48 +39,6 @@ def get_samples(path):
     with open(path, "r") as f:
         sample_names = [line.rstrip("\n") for line in f]
     return sample_names
-
-
-def add_ignore_pixel(
-    cls_seg: np.ndarray,
-    border_px: int = 5,
-    ignore_id: int = 21,
-):
-    """Add ignore pixels around the segmentation boundaries
-
-    In SEAL, this process was added since SBD has issues when segmentation map
-    touches the image boundaries.
-    """
-    h, w = cls_seg.shape
-    cls_seg[0:border_px, :] = ignore_id
-    cls_seg[h - border_px : h, :] = ignore_id
-    cls_seg[:, 0:border_px] = ignore_id
-    cls_seg[:, w - border_px : w] = ignore_id
-    return cls_seg
-
-
-def convert_inst_seg(inst_seg, inst_cats, present_cats):
-    """Convert the instance segmentation format so it's compatible with mask2edge
-
-    Args:
-        inst_seg (np.ndarray): original instance segmentation
-        inst_cats (np.ndarray): instance labels
-        present_cats (np.ndarray): present categories in the instance segmentation map
-    Returns:
-        output instance segmentation map (np.ndarray with np.int32)
-    """
-    # output requires int32
-    out = np.zeros_like(inst_seg, dtype=np.int32)
-    for present_cat in present_cats:
-        tmp_id = str(present_cat).zfill(2)
-        num_inst = 0
-        for i, cat in enumerate(inst_cats):
-            if present_cat == cat:
-                out_id = int(tmp_id + str(num_inst).zfill(3))
-                # indexed from 1
-                out[inst_seg == (i + 1)] = out_id
-                num_inst += 1
-    return out
 
 
 def convert_seg_label2train(seg, label2trainId):
