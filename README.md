@@ -141,7 +141,7 @@ Example evaluation commands:
 python scripts/evaluate/sbd.py <path/to/sbd> <path/to/pred> --categories=15 --thresholds=5 --nproc=8
 ```
 
-## CityScapes
+## Cityscapes
 
 First, create GT data using this script:
 ```Bash
