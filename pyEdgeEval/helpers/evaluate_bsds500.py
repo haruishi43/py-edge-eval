@@ -148,7 +148,7 @@ def evaluate_bsds500(no_split_dir=False):
 
     apply_thinning = not args.raw
 
-    evaluate_bsds500(
+    evaluate(
         bsds_path=args.bsds_path,
         pred_path=args.pred_path,
         output_path=args.output_path,
