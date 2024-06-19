@@ -2,7 +2,7 @@
 
 """Information about this library"""
 
-__version__ = "0.2.7"
+__version__ = "0.2.8"
 __author__ = "haruishi43"
 __email__ = "haruyaishikawa@keio.jp"
 __description__ = "Python Edge Evaluation Tools"
