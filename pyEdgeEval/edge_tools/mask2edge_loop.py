@@ -16,13 +16,14 @@ __all__ = [
 
 
 def loop_mask2edge(
-    mask,
-    ignore_indices,
-    radius,
-    thin=False,
-    use_cv2=True,
-    quality=0,
-):
+    mask: np.ndarray,
+    ignore_indices: list,
+    radius: int,
+    thin: bool = False,
+    internal_only: bool = False,
+    use_cv2: bool = True,
+    quality: int = 0,
+) -> np.ndarray:
     """mask2edge with looping"""
     assert mask.ndim == 3
     num_labels, h, w = mask.shape
@@ -49,6 +50,7 @@ def loop_mask2edge(
             radius=radius,
             use_cv2=use_cv2,
             quality=quality,
+            internal_only=internal_only,
         )
 
         # thin the boundaries
@@ -61,17 +63,18 @@ def loop_mask2edge(
 
 
 def loop_instance_mask2edge(
-    mask,
-    inst_mask,
-    inst_labelIds,
-    ignore_indices,
-    radius,
-    thin=False,
-    use_cv2=True,
-    quality=0,
-    _inst_len=5,
-    _inst_id_dig=2,
-):
+    mask: np.ndarray,
+    inst_mask: np.ndarray,
+    inst_labelIds: list,
+    ignore_indices: list,
+    radius: int,
+    thin: bool = False,
+    internal_only: bool = False,
+    use_cv2: bool = True,
+    quality: int = 0,
+    _inst_len: int = 5,
+    _inst_id_dig: int = 2,
+) -> np.ndarray:
     """mask2edge with looping (instance sensitive)"""
     assert mask.ndim == 3
     num_labels, h, w = mask.shape
@@ -109,6 +112,7 @@ def loop_instance_mask2edge(
 
     args = dict(
         radius=radius,
+        internal_only=internal_only,
         use_cv2=use_cv2,
         quality=quality,
     )
